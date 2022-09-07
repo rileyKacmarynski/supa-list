@@ -1,23 +1,23 @@
-import { ActionIcon, useMantineColorScheme } from '@mantine/core'
+import { ActionIcon } from '@mantine/core'
 import { IconMoonStars, IconSun } from '@tabler/icons'
+import { useTheme } from '../../Theme/ThemeProvider'
 
 const ThemeToggle: React.FC = () => {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
+  const { colorScheme, toggleColorScheme } = useTheme()
 
   return (
     <ActionIcon
-      variant="default"
       onClick={() => toggleColorScheme()}
-      size={30}
+      size={32}
       data-testid="theme-toggle"
       aria-label={`change to ${
         colorScheme === 'dark' ? 'light' : 'dark'
       } theme`}
     >
       {colorScheme === 'dark' ? (
-        <IconSun size={16} />
+        <IconSun size={24} />
       ) : (
-        <IconMoonStars size={16} />
+        <IconMoonStars size={24} />
       )}
     </ActionIcon>
   )

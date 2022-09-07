@@ -12,18 +12,20 @@ export const parameters = {
   },
 }
 
+const colorOptions = ['grape', 'indigo', 'cyan', 'teal', 'yellow']
 export const argTypes = {
   theme: { control: 'select', options: ['light', 'dark'] },
+  primaryColor: { control: 'select', options: colorOptions },
 }
 
 // The default value of the theme arg to all stories
 export const args = { theme: 'dark' }
 
 const withTheme: DecoratorFn = (Story, context) => {
-  const { theme } = context.args
+  const { theme, primaryColor } = context.args
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme} primaryColor={primaryColor}>
       <Story />
     </ThemeProvider>
   )

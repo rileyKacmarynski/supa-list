@@ -4,8 +4,10 @@ import {
   Header as MantineHeader,
   HeaderProps as MantineHeaderProps,
   MediaQuery,
-  useMantineTheme,
 } from '@mantine/core'
+import { useTheme } from '../../Theme/ThemeProvider'
+import Logo from './Logo'
+import SettingsMenu from './SettingsMenu'
 import ThemeToggle from './ThemeToggle'
 
 export interface HeaderProps extends Omit<MantineHeaderProps, 'height' | 'p'> {
@@ -19,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({
   children,
   ...rest
 }) => {
-  const theme = useMantineTheme()
+  const theme = useTheme()
 
   return (
     <MantineHeader height={70} p="md" {...rest}>
@@ -34,10 +36,11 @@ const Header: React.FC<HeaderProps> = ({
           />
         </MediaQuery>
         <Group sx={{ height: '100%', width: '100%' }} px={20} position="apart">
-          LOGO
+          <Logo />
           <Group position="right">
             {children}
             <ThemeToggle />
+            <SettingsMenu />
           </Group>
         </Group>
       </div>

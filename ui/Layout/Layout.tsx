@@ -1,7 +1,8 @@
 import React, { useCallback, useState } from 'react'
-import { AppShell, useMantineTheme } from '@mantine/core'
+import { AppShell, ScrollArea } from '@mantine/core'
 import Header from './Header/Header'
 import Navbar from './Navbar'
+import { useTheme } from '../Theme/ThemeProvider'
 export interface LayoutProps {
   children: React.ReactNode
   header: React.ReactNode
@@ -9,7 +10,7 @@ export interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
-  const theme = useMantineTheme()
+  const theme = useTheme()
   const [opened, setOpened] = useState(false)
 
   const layoutBackground =
@@ -21,6 +22,8 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
     <AppShell
       styles={{
         main: {
+          height: '100vh',
+          display: 'flex',
           background:
             theme.colorScheme === 'dark'
               ? theme.colors.dark[8]
@@ -29,11 +32,11 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
       }}
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
-      navbar={
-        <Navbar menuOpened={opened} sx={{ background: layoutBackground }}>
-          {navbar}
-        </Navbar>
-      }
+      // navbar={
+      //   <Navbar menuOpened={opened} sx={{ background: layoutBackground }}>
+      //     {navbar}
+      //   </Navbar>
+      // }
       header={
         <Header
           toggleMenu={toggleMenu}
@@ -44,7 +47,7 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
         </Header>
       }
     >
-      {children}
+      <ScrollArea>{children}</ScrollArea>
     </AppShell>
   )
 }

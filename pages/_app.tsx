@@ -5,7 +5,7 @@ import { ThemeProvider } from '../ui/Theme'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <ThemeProvider theme="dark">
+    <ThemeProvider>
       <Layout header="this is a header" navbar="this is a navbar">
         <Component {...pageProps} />
       </Layout>

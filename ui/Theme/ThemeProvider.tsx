@@ -1,34 +1,80 @@
 import {
   ColorScheme,
-  ColorSchemeProvider,
-  MantineProvider,
+  MantineTheme,
+  useMantineColorScheme,
+  useMantineTheme,
 } from '@mantine/core'
-import { useState } from 'react'
+import React from 'react'
+import MantineProviders from './MantineProviders'
 
 export interface ThemeProps {
   children: React.ReactNode
   theme?: 'light' | 'dark'
+  primaryColor: ColorOption
 }
 
-const ThemeProvider: React.FC<ThemeProps> = ({ children, theme = 'light' }) => {
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(theme)
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
+export type ColorOption = 'grape' | 'indigo' | 'cyan' | 'teal' | 'yellow'
+
+export interface PrimaryColorContext {
+  setPrimaryColor: (color: ColorOption) => void
+  primaryColor: string
+}
+
+const ThemeContext = React.createContext<PrimaryColorContext | undefined>(
+  undefined,
+)
+
+type Optional<T, K extends keyof T> = Pick<Partial<T>, K> & Omit<T, K>
+
+const ThemeProvider: React.FC<Optional<ThemeProps, 'primaryColor'>> = ({
+  children,
+  theme,
+  primaryColor = 'grape',
+}) => {
+  const [primaryColorOption, setPrimaryColorOption] =
+    React.useState<ColorOption>(primaryColor)
+
+  const setPrimaryColor = React.useCallback(
+    (color: ColorOption) => setPrimaryColorOption(color),
+    [],
+  )
 
   return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
+    <ThemeContext.Provider
+      value={{ primaryColor: primaryColorOption, setPrimaryColor }}
     >
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{ colorScheme }}
-      >
+      <MantineProviders theme={theme} primaryColor={primaryColorOption}>
         {children}
-      </MantineProvider>
-    </ColorSchemeProvider>
+      </MantineProviders>
+    </ThemeContext.Provider>
   )
+}
+
+export interface Theme extends MantineTheme {
+  colorScheme: ColorScheme
+  toggleColorScheme(colorScheme?: ColorScheme): void
+  setPrimaryColor: (color: ColorOption) => void
+  primaryColor: string
+}
+
+export const useTheme: () => Theme = () => {
+  const themeContext = React.useContext(ThemeContext)
+  if (themeContext === undefined) {
+    throw new Error('useTheme must be used within a ThemeProvider')
+  }
+
+  const colorScheme = useMantineColorScheme()
+  const mantineTheme = useMantineTheme()
+
+  const { primaryColor, setPrimaryColor } = themeContext
+  const color = mantineTheme.colors[primaryColor][8]
+
+  return {
+    ...colorScheme,
+    ...mantineTheme,
+    setPrimaryColor,
+    primaryColor: color,
+  }
 }
 
 export default ThemeProvider
