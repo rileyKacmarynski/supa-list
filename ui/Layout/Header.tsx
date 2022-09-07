@@ -1,5 +1,8 @@
+import { ActionIcon, useMantineColorScheme } from '@mantine/core'
+import { IconSun, IconMoonStars } from '@tabler/icons'
 import {
   Burger,
+  Group,
   Header as MantineHeader,
   HeaderProps as MantineHeaderProps,
   MediaQuery,
@@ -18,6 +21,7 @@ const Header: React.FC<HeaderProps> = ({
   ...rest
 }) => {
   const theme = useMantineTheme()
+  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   return (
     <MantineHeader height={70} p="md" {...rest}>
@@ -31,7 +35,23 @@ const Header: React.FC<HeaderProps> = ({
             mr="xl"
           />
         </MediaQuery>
-        {children}
+        <Group sx={{ height: '100%', width: '100%' }} px={20} position="apart">
+          LOGO
+          <Group position="right">
+            {children}
+            <ActionIcon
+              variant="default"
+              onClick={() => toggleColorScheme()}
+              size={30}
+            >
+              {colorScheme === 'dark' ? (
+                <IconSun size={16} />
+              ) : (
+                <IconMoonStars size={16} />
+              )}
+            </ActionIcon>
+          </Group>
+        </Group>
       </div>
     </MantineHeader>
   )
