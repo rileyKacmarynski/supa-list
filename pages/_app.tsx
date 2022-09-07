@@ -9,7 +9,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       withNormalizeCSS
       theme={{ colorScheme: 'dark' }}
     >
-      <Layout>
+      <Layout header="this is a header" navbar="this is a navbar">
         <Component {...pageProps} />
       </Layout>
     </MantineProvider>

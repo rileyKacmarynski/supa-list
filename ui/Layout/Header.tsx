@@ -3,17 +3,20 @@ import {
   Header as MantineHeader,
   HeaderProps as MantineHeaderProps,
   MediaQuery,
-  Text,
   useMantineTheme,
 } from '@mantine/core'
 
-export interface HeaderProps
-  extends Omit<MantineHeaderProps, 'height' | 'p' | 'children'> {
+export interface HeaderProps extends Omit<MantineHeaderProps, 'height' | 'p'> {
   menuOpened: boolean
   toggleMenu: () => void
 }
 
-const Header: React.FC<HeaderProps> = ({ menuOpened, toggleMenu, ...rest }) => {
+const Header: React.FC<HeaderProps> = ({
+  menuOpened,
+  toggleMenu,
+  children,
+  ...rest
+}) => {
   const theme = useMantineTheme()
 
   return (
@@ -28,7 +31,7 @@ const Header: React.FC<HeaderProps> = ({ menuOpened, toggleMenu, ...rest }) => {
             mr="xl"
           />
         </MediaQuery>
-        <Text>Application header</Text>
+        {children}
       </div>
     </MantineHeader>
   )

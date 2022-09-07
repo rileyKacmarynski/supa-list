@@ -14,3 +14,7 @@ export default {
 const Template: ComponentStory<typeof Layout> = args => <Layout {...args} />
 
 export const Primary = Template.bind({})
+Primary.args = {
+  header: 'This is a header',
+  navbar: 'This is a navbar',
+}

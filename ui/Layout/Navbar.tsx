@@ -1,14 +1,12 @@
 import {
   Navbar as MantineNavbar,
   NavbarProps as MantineNavbarProps,
-  Text,
 } from '@mantine/core'
-
-export interface NavbarProps extends Omit<MantineNavbarProps, 'children'> {
+export interface NavbarProps extends MantineNavbarProps {
   menuOpened: boolean
 }
 
-const Navbar: React.FC<NavbarProps> = ({ menuOpened, ...rest }) => {
+const Navbar: React.FC<NavbarProps> = ({ menuOpened, children, ...rest }) => {
   return (
     <MantineNavbar
       p="md"
@@ -17,7 +15,7 @@ const Navbar: React.FC<NavbarProps> = ({ menuOpened, ...rest }) => {
       width={{ sm: 200, lg: 300 }}
       {...rest}
     >
-      <Text>Application navbar</Text>
+      {children}
     </MantineNavbar>
   )
 }

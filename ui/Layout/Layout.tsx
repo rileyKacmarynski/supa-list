@@ -1,19 +1,14 @@
 import React, { useCallback, useState } from 'react'
-import {
-  AppShell,
-  Navbar as MantineNavbar,
-  NavbarProps as MantineNavbarProps,
-  Text,
-  useMantineTheme,
-} from '@mantine/core'
+import { AppShell, useMantineTheme } from '@mantine/core'
 import Header from './Header'
 import Navbar from './Navbar'
-
 export interface LayoutProps {
   children: React.ReactNode
+  header: React.ReactNode
+  navbar: React.ReactNode
 }
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
   const theme = useMantineTheme()
   const [opened, setOpened] = useState(false)
 
@@ -35,14 +30,18 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
       navbar={
-        <Navbar menuOpened={opened} sx={{ background: layoutBackground }} />
+        <Navbar menuOpened={opened} sx={{ background: layoutBackground }}>
+          {navbar}
+        </Navbar>
       }
       header={
         <Header
           toggleMenu={toggleMenu}
           menuOpened={opened}
           sx={{ background: layoutBackground }}
-        />
+        >
+          {header}
+        </Header>
       }
     >
       {children}
