@@ -1,5 +1,3 @@
-import { ActionIcon, useMantineColorScheme } from '@mantine/core'
-import { IconSun, IconMoonStars } from '@tabler/icons'
 import {
   Burger,
   Group,
@@ -8,6 +6,7 @@ import {
   MediaQuery,
   useMantineTheme,
 } from '@mantine/core'
+import ThemeToggle from './ThemeToggle'
 
 export interface HeaderProps extends Omit<MantineHeaderProps, 'height' | 'p'> {
   menuOpened: boolean
@@ -21,7 +20,6 @@ const Header: React.FC<HeaderProps> = ({
   ...rest
 }) => {
   const theme = useMantineTheme()
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme()
 
   return (
     <MantineHeader height={70} p="md" {...rest}>
@@ -39,17 +37,7 @@ const Header: React.FC<HeaderProps> = ({
           LOGO
           <Group position="right">
             {children}
-            <ActionIcon
-              variant="default"
-              onClick={() => toggleColorScheme()}
-              size={30}
-            >
-              {colorScheme === 'dark' ? (
-                <IconSun size={16} />
-              ) : (
-                <IconMoonStars size={16} />
-              )}
-            </ActionIcon>
+            <ThemeToggle />
           </Group>
         </Group>
       </div>

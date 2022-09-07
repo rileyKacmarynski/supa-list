@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { AppShell, useMantineTheme } from '@mantine/core'
-import Header from './Header'
+import Header from './Header/Header'
 import Navbar from './Navbar'
 export interface LayoutProps {
   children: React.ReactNode

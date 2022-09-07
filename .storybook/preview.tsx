@@ -1,5 +1,5 @@
 import React from 'react'
-import { MantineProvider } from '@mantine/core'
+import { ThemeProvider } from '../ui/Theme'
 import { DecoratorFn } from '@storybook/react'
 
 export const parameters = {
@@ -23,13 +23,9 @@ const withTheme: DecoratorFn = (Story, context) => {
   const { theme } = context.args
 
   return (
-    <MantineProvider
-      withGlobalStyles
-      withNormalizeCSS
-      theme={{ colorScheme: theme }}
-    >
+    <ThemeProvider theme={theme}>
       <Story />
-    </MantineProvider>
+    </ThemeProvider>
   )
 }
 
