@@ -1,6 +1,7 @@
 import { ActionIcon, Drawer } from '@mantine/core'
 import { IconSettings } from '@tabler/icons'
 import { useState } from 'react'
+import IconButton from '../Buttons/IconButton/IconButton'
 
 const SettingsMenu = () => {
   const [opened, setOpened] = useState(false)
@@ -20,13 +21,11 @@ const SettingsMenu = () => {
         {/* Drawer content */}
       </Drawer>
 
-      <ActionIcon
+      <IconButton
         aria-label="open settings"
-        size={32}
         onClick={() => setOpened(true)}
-      >
-        <IconSettings size={24} />
-      </ActionIcon>
+        Icon={IconSettings}
+      />
     </>
   )
 }

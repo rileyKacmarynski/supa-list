@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { AppShell, ScrollArea } from '@mantine/core'
+import { AppShell, Box, ScrollArea } from '@mantine/core'
 import Header from './Header/Header'
 import Navbar from './Navbar'
 import { useTheme } from '../Theme/ThemeProvider'
@@ -32,11 +32,11 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
       }}
       navbarOffsetBreakpoint="sm"
       asideOffsetBreakpoint="sm"
-      // navbar={
-      //   <Navbar menuOpened={opened} sx={{ background: layoutBackground }}>
-      //     {navbar}
-      //   </Navbar>
-      // }
+      navbar={
+        <Navbar menuOpened={opened} sx={{ background: layoutBackground }}>
+          {navbar}
+        </Navbar>
+      }
       header={
         <Header
           toggleMenu={toggleMenu}
@@ -47,7 +47,11 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
         </Header>
       }
     >
-      <ScrollArea>{children}</ScrollArea>
+      <ScrollArea>
+        <Box sx={{ marginTop: 'var(--mantine-header-height, 0px)' }}>
+          {children}
+        </Box>
+      </ScrollArea>
     </AppShell>
   )
 }

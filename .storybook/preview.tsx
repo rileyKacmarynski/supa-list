@@ -12,7 +12,7 @@ export const parameters = {
   },
 }
 
-const colorOptions = ['grape', 'indigo', 'cyan', 'teal', 'yellow']
+export const colorOptions = ['grape', 'indigo', 'cyan', 'teal', 'yellow']
 export const argTypes = {
   theme: { control: 'select', options: ['light', 'dark'] },
   primaryColor: { control: 'select', options: colorOptions },
