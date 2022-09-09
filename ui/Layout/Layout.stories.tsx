@@ -19,8 +19,13 @@ Primary.args = {
   header: 'This is a header',
   navbar: 'This is a navbar',
 }
+Primary.parameters = {
+  skipLayout: true,
+}
 
 export const LightTheme = Template.bind({})
+LightTheme.args = Primary.args
+LightTheme.parameters = Primary.parameters
 LightTheme.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement)
 
