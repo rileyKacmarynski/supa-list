@@ -1,9 +1,17 @@
-import { SegmentedControl } from '@mantine/core'
-import { useTheme } from '../../Theme/ThemeProvider'
+import { ColorScheme, SegmentedControl } from '@mantine/core'
+import { ColorOption, useTheme } from '../../Theme/ThemeProvider'
 
-const ThemeToggle: React.FC = () => {
-  const { colorScheme, toggleColorScheme } = useTheme()
+export interface ThemeToggleProps {
+  colorScheme: ColorScheme
+  toggleColorScheme: (scheme: ColorScheme | undefined) => void
+  primaryColorOption: ColorOption
+}
 
+const ThemeToggle: React.FC<ThemeToggleProps> = ({
+  colorScheme,
+  primaryColorOption,
+  toggleColorScheme,
+}) => {
   const onColorSchemeChange = (scheme: string) => {
     if (scheme !== 'dark' && scheme !== 'light') {
       throw new Error('invalid color scheme')
@@ -14,6 +22,7 @@ const ThemeToggle: React.FC = () => {
 
   return (
     <SegmentedControl
+      color={primaryColorOption}
       aria-labelledby="theme"
       value={colorScheme}
       onChange={onColorSchemeChange}

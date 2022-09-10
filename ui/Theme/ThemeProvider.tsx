@@ -13,11 +13,18 @@ export interface ThemeProps {
   primaryColor: ColorOption
 }
 
-export type ColorOption = 'grape' | 'indigo' | 'cyan' | 'teal' | 'yellow'
+export const colorOptions = [
+  'grape',
+  'indigo',
+  'cyan',
+  'teal',
+  'yellow',
+] as const
 
+export type ColorOption = typeof colorOptions[number]
 export interface PrimaryColorContext {
   setPrimaryColor: (color: ColorOption) => void
-  primaryColor: string
+  primaryColor: ColorOption
 }
 
 const ThemeContext = React.createContext<PrimaryColorContext | undefined>(
@@ -34,10 +41,9 @@ const ThemeProvider: React.FC<Optional<ThemeProps, 'primaryColor'>> = ({
   const [primaryColorOption, setPrimaryColorOption] =
     React.useState<ColorOption>(primaryColor)
 
-  const setPrimaryColor = React.useCallback(
-    (color: ColorOption) => setPrimaryColorOption(color),
-    [],
-  )
+  const setPrimaryColor = React.useCallback((color: ColorOption) => {
+    setPrimaryColorOption(color)
+  }, [])
 
   return (
     <ThemeContext.Provider
@@ -54,6 +60,7 @@ export interface Theme extends MantineTheme {
   colorScheme: ColorScheme
   toggleColorScheme(colorScheme?: ColorScheme): void
   setPrimaryColor: (color: ColorOption) => void
+  primaryColorOption: ColorOption
   primaryColor: string
 }
 
@@ -74,6 +81,7 @@ export const useTheme: () => Theme = () => {
     ...mantineTheme,
     setPrimaryColor,
     primaryColor: color,
+    primaryColorOption: primaryColor,
   }
 }
 

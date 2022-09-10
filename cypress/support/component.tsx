@@ -14,8 +14,8 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import '@testing-library/cypress'
 import './commands'
+import '@testing-library/cypress/add-commands'
 
 import { ThemeProps, ThemeProvider } from '../../ui/Theme'
 
