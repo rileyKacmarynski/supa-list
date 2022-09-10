@@ -14,12 +14,16 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+import '@testing-library/cypress'
 import './commands'
+
+import { ThemeProps, ThemeProvider } from '../../ui/Theme'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-import { mount } from 'cypress/react'
+import { mount, MountOptions, MountReturn } from 'cypress/react'
+import React = require('react')
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -28,12 +32,26 @@ import { mount } from 'cypress/react'
 declare global {
   namespace Cypress {
     interface Chainable {
-      mount: typeof mount
+      /**
+       * Mounts a react node
+       * @param component React Node to mount
+       * @param options Additional options to pass into mount
+       */
+      mount(
+        component: React.ReactNode,
+        options?: MountOptions & { themeProps?: ThemeProps },
+      ): Cypress.Chainable<MountReturn>
     }
   }
 }
 
-Cypress.Commands.add('mount', mount)
+Cypress.Commands.add('mount', (component, options = {}) => {
+  const { themeProps, ...mountOptions } = options
+
+  const wrapped = <ThemeProvider {...themeProps}>{component}</ThemeProvider>
+
+  return mount(wrapped, mountOptions)
+})
 
 // Example use:
 // cy.mount(<MyComponent />)

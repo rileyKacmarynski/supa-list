@@ -28,6 +28,7 @@ const Header: React.FC<HeaderProps> = ({
       <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger
+            aria-label="navigation menu"
             opened={menuOpened}
             onClick={toggleMenu}
             size="sm"
@@ -39,7 +40,6 @@ const Header: React.FC<HeaderProps> = ({
           <Logo />
           <Group position="right">
             {children}
-            <ThemeToggle />
             <SettingsMenu />
           </Group>
         </Group>

@@ -1,25 +1,27 @@
-import { ActionIcon } from '@mantine/core'
-import { IconMoonStars, IconSun } from '@tabler/icons'
+import { SegmentedControl } from '@mantine/core'
 import { useTheme } from '../../Theme/ThemeProvider'
 
 const ThemeToggle: React.FC = () => {
   const { colorScheme, toggleColorScheme } = useTheme()
 
+  const onColorSchemeChange = (scheme: string) => {
+    if (scheme !== 'dark' && scheme !== 'light') {
+      throw new Error('invalid color scheme')
+    }
+
+    toggleColorScheme(scheme)
+  }
+
   return (
-    <ActionIcon
-      onClick={() => toggleColorScheme()}
-      size={32}
-      data-testid="theme-toggle"
-      aria-label={`change to ${
-        colorScheme === 'dark' ? 'light' : 'dark'
-      } theme`}
-    >
-      {colorScheme === 'dark' ? (
-        <IconSun size={24} />
-      ) : (
-        <IconMoonStars size={24} />
-      )}
-    </ActionIcon>
+    <SegmentedControl
+      aria-labelledby="theme"
+      value={colorScheme}
+      onChange={onColorSchemeChange}
+      data={[
+        { label: 'Light', value: 'light' },
+        { label: 'Dark', value: 'dark' },
+      ]}
+    />
   )
 }
 
