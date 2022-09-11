@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { AppShell, Box, ScrollArea } from '@mantine/core'
+import { AppShell, ScrollArea } from '@mantine/core'
 import Header from './Header/Header'
 import Navbar from './Navbar'
 import { useTheme } from '../Theme/ThemeProvider'
