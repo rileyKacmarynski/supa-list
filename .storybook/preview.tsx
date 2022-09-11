@@ -1,3 +1,4 @@
+import '../styles/globals.css'
 import React from 'react'
 import { ThemeProvider } from '../ui/Theme'
 import { DecoratorFn } from '@storybook/react'

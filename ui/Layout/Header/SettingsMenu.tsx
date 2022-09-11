@@ -23,7 +23,6 @@ const SettingsMenu = () => {
     toggleColorScheme,
     primaryColorOption,
     setPrimaryColor,
-    colors,
   } = useTheme()
 
   return (
@@ -55,7 +54,6 @@ const SettingsMenu = () => {
             </Text>
             <ColorSchemePicker
               primaryColorOption={primaryColorOption}
-              colors={colors}
               setPrimaryColor={setPrimaryColor}
             />
           </Stack>

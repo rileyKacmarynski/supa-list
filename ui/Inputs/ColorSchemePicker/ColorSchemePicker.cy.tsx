@@ -1,3 +1,5 @@
+// @ts-nocheck
+// for some reason typings for cypress testing library aren't working
 import ColorSchemePicker, { ColorSchemePickerProps } from './ColorSchemePicker'
 
 describe('<ColorSchemePicker />', () => {

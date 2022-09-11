@@ -47,11 +47,7 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
         </Header>
       }
     >
-      <ScrollArea>
-        <Box sx={{ marginTop: 'var(--mantine-header-height, 0px)' }}>
-          {children}
-        </Box>
-      </ScrollArea>
+      <ScrollArea sx={{ width: '100vw' }}>{children}</ScrollArea>
     </AppShell>
   )
 }

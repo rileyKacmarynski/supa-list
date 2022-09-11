@@ -1,5 +1,5 @@
 import React from 'react'
-import { userEvent, waitFor, within } from '@storybook/testing-library'
+import { userEvent, within, screen } from '@storybook/testing-library'
 import { ComponentStory, ComponentMeta } from '@storybook/react'
 
 import Layout from './Layout'
@@ -29,7 +29,11 @@ LightTheme.parameters = Primary.parameters
 LightTheme.play = async ({ canvasElement }) => {
   const canvas = within(canvasElement)
 
-  const button = canvas.getByTestId('theme-toggle')
+  const settingsButton = canvas.getByRole('button', {
+    name: /open settings/i,
+  })
+  userEvent.click(settingsButton)
 
-  userEvent.click(button)
+  const lightSwitch = await screen.findByLabelText(/Light/i)
+  userEvent.click(lightSwitch)
 }
