@@ -47,7 +47,9 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
         </Header>
       }
     >
-      <ScrollArea sx={{ width: '100vw' }}>{children}</ScrollArea>
+      <ScrollArea offsetScrollbars sx={{ width: '100vw' }}>
+        {children}
+      </ScrollArea>
     </AppShell>
   )
 }
