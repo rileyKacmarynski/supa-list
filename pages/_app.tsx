@@ -8,6 +8,8 @@ import { useEffect } from 'react'
 import { Button, Group } from '@mantine/core'
 import Link from 'next/link'
 import ComponentWrapper from '../ui/Layout/ComponentWrapper'
+import UserMenu from '../components/UserMenu'
+import { NotificationsProvider } from '@mantine/notifications'
 
 function MyApp({ Component, pageProps, ...appProps }: AppProps) {
   const [user, setUser] = useState<User | null>(null)
@@ -21,18 +23,20 @@ function MyApp({ Component, pageProps, ...appProps }: AppProps) {
 
   return (
     <ThemeProvider>
-      {isApp ? (
-        <Layout
-          header={<Header user={user} signOut={signOut} />}
-          navbar="This is navbar"
-        >
-          <Component {...pageProps} />
-        </Layout>
-      ) : (
-        <ComponentWrapper>
-          <Component {...pageProps} />
-        </ComponentWrapper>
-      )}
+      <NotificationsProvider>
+        {isApp ? (
+          <Layout
+            header={<Header user={user} signOut={signOut} />}
+            navbar="This is navbar"
+          >
+            <Component {...pageProps} />
+          </Layout>
+        ) : (
+          <ComponentWrapper>
+            <Component {...pageProps} />
+          </ComponentWrapper>
+        )}
+      </NotificationsProvider>
     </ThemeProvider>
   )
 }
@@ -54,9 +58,7 @@ function Header({ user, signOut }: { user: User | null; signOut: () => void }) {
           </Link>
         </>
       ) : (
-        <Button onClick={signOut} component="a">
-          Log Out
-        </Button>
+        <UserMenu user={user} signOut={signOut} />
       )}
     </Group>
   )

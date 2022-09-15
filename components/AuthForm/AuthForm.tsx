@@ -1,22 +1,23 @@
 import {
   Paper,
   Group,
-  Divider,
   Stack,
   TextInput,
   PasswordInput,
   Anchor,
   Button,
   Text,
-  Box,
 } from '@mantine/core'
 import { upperFirst } from '@mantine/hooks'
-import { IconLogin } from '@tabler/icons'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { LoginCredentials } from '../../services/authService'
 
+// should use an error object, but let's keep it simple for now
+type SubmitError = string
+
 export interface AuthFormProps {
-  submit: (credentials: LoginCredentials) => Promise<void>
+  submit: (credentials: LoginCredentials) => Promise<SubmitError | undefined>
   type: 'login' | 'register'
   navigateToOtherType: () => void
   loading: boolean
@@ -38,8 +39,14 @@ const AuthForm: React.FC<AuthFormProps> = ({
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>()
+  const [loginError, setLoginError] = useState<string | undefined>()
 
-  const onSubmit: SubmitHandler<Inputs> = inputs => submit(inputs)
+  const onSubmit: SubmitHandler<Inputs> = async inputs => {
+    const error = await submit(inputs)
+    if (error) {
+      setLoginError(error)
+    }
+  }
 
   return (
     <Paper radius="md" p="xl" sx={{ width: '380px' }} withBorder>
@@ -62,7 +69,11 @@ const AuthForm: React.FC<AuthFormProps> = ({
             }
           />
         </Stack>
-
+        {loginError && (
+          <Text mt="md" color="red">
+            {loginError}
+          </Text>
+        )}
         <Group position="apart" mt="xl">
           <Anchor
             component="button"

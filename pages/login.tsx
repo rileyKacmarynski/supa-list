@@ -2,6 +2,7 @@ import { getUser, LoginCredentials, signIn } from '../services/authService'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import AuthForm from '../components/AuthForm'
+import { showNotification } from '@mantine/notifications'
 
 export default function Login() {
   const router = useRouter()
@@ -21,7 +22,7 @@ export default function Login() {
     setLoading(false)
 
     if (error) {
-      // error notification
+      return 'Invalid username or password'
     } else {
       // success notification and redirect to app
     }
