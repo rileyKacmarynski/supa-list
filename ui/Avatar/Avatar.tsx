@@ -7,7 +7,7 @@ import { forwardRef } from 'react'
 
 export interface AvatarProps extends MantineAvatarProps {
   component?: string
-  initials: string
+  initials?: string
 }
 
 // eslint-disable-next-line react/display-name
