@@ -8,7 +8,6 @@ import {
 import { useTheme } from '../../Theme/ThemeProvider'
 import Logo from './Logo'
 import SettingsMenu from './SettingsMenu'
-import ThemeToggle from './ThemeToggle'
 
 export interface HeaderProps extends Omit<MantineHeaderProps, 'height' | 'p'> {
   menuOpened: boolean

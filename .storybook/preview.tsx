@@ -27,7 +27,6 @@ export const args = { theme: 'dark' }
 const withTheme: DecoratorFn = (Story, context) => {
   const { theme, primaryColor } = context.args
 
-  console.log(context)
   if (context.parameters.skipLayout) {
     return (
       <ThemeProvider theme={theme} primaryColor={primaryColor}>

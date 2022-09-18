@@ -7,7 +7,7 @@ const Logo = () => {
   const { primaryColor } = useTheme()
 
   return (
-    <Link href="/">
+    <Link href="/app">
       <a>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <IconBolt size={36} strokeWidth={1} color={primaryColor} />

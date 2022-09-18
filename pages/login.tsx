@@ -1,18 +1,19 @@
-import { getUser, LoginCredentials, signIn } from '../services/authService'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import AuthForm from '../components/AuthForm'
-import { showNotification } from '@mantine/notifications'
+import { LoginCredentials } from '../services/auth'
+import { useAuth } from '../services/auth/AuthContextProvider'
 
 export default function Login() {
+  const { signIn, session } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
   useEffect(() => {
-    if (getUser()) {
-      router.replace('/')
+    if (session) {
+      router.replace('/app')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onSignIn = async (credentials: LoginCredentials) => {
@@ -22,9 +23,10 @@ export default function Login() {
     setLoading(false)
 
     if (error) {
-      return 'Invalid username or password'
+      return error.message
     } else {
       // success notification and redirect to app
+      router.replace('/app')
     }
   }
 

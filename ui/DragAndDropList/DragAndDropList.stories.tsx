@@ -28,10 +28,6 @@ const Template: ComponentStory<typeof DragAndDropList> = args => {
     handleOrderChange()
   }
 
-  useEffect(() => {
-    console.log(state)
-  }, [state])
-
   const onDragEnd = ({ item, source, destination }: onDragEndArgs) => {
     handlers.reorder({ from: source, to: destination })
     handleOrderChange()

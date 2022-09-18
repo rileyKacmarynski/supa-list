@@ -11,13 +11,12 @@ import {
 import { upperFirst } from '@mantine/hooks'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { LoginCredentials } from '../../services/authService'
+import { LoginCredentials, AuthResponse } from '../../services/auth/AuthClient'
 
-// should use an error object, but let's keep it simple for now
-type SubmitError = string
+type ErrorMessage = string
 
 export interface AuthFormProps {
-  submit: (credentials: LoginCredentials) => Promise<SubmitError | undefined>
+  submit: (credentials: LoginCredentials) => Promise<ErrorMessage | undefined>
   type: 'login' | 'register'
   navigateToOtherType: () => void
   loading: boolean

@@ -22,6 +22,12 @@ export const colorOptions = [
 ] as const
 
 export type ColorOption = typeof colorOptions[number]
+
+export function randomColorOption(): ColorOption {
+  const element = Math.floor(Math.random() * colorOptions.length)
+  return colorOptions[element]
+}
+
 export interface PrimaryColorContext {
   setPrimaryColor: (color: ColorOption) => void
   primaryColor: ColorOption

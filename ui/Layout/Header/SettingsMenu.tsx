@@ -6,6 +6,8 @@ import {
   Title,
   Text,
   Group,
+  Tooltip,
+  Button,
 } from '@mantine/core'
 import { IconSettings } from '@tabler/icons'
 import { useState } from 'react'
@@ -60,11 +62,13 @@ const SettingsMenu = () => {
         </Stack>
       </Drawer>
 
-      <IconButton
-        aria-label="open settings"
-        onClick={() => setOpened(true)}
-        Icon={IconSettings}
-      />
+      <Tooltip label="open settings" openDelay={500} position="bottom-start">
+        <IconButton
+          aria-label="open settings"
+          onClick={() => setOpened(true)}
+          Icon={IconSettings}
+        />
+      </Tooltip>
     </>
   )
 }

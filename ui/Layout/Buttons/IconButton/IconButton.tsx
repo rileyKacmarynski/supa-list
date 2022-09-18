@@ -1,6 +1,6 @@
 import { ActionIcon, ActionIconProps } from '@mantine/core'
 import { TablerIcon } from '@tabler/icons'
-import { MouseEventHandler } from 'react'
+import { forwardRef, MouseEventHandler } from 'react'
 
 export interface IconButtonProps extends ActionIconProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
@@ -8,20 +8,25 @@ export interface IconButtonProps extends ActionIconProps {
   onClick: MouseEventHandler<HTMLButtonElement>
 }
 
-const IconButton: React.FC<IconButtonProps> = ({
-  Icon,
-  size = 'sm',
-  ...rest
-}) => {
-  const sizeMultiplier = 0.75
-  const buttonSize = getButtonSize(size)
+// eslint-disable-next-line react/display-name
+const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(
+  (props, ref) => {
+    const { Icon, size = 'sm', ...rest } = props
+    const sizeMultiplier = 0.75
+    const buttonSize = getButtonSize(size)
 
-  return (
-    <ActionIcon aria-label="icon button" {...rest} size={buttonSize}>
-      <Icon size={buttonSize * sizeMultiplier} />
-    </ActionIcon>
-  )
-}
+    return (
+      <ActionIcon
+        ref={ref}
+        aria-label="icon button"
+        {...rest}
+        size={buttonSize}
+      >
+        <Icon size={buttonSize * sizeMultiplier} />
+      </ActionIcon>
+    )
+  },
+)
 
 function getButtonSize(size: string) {
   switch (size) {
