@@ -37,6 +37,28 @@
 // }
 
 import '@testing-library/cypress/add-commands'
+import { worker } from '../../mocks/browser'
+
+declare global {
+  namespace Cypress {
+    interface Chainable {}
+  }
+}
+
+Cypress.on('test:before:run:async', async () => {
+  // @ts-ignore
+  if (window.msw) {
+    console.log('MSW already running...')
+  }
+
+  if (!window.msw) {
+    console.log('starting MSW...')
+    await worker.start()
+    window.msw = {
+      worker,
+    }
+  }
+})
 
 // Prevent TypeScript from reading file as legacy script
 export {}
