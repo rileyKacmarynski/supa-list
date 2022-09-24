@@ -17,9 +17,9 @@ describe('Auth', () => {
 
     cy.get('input[name="email"]').type(form.email)
     cy.get('input[name="password"]').type(form.password)
-    cy.get('button[type="submit"]')
-      .click()
-      .then(() => cy.findByText(form.email))
+    cy.get('button[type="submit"]').click()
+
+    cy.findByText(form.email)
   })
 
   it('should allow a user to log in', () => {
@@ -32,9 +32,9 @@ describe('Auth', () => {
 
     cy.get('input[name="email"]').type(form.email)
     cy.get('input[name="password"]').type(form.password)
-    cy.get('button[type="submit"]')
-      .click()
-      .then(() => cy.findByText(form.email))
+    cy.get('button[type="submit"]').click()
+
+    cy.findByText(form.email)
   })
 })
 

@@ -23,6 +23,9 @@ const useStyles = createStyles(theme => ({
     //       ? theme.colors.dark[6]
     //       : theme.colors.gray[1],
     // },
+    '&:hover': {
+      color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.black,
+    },
   },
 }))
 

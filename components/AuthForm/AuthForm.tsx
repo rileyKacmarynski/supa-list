@@ -11,7 +11,7 @@ import {
 import { upperFirst } from '@mantine/hooks'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { LoginCredentials, AuthResponse } from '../../services/auth/AuthClient'
+import { LoginCredentials } from '../../services/auth'
 
 type ErrorMessage = string
 
@@ -75,6 +75,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
         )}
         <Group position="apart" mt="xl">
           <Anchor
+            data-testid="AuthForm-navigate"
             component="button"
             type="button"
             color="dimmed"
