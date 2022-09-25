@@ -11,9 +11,9 @@ import {
 } from '@mantine/core'
 import { IconSettings } from '@tabler/icons'
 import { useState } from 'react'
-import ColorSchemePicker from '../../Inputs/ColorSchemePicker/ColorSchemePicker'
-import { useTheme } from '../../Theme'
-import IconButton from '../Buttons/IconButton/IconButton'
+import ColorSchemePicker from 'ui/Inputs/ColorSchemePicker'
+import { useTheme } from 'ui/Theme'
+import IconButton from 'ui/Buttons/IconButton'
 import ThemeToggle from './ThemeToggle'
 
 const SettingsTitle = () => <Title order={2}>Settings</Title>

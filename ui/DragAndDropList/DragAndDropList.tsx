@@ -2,7 +2,7 @@ import { Checkbox, createStyles, Text } from '@mantine/core'
 import { IconGripVertical, IconX } from '@tabler/icons'
 import React from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import IconButton from '../Layout/Buttons/IconButton'
+import IconButton from '../Buttons/IconButton'
 
 const useStyles = createStyles(theme => ({
   item: {

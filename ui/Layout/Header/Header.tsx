@@ -5,7 +5,7 @@ import {
   HeaderProps as MantineHeaderProps,
   MediaQuery,
 } from '@mantine/core'
-import { useTheme } from '../../Theme/ThemeProvider'
+import { useTheme } from 'ui/Theme/ThemeProvider'
 import Logo from './Logo'
 import SettingsMenu from './SettingsMenu'
 

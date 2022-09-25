@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import Avatar from './Avatar'
-import { colorOptions } from '../../.storybook/preview'
+import { colorOptions } from '.storybook/preview'
 
 export default {
   title: 'UI/Avatar',

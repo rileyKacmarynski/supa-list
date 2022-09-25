@@ -3,7 +3,6 @@
 - Deploy to vercel
   - run tests / setup CI
   - try to get lighthouse to run in CI
-- setup nextjs storybook addon
 - Do some notification stuff
 - should I get things working with supabase now, or get it working locally?
   - Maybe try to do the supabase route to get something working, then attack storing it locally and other fun jazz

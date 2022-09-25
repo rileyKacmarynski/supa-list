@@ -1,7 +1,6 @@
 import { useListState } from '@mantine/hooks'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import React from 'react'
-import { useEffect } from 'react'
 import DragAndDropList, { ListItem, onDragEndArgs } from './DragAndDropList'
 
 export default {

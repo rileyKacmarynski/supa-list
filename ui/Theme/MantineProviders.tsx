@@ -4,6 +4,7 @@ import {
   MantineProvider,
 } from '@mantine/core'
 import { useColorScheme, useHotkeys, useLocalStorage } from '@mantine/hooks'
+import { NotificationsProvider } from '@mantine/notifications'
 import { ThemeProps } from './ThemeProvider'
 
 const MantineProviders: React.FC<ThemeProps> = ({

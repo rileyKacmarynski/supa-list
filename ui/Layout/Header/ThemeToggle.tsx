@@ -1,5 +1,5 @@
 import { ColorScheme, SegmentedControl } from '@mantine/core'
-import { ColorOption, useTheme } from '../../Theme/ThemeProvider'
+import { ColorOption } from 'ui/Theme'
 
 export interface ThemeToggleProps {
   colorScheme: ColorScheme

@@ -1,6 +1,6 @@
 import { CheckIcon, ColorSwatch, Group } from '@mantine/core'
 import React from 'react'
-import { ColorOption, colorOptions, useTheme } from '../../Theme'
+import { ColorOption, colorOptions, useTheme } from 'ui/Theme'
 
 export interface ColorSchemePickerProps {
   primaryColorOption: ColorOption
