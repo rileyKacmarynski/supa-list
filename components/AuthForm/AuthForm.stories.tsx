@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { userEvent, within } from '@storybook/testing-library'
-import { LoginCredentials } from '../../services/auth/AuthClient'
+import { LoginCredentials } from '../../lib/auth'
 import AuthForm from './AuthForm'
 
 export default {

@@ -22,7 +22,7 @@ import { ThemeProps, ThemeProvider } from '../../ui/Theme'
 // require('./commands')
 
 import { mount, MountOptions, MountReturn } from 'cypress/react'
-import React = require('react')
+import * as React from 'react'
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.

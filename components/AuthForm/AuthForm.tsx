@@ -11,7 +11,7 @@ import {
 import { upperFirst } from '@mantine/hooks'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { LoginCredentials } from '../../services/auth'
+import { LoginCredentials } from '../../lib/auth'
 
 type ErrorMessage = string
 

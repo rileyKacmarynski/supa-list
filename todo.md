@@ -1,16 +1,19 @@
 # To Do
 
-- Comprehensive component and e2e cypress tests
-  - just need to add component tests for the auth form
-- Set up CI and make sure all the tests can run
+- Deploy to vercel
+  - run tests / setup CI
+  - try to get lighthouse to run in CI
+- setup nextjs storybook addon
 - Do some notification stuff
+- should I get things working with supabase now, or get it working locally?
+  - Maybe try to do the supabase route to get something working, then attack storing it locally and other fun jazz
 
 # Chores
 
 - I need to rearrange the project
+  - I think I'm going to ignore this for now
 - try using hygen for scaffolding components
-- maybe add husky. IDK if I care that much
-- update dependencies... GUH
+  - Should try this. Not sure about cy component tests yet, so I'll wait until I make a decision on those vs vitest before doing this
 
 # Stuff that might get easier in the next version of NextJS
 

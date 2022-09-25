@@ -1,7 +1,7 @@
 import { createStyles, Group, Menu, UnstyledButton, Text } from '@mantine/core'
 import { IconChevronRight, IconLogout } from '@tabler/icons'
 import React from 'react'
-import { User } from '../../services/auth'
+import { User } from '../../lib/auth'
 import Avatar from '../../ui/Avatar'
 
 export interface UserMenuProps {

@@ -1,6 +1,6 @@
 import { Button, Group } from '@mantine/core'
 import Link from 'next/link'
-import { useAuth } from '../../services/auth/AuthContextProvider'
+import { useAuth } from '../../lib/auth/AuthContextProvider'
 import UserMenu from '../UserMenu'
 
 export const AppHeader = () => {

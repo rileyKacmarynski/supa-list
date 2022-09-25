@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import AuthForm from '../components/AuthForm'
-import { LoginCredentials } from '../services/auth'
-import { useAuth } from '../services/auth/AuthContextProvider'
+import { LoginCredentials } from '../lib/auth'
+import { useAuth } from '../lib/auth/AuthContextProvider'
 
 export default function Register() {
   const { session, signUp } = useAuth()

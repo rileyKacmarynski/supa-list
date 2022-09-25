@@ -51,9 +51,11 @@ Cypress.on('test:before:run:async', async () => {
     console.log('MSW already running...')
   }
 
+  // @ts-ignore
   if (!window.msw) {
     console.log('starting MSW...')
     await worker.start()
+    // @ts-ignore
     window.msw = {
       worker,
     }

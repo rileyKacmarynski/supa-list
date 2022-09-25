@@ -6,8 +6,8 @@ import { ThemeProvider } from '../ui/Theme'
 import ComponentWrapper from '../ui/Layout/ComponentWrapper'
 import { NotificationsProvider } from '@mantine/notifications'
 import AppHeader from '../components/AppHeader'
-import AuthProvider from '../services/auth/AuthContextProvider'
-import { client } from '../services/auth/AuthClient'
+import AuthProvider from '../lib/auth/AuthContextProvider'
+import { client } from '../lib/auth/AuthClient'
 
 function MyApp({ Component, pageProps, ...appProps }: AppProps) {
   const isApp = ['/app'].includes(appProps.router.pathname)
