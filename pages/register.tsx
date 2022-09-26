@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import AuthForm from 'components/AuthForm'
 import { LoginCredentials } from 'lib/auth'
 import { useAuth } from 'lib/auth/AuthContextProvider'
+import { useNotifications } from 'ui/Notifications'
 
 export default function Register() {
   const { session, signUp } = useAuth()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { showNotification } = useNotifications()
 
   useEffect(() => {
     if (session) {
@@ -27,7 +29,10 @@ export default function Register() {
     if (error) {
       return 'Unable to create account'
     } else {
-      // success notification and redirect to app
+      showNotification({
+        title: 'Congrats!',
+        message: 'Your account has been created.',
+      })
       router.replace('/app')
     }
   }

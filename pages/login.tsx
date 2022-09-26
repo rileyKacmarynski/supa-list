@@ -3,11 +3,13 @@ import { useEffect, useState } from 'react'
 import AuthForm from 'components/AuthForm'
 import { LoginCredentials } from 'lib/auth'
 import { useAuth } from 'lib/auth/AuthContextProvider'
+import { useNotifications } from 'ui/Notifications'
 
 export default function Login() {
   const { signIn, session } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const { showNotification } = useNotifications()
 
   useEffect(() => {
     if (session) {
@@ -25,7 +27,10 @@ export default function Login() {
     if (error) {
       return error.message
     } else {
-      // success notification and redirect to app
+      showNotification({
+        title: 'Hey!',
+        message: 'Welcome back.',
+      })
       router.replace('/app')
     }
   }
