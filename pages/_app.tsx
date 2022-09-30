@@ -9,6 +9,10 @@ import AppHeader from 'components/AppHeader'
 import AuthProvider from 'lib/auth/AuthContextProvider'
 import { client } from 'lib/auth/AuthClient'
 
+if (process.env.NEXT_PUBLIC_API_MOCKING == 'true') {
+  import('../mocks').then(mod => mod.initMocks())
+}
+
 function MyApp({ Component, pageProps, ...appProps }: AppProps) {
   const isApp = ['/app'].includes(appProps.router.pathname)
 

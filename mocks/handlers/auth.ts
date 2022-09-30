@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { rest } from 'msw'
 
 const supabaseAuthSession = (userId, email) => ({

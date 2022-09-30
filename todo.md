@@ -2,6 +2,12 @@
 
 - Deploy to vercel
   - run tests / setup CI
+- Try out playwright
+  - Really don't want to mess more with testing, but I'm not all that happy with the way cypress has turned out
+    want to try vitest with playwright
+    - It's tough to run all your component tests easily and quickly, vitest works better for that
+    - playwright is supposedly quicker and the "record" functionality has peaked my interest
+    - On the other hand the the browser experience for cypress e2e tests is really nice
 - should I get things working with supabase now, or get it working locally?
   - Maybe try to do the supabase route to get something working, then attack storing it locally and other fun jazz
 
