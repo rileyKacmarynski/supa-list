@@ -35,7 +35,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ user, signOut }) => {
   return (
     <Menu shadow="md" width={200}>
       <Menu.Target>
-        <UnstyledButton className={classes.user}>
+        <UnstyledButton aria-label="open user menu" className={classes.user}>
           <Group spacing="sm">
             <Avatar color={user.user_metadata?.avatarColor ?? 'grape'} />
             <div style={{ flex: 1 }}>

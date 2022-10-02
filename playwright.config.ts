@@ -1,11 +1,15 @@
-import type { PlaywrightTestConfig } from '@playwright/test';
-import { devices } from '@playwright/test';
+import type { PlaywrightTestConfig } from '@playwright/test'
+// @ts-ignore
+import { devices } from '@playwright/test'
 
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
 // require('dotenv').config();
+
+const PORT = 3001
+const URL = `http:localhost:${PORT}`
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -19,7 +23,7 @@ const config: PlaywrightTestConfig = {
      * Maximum time expect() should wait for the condition to be met.
      * For example in `await expect(locator).toHaveText();`
      */
-    timeout: 5000
+    timeout: 5000,
   },
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -40,6 +44,7 @@ const config: PlaywrightTestConfig = {
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    baseURL: URL,
   },
 
   /* Configure projects for major browsers */
@@ -98,10 +103,12 @@ const config: PlaywrightTestConfig = {
   // outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   port: 3000,
-  // },
-};
+  webServer: {
+    command: 'yarn dev:e2e',
+    url: URL,
+    timeout: 120 * 1000,
+    reuseExistingServer: !process.env.CI,
+  },
+}
 
-export default config;
+export default config
