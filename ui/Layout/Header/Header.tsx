@@ -5,7 +5,8 @@ import {
   HeaderProps as MantineHeaderProps,
   MediaQuery,
 } from '@mantine/core'
-import { useTheme } from 'ui/Theme/ThemeProvider'
+// this has to be relative or else vitest gets mad
+import { useTheme } from '../../../ui/Theme/ThemeProvider'
 import Logo from './Logo'
 import SettingsMenu from './SettingsMenu'
 

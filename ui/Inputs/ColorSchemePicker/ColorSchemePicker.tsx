@@ -7,6 +7,10 @@ export interface ColorSchemePickerProps {
   setPrimaryColor: (color: ColorOption) => void
 }
 
+export const testIds = {
+  CHECK_ICON: 'primary-color-check',
+}
+
 const ColorSchemePicker: React.FC<ColorSchemePickerProps> = ({
   primaryColorOption,
   setPrimaryColor,
@@ -25,7 +29,7 @@ const ColorSchemePicker: React.FC<ColorSchemePickerProps> = ({
           sx={{ color: '#fff', cursor: 'pointer' }}
         >
           {primaryColorOption === c && (
-            <CheckIcon data-testid="primary-color-check" width={10} />
+            <CheckIcon data-testid={testIds.CHECK_ICON} width={10} />
           )}
         </ColorSwatch>
       ))}

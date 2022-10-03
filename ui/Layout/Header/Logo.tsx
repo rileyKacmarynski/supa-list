@@ -1,6 +1,6 @@
 import { Box, Text } from '@mantine/core'
 import { IconBolt } from '@tabler/icons'
-import { useTheme } from 'ui/Theme/ThemeProvider'
+import { useTheme } from '../../../ui/Theme/ThemeProvider'
 import Link from 'next/link'
 
 const Logo = () => {
