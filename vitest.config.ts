@@ -9,6 +9,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
+      // not sure if this works right
       '/': `${path.resolve(__dirname, '/')}`,
     },
   },

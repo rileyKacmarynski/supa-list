@@ -6,7 +6,12 @@
 
 // Ensure MSW connections are closed
 // afterAll(() => getWorker().close())
-import { vi } from 'vitest'
+
+import { vi, afterEach, expect } from 'vitest'
+import { cleanup } from '@testing-library/react'
+import matchers, {
+  TestingLibraryMatchers,
+} from '@testing-library/jest-dom/matchers'
 
 // I think this is something mantine uses
 Object.defineProperty(window, 'matchMedia', {
@@ -22,7 +27,13 @@ Object.defineProperty(window, 'matchMedia', {
     dispatchEvent: vi.fn(),
   })),
 })
-
+declare global {
+  namespace Vi {
+    interface JestAssertion<T = any>
+      extends jest.Matchers<void, T>,
+        TestingLibraryMatchers<T, void> {}
+  }
+}
 class ResizeObserver {
   observe() {}
   unobserve() {}
@@ -30,4 +41,6 @@ class ResizeObserver {
 }
 window.ResizeObserver = ResizeObserver
 
-export {}
+afterEach(cleanup)
+
+expect.extend(matchers)

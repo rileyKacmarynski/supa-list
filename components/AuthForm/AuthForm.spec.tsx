@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { screen, cleanup } from '@testing-library/react'
+import { faker } from '@faker-js/faker'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '__tests__/testUtils'
 import AuthForm, { AuthFormProps } from './AuthForm'
-import { faker } from '@faker-js/faker'
 
 describe('<AuthForm />', () => {
   const mountComponent = (props: Partial<AuthFormProps> = {}) => {
@@ -27,8 +27,6 @@ describe('<AuthForm />', () => {
   const getEmailInput = () => screen.getByLabelText(/email/i)
 
   const getPasswordInput = () => screen.getByLabelText(/password/i)
-
-  afterEach(cleanup)
 
   it('shows login', () => {
     mountComponent({ type: 'login' })

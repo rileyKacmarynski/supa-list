@@ -1,7 +1,7 @@
-import { ColorOption } from 'ui/Theme'
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { screen, within, cleanup } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { ColorOption } from 'ui/Theme'
+import { describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '__tests__/testUtils'
 import ColorSchemePicker, {
   ColorSchemePickerProps,
@@ -23,9 +23,6 @@ describe('<ColorSchemePicker />', () => {
   const getColorSwatch = (colorOption: ColorOption) => {
     return screen.getByLabelText(`change theme to ${colorOption}`)
   }
-
-  // not sure why we need this tbh
-  afterEach(cleanup)
 
   it('shows the primaryColorOption as checked', () => {
     const primaryColorOption: ColorOption = 'cyan'

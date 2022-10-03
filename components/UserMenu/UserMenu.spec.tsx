@@ -1,9 +1,9 @@
-import { describe, it, expect, vi, afterEach } from 'vitest'
-import { screen, cleanup } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { User } from 'lib/auth'
+import { describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '__tests__/testUtils'
 import UserMenu, { UserMenuProps } from './UserMenu'
-import { User } from 'lib/auth'
 
 describe('<UserMenu />', () => {
   const mountComponent = (props: Partial<UserMenuProps> = {}) => {
@@ -19,8 +19,6 @@ describe('<UserMenu />', () => {
     id: '123',
     app_metadata: {},
   })
-
-  afterEach(cleanup)
 
   it('shows users email', () => {
     const email = 'email@domain.com'
