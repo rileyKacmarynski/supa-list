@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
 import AuthForm from 'components/AuthForm'
 import { LoginCredentials } from 'lib/auth'
 import { useAuth } from 'lib/auth/AuthContextProvider'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { useNotifications } from 'ui/Notifications'
 
 export default function Login() {
@@ -20,8 +20,12 @@ export default function Login() {
 
   const onSignIn = async (credentials: LoginCredentials) => {
     setLoading(true)
+    console.log('signing in...')
 
-    const { error } = await signIn(credentials)
+    const response = await signIn(credentials)
+    const { error } = response
+    console.log('response from component', response)
+
     setLoading(false)
 
     if (error) {

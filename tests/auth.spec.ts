@@ -1,23 +1,21 @@
-import { expect, PlaywrightTestArgs } from '@playwright/test'
-import { TOKEN_API } from 'mocks/handlers/auth'
-import { rest } from 'msw'
-import type { Page } from 'playwright-core'
-import { test } from './test'
+import { faker } from '@faker-js/faker'
+import { expect, Page, PlaywrightTestArgs, test } from '@playwright/test'
+import { ERROR_USER } from 'mocks/handlers/auth'
 
 test('login', async ({ page }: PlaywrightTestArgs) => {
-  const username = 'username'
+  const email = faker.internet.email()
   await page.goto('./app')
 
-  await loginAsUser(page, username)
+  await loginAsUser(page, email)
 
   await expect(page).toHaveURL('./app')
   await expect(page.locator('[aria-label="open user menu"]')).toContainText(
-    username,
+    email,
   )
 })
 
 test('register', async ({ page }) => {
-  const username = 'username'
+  const email = faker.internet.email()
   await page.goto('./app')
 
   await page.locator('text=Register').click()
@@ -25,7 +23,7 @@ test('register', async ({ page }) => {
 
   const emailInput = page.locator('text=email')
   await emailInput.click()
-  await emailInput.fill(username)
+  await emailInput.fill(email)
 
   const passwordInput = page.locator('text=password')
   await passwordInput.click()
@@ -35,32 +33,29 @@ test('register', async ({ page }) => {
 
   await expect(page).toHaveURL('./app')
   await expect(page.locator('[aria-label="open user menu"]')).toContainText(
-    username,
+    email,
   )
 })
 
 test('logout', async ({ page }) => {
   await page.goto('./app')
 
-  const username = 'username'
-  await loginAsUser(page, username)
+  const email = faker.internet.email()
+  await loginAsUser(page, email)
 
   await page.locator('[aria-label="open user menu"]').click()
   await page.locator('button', { hasText: 'Log Out' }).click()
 
   await expect(page.locator('text=Log In')).toBeVisible()
-  expect(await page.locator(`text=${username}`).count()).toEqual(0)
+  expect(await page.locator(`text=${email}`).count()).toEqual(0)
 })
 
-test.skip('login error', async ({ page, worker }) => {
-  await worker.use(
-    rest.post(TOKEN_API, async (_, response, context) => {
-      response(context.status(403))
-    }),
-  )
+test('login error', async ({ page }) => {
+  await page.goto('./app')
 
-  await page.goto('./login')
-  await page.locator('button:has-text("Login")').click()
+  await loginAsUser(page, ERROR_USER)
+
+  await expect(page.locator(`[data-testid=AuthForm-errorText]`)).toBeVisible()
 })
 
 async function loginAsUser(page: Page, username: string) {

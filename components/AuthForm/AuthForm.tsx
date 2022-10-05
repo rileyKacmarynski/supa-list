@@ -14,7 +14,6 @@ import { useState } from 'react'
 import { LoginCredentials } from '../../lib/auth'
 
 type ErrorMessage = string
-
 export interface AuthFormProps {
   submit: (credentials: LoginCredentials) => Promise<ErrorMessage | undefined>
   type: 'login' | 'register'
@@ -73,7 +72,7 @@ const AuthForm: React.FC<AuthFormProps> = ({
           />
         </Stack>
         {loginError && (
-          <Text mt="md" color="red">
+          <Text data-testid="AuthForm-errorText" mt="md" color="red">
             {loginError}
           </Text>
         )}

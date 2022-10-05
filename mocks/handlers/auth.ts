@@ -49,7 +49,17 @@ export const handlers = [
     `${SUPABASE_URL}${SUPABASE_AUTH_TOKEN_API}`,
     async (req, res, ctx) => {
       console.log('post to supabase token api...', req)
+
       const { email, password, refresh_token } = JSON.parse(req.body)
+
+      if (email == ERROR_USER) {
+        console.log('invalid credentials')
+        const errorResponse = {
+          error: 'invalid_grant',
+          error_description: 'Invalid login credentials',
+        }
+        return res(ctx.status(401), ctx.json(errorResponse))
+      }
 
       if (refresh_token) {
         if (refresh_token !== 'valid') {
@@ -60,13 +70,6 @@ export const handlers = [
         console.log('session for response', session)
 
         return res(ctx.status(200), ctx.json(session))
-      }
-
-      if (!email || !password) {
-        return res(
-          ctx.status(401),
-          ctx.json({ message: 'Wrong email or password' }),
-        )
       }
 
       const session = supabaseAuthSession('123123', email)
@@ -111,8 +114,6 @@ export const handlers = [
   rest.get(
     `${SUPABASE_URL}${SUPABASE_AUTH_PROFILE_API}`,
     async (req, res, ctx) => {
-      console.log('profile api request', req)
-
       return res(ctx.status(200), ctx.json([userProfile]))
     },
   ),
@@ -153,6 +154,10 @@ export const handlers = [
     return res(ctx.status(200))
   }),
 ]
+
+// I don't like this, but I also don't like trying to attach msw on the window to
+// modify handlers in each test. Will make testing server requests tough
+export const ERROR_USER = 'error-user@email.com'
 
 export const TOKEN_API = `${SUPABASE_URL}${SUPABASE_AUTH_TOKEN_API}`
 export const SIGNUP_API = `${SUPABASE_URL}${SUPABASE_AUTH_SIGNUP_API}`
