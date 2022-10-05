@@ -39,6 +39,7 @@ const userProfile = {
 const SUPABASE_URL = 'https://dydoinxeicqbpcqlpood.supabase.co'
 const SUPABASE_AUTH_TOKEN_API = '/auth/v1/token'
 const SUPABASE_AUTH_USER_API = '/auth/v1/user'
+const SUPABASE_AUTH_LOGOUT = '/auth/v1/logout'
 const SUPABASE_AUTH_SIGNUP_API = '/auth/v1/signup'
 const SUPABASE_AUTH_PROFILE_API = '/rest/v1/profiles'
 const SUPABASE_AUTH_ADMIN_USER_API = '/auth/v1/admin/users'
@@ -148,6 +149,9 @@ export const handlers = [
       return res(ctx.status(200), ctx.json({}))
     },
   ),
+  rest.post(`${SUPABASE_URL}${SUPABASE_AUTH_LOGOUT}`, async (req, res, ctx) => {
+    return res(ctx.status(200))
+  }),
 ]
 
 export const TOKEN_API = `${SUPABASE_URL}${SUPABASE_AUTH_TOKEN_API}`

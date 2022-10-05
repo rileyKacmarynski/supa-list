@@ -1,5 +1,8 @@
-import { test, expect, PlaywrightTestArgs } from '@playwright/test'
+import { expect, PlaywrightTestArgs } from '@playwright/test'
+import { TOKEN_API } from 'mocks/handlers/auth'
+import { rest } from 'msw'
 import type { Page } from 'playwright-core'
+import { test } from './test'
 
 test('login', async ({ page }: PlaywrightTestArgs) => {
   const username = 'username'
@@ -13,7 +16,7 @@ test('login', async ({ page }: PlaywrightTestArgs) => {
   )
 })
 
-test('register', async ({ page }: PlaywrightTestArgs) => {
+test('register', async ({ page }) => {
   const username = 'username'
   await page.goto('./app')
 
@@ -36,7 +39,7 @@ test('register', async ({ page }: PlaywrightTestArgs) => {
   )
 })
 
-test('logout', async ({ page }: PlaywrightTestArgs) => {
+test('logout', async ({ page }) => {
   await page.goto('./app')
 
   const username = 'username'
@@ -47,6 +50,17 @@ test('logout', async ({ page }: PlaywrightTestArgs) => {
 
   await expect(page.locator('text=Log In')).toBeVisible()
   expect(await page.locator(`text=${username}`).count()).toEqual(0)
+})
+
+test.skip('login error', async ({ page, worker }) => {
+  await worker.use(
+    rest.post(TOKEN_API, async (_, response, context) => {
+      response(context.status(403))
+    }),
+  )
+
+  await page.goto('./login')
+  await page.locator('button:has-text("Login")').click()
 })
 
 async function loginAsUser(page: Page, username: string) {

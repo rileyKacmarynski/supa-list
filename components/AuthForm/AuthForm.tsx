@@ -1,16 +1,16 @@
 import {
-  Paper,
-  Group,
-  Stack,
-  TextInput,
-  PasswordInput,
   Anchor,
   Button,
+  Group,
+  Paper,
+  PasswordInput,
+  Stack,
   Text,
+  TextInput,
 } from '@mantine/core'
+import { useForm } from '@mantine/form'
 import { upperFirst } from '@mantine/hooks'
 import { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
 import { LoginCredentials } from '../../lib/auth'
 
 type ErrorMessage = string
@@ -33,14 +33,22 @@ const AuthForm: React.FC<AuthFormProps> = ({
   navigateToOtherType,
   loading,
 }) => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Inputs>()
+  const form = useForm({
+    initialValues: {
+      email: '',
+      password: '',
+    },
+
+    validate: {
+      email: value => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
+      password: value =>
+        value.length >= 8 ? null : 'Passord must be 8 characters or more',
+    },
+  })
+
   const [loginError, setLoginError] = useState<string | undefined>()
 
-  const onSubmit: SubmitHandler<Inputs> = async inputs => {
+  async function submitForm(inputs: Inputs) {
     const error = await submit(inputs)
     if (error) {
       setLoginError(error)
@@ -49,23 +57,19 @@ const AuthForm: React.FC<AuthFormProps> = ({
 
   return (
     <Paper radius="md" p="xl" sx={{ width: '380px' }} withBorder>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={form.onSubmit(submitForm)}>
         <Stack>
           <TextInput
-            required
+            withAsterisk
             label="Email"
             placeholder="hello@gmail.com"
-            {...register('email', { required: true })}
-            error={errors.email && 'Invalid email'}
+            {...form.getInputProps('email')}
           />
           <PasswordInput
-            required
+            withAsterisk
             label="Password"
             placeholder="Your password"
-            {...register('password', { required: true })}
-            error={
-              errors.password && 'Password should include at least 6 characters'
-            }
+            {...form.getInputProps('password')}
           />
         </Stack>
         {loginError && (

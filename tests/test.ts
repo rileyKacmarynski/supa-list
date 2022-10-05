@@ -1,4 +1,4 @@
-import { test as base, expect } from '@playwright/test'
+import { expect, test as base } from '@playwright/test'
 import type { MockServiceWorker } from 'playwright-msw'
 import { createWorkerFixture } from 'playwright-msw'
 

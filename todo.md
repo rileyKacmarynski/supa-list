@@ -1,5 +1,7 @@
 # To Do
 
+- Test auth error path
+- Test color switching
 - Deploy to vercel
   - run tests / setup CI
 - should I get things working with supabase now, or get it working locally?
