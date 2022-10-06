@@ -4,6 +4,9 @@
 - Test color switching
 - Deploy to vercel
   - run tests / setup CI
+  - figure out how to make sure the tests pass before deploying
+  - add husky to lint and stuff before committing
+    - maybe try to enforce test pass unless commit message start with WIP
 - should I get things working with supabase now, or get it working locally?
   - Maybe try to do the supabase route to get something working, then attack storing it locally and other fun jazz
 
