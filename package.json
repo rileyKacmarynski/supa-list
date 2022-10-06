@@ -9,7 +9,8 @@
     "lint": "next lint",
     "test": "vitest",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "gen:component": "hygen component new"
   },
   "dependencies": {
     "@babel/core": "^7.0.0",
@@ -56,6 +57,7 @@
     "eslint-config-next": "12.2.5",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-storybook": "^0.6.4",
+    "hygen": "^6.2.11",
     "jsdom": "^20.0.0",
     "msw": "^0.47.3",
     "playwright-msw": "^1.0.0",
