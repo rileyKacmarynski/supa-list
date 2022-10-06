@@ -1,5 +1,12 @@
 {
   "vitest.commandLine": "yarn test",
   "vitest.enable": true,
-  "vitest.showFailMessages": true
+  "vitest.showFailMessages": true,
+  "vitest.exclude": [
+    "tests/**",
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/cypress/**",
+    "**/.{idea,git,cache,output,temp}/**"
+  ]
 }
