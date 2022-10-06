@@ -8,10 +8,13 @@
 		"start:e2e": "cross-env NODE_ENV=test next start 3001",
 		"lint": "next lint",
 		"format": "prettier -uw --cache --ignore-path .gitignore .",
-		"test": "vitest",
+		"test:unit": "vitest",
+		"test:e2e": "playwright test",
+		"test": "concurrently \"yarn test:e2e\" \"yarn test:unit run\"",
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook",
-		"gen:component": "hygen component new"
+		"gen:component": "hygen component new",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@babel/core": "^7.0.0",
@@ -33,6 +36,8 @@
 		"uuid": "^9.0.0"
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^17.1.2",
+		"@commitlint/config-conventional": "^17.1.0",
 		"@faker-js/faker": "^7.5.0",
 		"@mswjs/data": "^0.10.2",
 		"@playwright/test": "^1.26.1",
@@ -53,11 +58,13 @@
 		"@types/uuid": "^8.3.4",
 		"@vitejs/plugin-react": "^2.1.0",
 		"babel-loader": "^8.2.5",
+		"concurrently": "^7.4.0",
 		"cross-env": "^7.0.3",
 		"eslint": "8.23.0",
 		"eslint-config-next": "12.2.5",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-storybook": "^0.6.4",
+		"husky": "^8.0.0",
 		"hygen": "^6.2.11",
 		"jsdom": "^20.0.0",
 		"msw": "^0.47.3",
