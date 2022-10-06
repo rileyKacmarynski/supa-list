@@ -3,38 +3,38 @@ import React from 'react'
 import { ColorOption, colorOptions, useTheme } from 'ui/Theme'
 
 export interface ColorSchemePickerProps {
-  primaryColorOption: ColorOption
-  setPrimaryColor: (color: ColorOption) => void
+	primaryColorOption: ColorOption
+	setPrimaryColor: (color: ColorOption) => void
 }
 
 export const testIds = {
-  CHECK_ICON: 'primary-color-check',
+	CHECK_ICON: 'primary-color-check',
 }
 
 const ColorSchemePicker: React.FC<ColorSchemePickerProps> = ({
-  primaryColorOption,
-  setPrimaryColor,
+	primaryColorOption,
+	setPrimaryColor,
 }) => {
-  const { colors } = useTheme()
+	const { colors } = useTheme()
 
-  return (
-    <Group spacing="xs">
-      {colorOptions.map(c => (
-        <ColorSwatch
-          key={c}
-          aria-label={`change theme to ${c}`}
-          component="button"
-          color={colors[c][8]}
-          onClick={() => setPrimaryColor(c)}
-          sx={{ color: '#fff', cursor: 'pointer' }}
-        >
-          {primaryColorOption === c && (
-            <CheckIcon data-testid={testIds.CHECK_ICON} width={10} />
-          )}
-        </ColorSwatch>
-      ))}
-    </Group>
-  )
+	return (
+		<Group spacing="xs">
+			{colorOptions.map(c => (
+				<ColorSwatch
+					key={c}
+					aria-label={`change theme to ${c}`}
+					component="button"
+					color={colors[c][8]}
+					onClick={() => setPrimaryColor(c)}
+					sx={{ color: '#fff', cursor: 'pointer' }}
+				>
+					{primaryColorOption === c && (
+						<CheckIcon data-testid={testIds.CHECK_ICON} width={10} />
+					)}
+				</ColorSwatch>
+			))}
+		</Group>
+	)
 }
 
 export default ColorSchemePicker

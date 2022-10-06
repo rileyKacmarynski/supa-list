@@ -4,20 +4,20 @@ import { useTheme } from '../../../ui/Theme/ThemeProvider'
 import Link from 'next/link'
 
 const Logo = () => {
-  const { primaryColor } = useTheme()
+	const { primaryColor } = useTheme()
 
-  return (
-    <Link href="/app">
-      <a>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <IconBolt size={36} strokeWidth={1} color={primaryColor} />
-          <Text sx={{ marginLeft: '4px' }} weight="500" size="xl">
-            SupaList
-          </Text>
-        </Box>
-      </a>
-    </Link>
-  )
+	return (
+		<Link href="/app">
+			<a>
+				<Box sx={{ display: 'flex', alignItems: 'center' }}>
+					<IconBolt size={36} strokeWidth={1} color={primaryColor} />
+					<Text sx={{ marginLeft: '4px' }} weight="500" size="xl">
+						SupaList
+					</Text>
+				</Box>
+			</a>
+		</Link>
+	)
 }
 
 export default Logo

@@ -10,29 +10,29 @@ import AuthProvider from 'lib/auth/AuthContextProvider'
 import { client } from 'lib/auth/AuthClient'
 
 if (process.env.NEXT_PUBLIC_API_MOCKING == 'true') {
-  import('../mocks').then(mod => mod.initMocks())
+	import('../mocks').then(mod => mod.initMocks())
 }
 
 function MyApp({ Component, pageProps, ...appProps }: AppProps) {
-  const isApp = ['/app'].includes(appProps.router.pathname)
+	const isApp = ['/app'].includes(appProps.router.pathname)
 
-  return (
-    <AuthProvider client={client}>
-      <ThemeProvider>
-        <NotificationsProvider>
-          {isApp ? (
-            <Layout header={<AppHeader />} navbar="This is navbar">
-              <Component {...pageProps} />
-            </Layout>
-          ) : (
-            <ComponentWrapper>
-              <Component {...pageProps} />
-            </ComponentWrapper>
-          )}
-        </NotificationsProvider>
-      </ThemeProvider>
-    </AuthProvider>
-  )
+	return (
+		<AuthProvider client={client}>
+			<ThemeProvider>
+				<NotificationsProvider>
+					{isApp ? (
+						<Layout header={<AppHeader />} navbar="This is navbar">
+							<Component {...pageProps} />
+						</Layout>
+					) : (
+						<ComponentWrapper>
+							<Component {...pageProps} />
+						</ComponentWrapper>
+					)}
+				</NotificationsProvider>
+			</ThemeProvider>
+		</AuthProvider>
+	)
 }
 
 export default MyApp

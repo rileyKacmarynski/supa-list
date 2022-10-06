@@ -1,43 +1,43 @@
 import {
-  ColorScheme,
-  ColorSchemeProvider,
-  MantineProvider,
+	ColorScheme,
+	ColorSchemeProvider,
+	MantineProvider,
 } from '@mantine/core'
 import { useColorScheme, useHotkeys, useLocalStorage } from '@mantine/hooks'
 import { NotificationsProvider } from '@mantine/notifications'
 import { ThemeProps } from './ThemeProvider'
 
 const MantineProviders: React.FC<ThemeProps> = ({
-  children,
-  theme,
-  primaryColor,
+	children,
+	theme,
+	primaryColor,
 }) => {
-  const preferredColorScheme = useColorScheme()
-  const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
-    key: 'mantine-color-scheme',
-    defaultValue: theme ? theme : preferredColorScheme,
-    getInitialValueInEffect: true,
-  })
+	const preferredColorScheme = useColorScheme()
+	const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
+		key: 'mantine-color-scheme',
+		defaultValue: theme ? theme : preferredColorScheme,
+		getInitialValueInEffect: true,
+	})
 
-  const toggleColorScheme = (value?: ColorScheme) =>
-    setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
+	const toggleColorScheme = (value?: ColorScheme) =>
+		setColorScheme(value || (colorScheme === 'dark' ? 'light' : 'dark'))
 
-  useHotkeys([['mod+J', () => toggleColorScheme()]])
+	useHotkeys([['mod+J', () => toggleColorScheme()]])
 
-  return (
-    <ColorSchemeProvider
-      colorScheme={colorScheme}
-      toggleColorScheme={toggleColorScheme}
-    >
-      <MantineProvider
-        withGlobalStyles
-        withNormalizeCSS
-        theme={{ colorScheme, primaryColor }}
-      >
-        {children}
-      </MantineProvider>
-    </ColorSchemeProvider>
-  )
+	return (
+		<ColorSchemeProvider
+			colorScheme={colorScheme}
+			toggleColorScheme={toggleColorScheme}
+		>
+			<MantineProvider
+				withGlobalStyles
+				withNormalizeCSS
+				theme={{ colorScheme, primaryColor }}
+			>
+				{children}
+			</MantineProvider>
+		</ColorSchemeProvider>
+	)
 }
 
 export default MantineProviders

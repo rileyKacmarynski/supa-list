@@ -1,23 +1,23 @@
 import {
-  Navbar as MantineNavbar,
-  NavbarProps as MantineNavbarProps,
+	Navbar as MantineNavbar,
+	NavbarProps as MantineNavbarProps,
 } from '@mantine/core'
 export interface NavbarProps extends MantineNavbarProps {
-  menuOpened: boolean
+	menuOpened: boolean
 }
 
 const Navbar: React.FC<NavbarProps> = ({ menuOpened, children, ...rest }) => {
-  return (
-    <MantineNavbar
-      p="md"
-      hiddenBreakpoint="sm"
-      hidden={!menuOpened}
-      width={{ sm: 200, lg: 300 }}
-      {...rest}
-    >
-      {children}
-    </MantineNavbar>
-  )
+	return (
+		<MantineNavbar
+			p="md"
+			hiddenBreakpoint="sm"
+			hidden={!menuOpened}
+			width={{ sm: 200, lg: 300 }}
+			{...rest}
+		>
+			{children}
+		</MantineNavbar>
+	)
 }
 
 export default Navbar

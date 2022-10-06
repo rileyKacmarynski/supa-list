@@ -6,43 +6,43 @@ import { useAuth } from 'lib/auth/AuthContextProvider'
 import { useNotifications } from 'ui/Notifications'
 
 export default function Register() {
-  const { session, signUp } = useAuth()
-  const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const { showNotification } = useNotifications()
+	const { session, signUp } = useAuth()
+	const [loading, setLoading] = useState(false)
+	const router = useRouter()
+	const { showNotification } = useNotifications()
 
-  useEffect(() => {
-    if (session) {
-      router.replace('/app')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+	useEffect(() => {
+		if (session) {
+			router.replace('/app')
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [])
 
-  const onSignUp: (
-    credentials: LoginCredentials,
-  ) => Promise<string | undefined> = async credentials => {
-    setLoading(true)
+	const onSignUp: (
+		credentials: LoginCredentials,
+	) => Promise<string | undefined> = async credentials => {
+		setLoading(true)
 
-    const { error } = await signUp(credentials)
-    setLoading(false)
+		const { error } = await signUp(credentials)
+		setLoading(false)
 
-    if (error) {
-      return 'Unable to create account'
-    } else {
-      showNotification({
-        title: 'Congrats!',
-        message: 'Your account has been created.',
-      })
-      router.replace('/app')
-    }
-  }
+		if (error) {
+			return 'Unable to create account'
+		} else {
+			showNotification({
+				title: 'Congrats!',
+				message: 'Your account has been created.',
+			})
+			router.replace('/app')
+		}
+	}
 
-  return (
-    <AuthForm
-      submit={onSignUp}
-      type="register"
-      navigateToOtherType={() => router.replace('login')}
-      loading={loading}
-    />
-  )
+	return (
+		<AuthForm
+			submit={onSignUp}
+			type="register"
+			navigateToOtherType={() => router.replace('login')}
+			loading={loading}
+		/>
+	)
 }

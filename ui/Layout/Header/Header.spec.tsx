@@ -5,44 +5,44 @@ import { renderWithProviders } from '__tests__/testUtils'
 import Header, { HeaderProps } from './Header'
 
 describe('<Header />', () => {
-  const mountComponent = (props: Partial<HeaderProps> = {}) => {
-    const {
-      menuOpened = false,
-      toggleMenu = vi.fn(),
-      children = 'header content',
-    } = props
+	const mountComponent = (props: Partial<HeaderProps> = {}) => {
+		const {
+			menuOpened = false,
+			toggleMenu = vi.fn(),
+			children = 'header content',
+		} = props
 
-    return renderWithProviders(
-      <Header menuOpened={menuOpened} toggleMenu={toggleMenu}>
-        {children}
-      </Header>,
-    )
-  }
+		return renderWithProviders(
+			<Header menuOpened={menuOpened} toggleMenu={toggleMenu}>
+				{children}
+			</Header>,
+		)
+	}
 
-  const openSettingsMenu = async () => {
-    await userEvent.click(screen.getByLabelText(/open settings/i))
-  }
+	const openSettingsMenu = async () => {
+		await userEvent.click(screen.getByLabelText(/open settings/i))
+	}
 
-  const closeSettingsMenu = async () => {
-    await userEvent.keyboard('{Escape}')
-  }
+	const closeSettingsMenu = async () => {
+		await userEvent.keyboard('{Escape}')
+	}
 
-  it('displays the header content', () => {
-    const headerText = 'header text'
-    mountComponent({ children: headerText })
+	it('displays the header content', () => {
+		const headerText = 'header text'
+		mountComponent({ children: headerText })
 
-    expect(screen.queryByText(headerText)).toBeInTheDocument()
-  })
+		expect(screen.queryByText(headerText)).toBeInTheDocument()
+	})
 
-  it('opens and closes the settings menu', async () => {
-    mountComponent()
+	it('opens and closes the settings menu', async () => {
+		mountComponent()
 
-    openSettingsMenu()
+		openSettingsMenu()
 
-    closeSettingsMenu()
+		closeSettingsMenu()
 
-    await waitFor(() =>
-      expect(screen.queryByText('Settings')).not.toBeInTheDocument(),
-    )
-  })
+		await waitFor(() =>
+			expect(screen.queryByText('Settings')).not.toBeInTheDocument(),
+		)
+	})
 })

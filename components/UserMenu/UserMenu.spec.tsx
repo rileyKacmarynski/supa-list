@@ -6,39 +6,39 @@ import { renderWithProviders } from '__tests__/testUtils'
 import UserMenu, { UserMenuProps } from './UserMenu'
 
 describe('<UserMenu />', () => {
-  const mountComponent = (props: Partial<UserMenuProps> = {}) => {
-    const { user = createDefaultUser(), signOut = vi.fn() } = props
+	const mountComponent = (props: Partial<UserMenuProps> = {}) => {
+		const { user = createDefaultUser(), signOut = vi.fn() } = props
 
-    return renderWithProviders(<UserMenu user={user} signOut={signOut} />)
-  }
+		return renderWithProviders(<UserMenu user={user} signOut={signOut} />)
+	}
 
-  const createDefaultUser: () => User = () => ({
-    aud: 'aud',
-    email: 'email',
-    created_at: new Date().toUTCString(),
-    id: '123',
-    app_metadata: {},
-  })
+	const createDefaultUser: () => User = () => ({
+		aud: 'aud',
+		email: 'email',
+		created_at: new Date().toUTCString(),
+		id: '123',
+		app_metadata: {},
+	})
 
-  it('shows users email', () => {
-    const email = 'email@domain.com'
-    const user = {
-      ...createDefaultUser(),
-      email,
-    }
+	it('shows users email', () => {
+		const email = 'email@domain.com'
+		const user = {
+			...createDefaultUser(),
+			email,
+		}
 
-    mountComponent({ user })
+		mountComponent({ user })
 
-    expect(screen.queryByText(email)).toBeDefined()
-  })
+		expect(screen.queryByText(email)).toBeDefined()
+	})
 
-  it('signs the user out', async () => {
-    const signOut = vi.fn()
-    mountComponent({ signOut })
+	it('signs the user out', async () => {
+		const signOut = vi.fn()
+		mountComponent({ signOut })
 
-    await userEvent.click(screen.getByLabelText(/open user menu/i))
-    await userEvent.click(screen.getByText(/log out/i))
+		await userEvent.click(screen.getByLabelText(/open user menu/i))
+		await userEvent.click(screen.getByText(/log out/i))
 
-    expect(signOut).toHaveBeenCalled()
-  })
+		expect(signOut).toHaveBeenCalled()
+	})
 })
