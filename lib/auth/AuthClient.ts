@@ -1,7 +1,7 @@
 import {
-	createClient,
 	ApiError,
 	AuthChangeEvent,
+	createClient,
 	Subscription,
 } from '@supabase/supabase-js'
 // @ts-ignore

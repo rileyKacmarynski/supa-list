@@ -10,7 +10,7 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			// not sure if this works right
-			'/': `${path.resolve(__dirname, '/')}`,
+			'/': `${path.resolve(__dirname, './')}`,
 		},
 	},
 	test: {

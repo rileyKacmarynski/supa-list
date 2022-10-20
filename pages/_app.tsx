@@ -1,13 +1,12 @@
-import '../styles/globals.css'
-import type { AppProps } from 'next/app'
-import React from 'react'
-import Layout from '../ui/Layout'
-import { ThemeProvider } from '../ui/Theme'
-import ComponentWrapper from '../ui/Layout/ComponentWrapper'
 import { NotificationsProvider } from '@mantine/notifications'
 import AppHeader from 'components/AppHeader'
-import AuthProvider from 'lib/auth/AuthContextProvider'
 import { client } from 'lib/auth/AuthClient'
+import AuthProvider from 'lib/auth/AuthContextProvider'
+import type { AppProps } from 'next/app'
+import '../styles/globals.css'
+import Layout from '../ui/Layout'
+import ComponentWrapper from '../ui/Layout/ComponentWrapper'
+import { ThemeProvider } from '../ui/Theme'
 
 if (process.env.NEXT_PUBLIC_API_MOCKING == 'true') {
 	import('../mocks').then(mod => mod.initMocks())

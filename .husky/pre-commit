@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-yarn lint
-yarn format
-yarn test:unit run
+pnpm lint
+pnpm format
+git add --all
+pnpm test:unit run
