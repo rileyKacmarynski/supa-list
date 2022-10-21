@@ -14,11 +14,13 @@ jobs:
         with:
           node-version: '16.x'
       - name: Install dependencies
-        run: yarn
+        run: pnpm install
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
+      - name: Build NextJS App
+        run: pnpm build:ci
       - name: Run Playwright tests
-        run: yarn playwright test
+        run: pnpm test:e2e:ci
       - uses: actions/upload-artifact@v3
         if: always()
         with:

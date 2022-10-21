@@ -8,7 +8,7 @@ import { devices } from '@playwright/test'
  */
 // require('dotenv').config();
 
-const PORT = 3001
+const PORT = 3003
 const URL = `http:localhost:${PORT}`
 
 /**
@@ -104,10 +104,13 @@ const config: PlaywrightTestConfig = {
 
 	/* Run your local dev server before starting the tests */
 	webServer: {
-		command: 'yarn dev:e2e',
+		command: !process.env.CI
+			? `pnpm dev:e2e -p ${PORT}`
+			: `pnpm start:e2e -p ${PORT}`,
 		url: URL,
 		timeout: 120 * 1000,
-		reuseExistingServer: !process.env.CI,
+		// spin up new server everytime, we want to make sure we're using msw
+		// reuseExistingServer: !process.env.CI,
 	},
 }
 

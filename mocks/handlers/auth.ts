@@ -50,7 +50,8 @@ export const handlers = [
 		async (req, res, ctx) => {
 			console.log('post to supabase token api...', req)
 
-			const { email, password, refresh_token } = JSON.parse(req.body)
+			const { email, password } = await req.json()
+			console.log('parsed json body')
 
 			if (email == ERROR_USER) {
 				console.log('invalid credentials')
@@ -61,31 +62,19 @@ export const handlers = [
 				return res(ctx.status(401), ctx.json(errorResponse))
 			}
 
-			if (refresh_token) {
-				if (refresh_token !== 'valid') {
-					return res(ctx.status(401), ctx.json({ error: 'Token expired' }))
-				}
-
-				const session = supabaseAuthSession('123123', email)
-				console.log('session for response', session)
-
-				return res(ctx.status(200), ctx.json(session))
-			}
+			console.log('about to create supabase session')
 
 			const session = supabaseAuthSession('123123', email)
 			console.log('session for response', session)
 
-			return res(
-				ctx.status(200),
-				ctx.json(supabaseAuthSession('123123', email)),
-			)
+			return res(ctx.status(200), ctx.json(session))
 		},
 	),
 	rest.post(
 		`${SUPABASE_URL}${SUPABASE_AUTH_SIGNUP_API}`,
 		async (req, res, ctx) => {
 			console.log('post to sign up supabase api...', req)
-			const { email, password, refresh_token } = JSON.parse(req.body)
+			const { email, password, refresh_token } = await req.json()
 
 			if (refresh_token) {
 				if (refresh_token !== 'valid') {
@@ -124,7 +113,7 @@ export const handlers = [
 
 			const token = req.headers.get('authorization')?.split('Bearer ')?.[1]
 
-			const { id } = JSON.parse(req.body)
+			const { id } = await req.json()
 			// if (token !== 'valid') {
 			//   return res(ctx.status(401), ctx.json({ error: 'Token expired' }))
 			// }

@@ -8,5 +8,6 @@
 		"**/dist/**",
 		"**/cypress/**",
 		"**/.{idea,git,cache,output,temp}/**"
-	]
+	],
+	"testing.automaticallyOpenPeekView": "never"
 }
