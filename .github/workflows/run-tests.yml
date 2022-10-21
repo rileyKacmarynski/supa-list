@@ -1,4 +1,4 @@
-name: Playwright Tests
+name: Run Tests
 on:
   push:
     branches: ['*']
@@ -6,7 +6,7 @@ on:
     branches: [main, master]
 jobs:
   test-e2e:
-    timeout-minutes: 5
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,15 +29,17 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-  # test-unit:
-  #   timeout-minutes: 5
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v3
-  #   - uses: actions/setup-node@v3
-  #     with:
-  #       node-version: '16.x'
-  #   - name: Install dependencies
-  #     run: yarn
-  #   - name: Run unit tests
-  #     run: yarn test run
+  test-unit:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Install Dependencies
+        run: pnpm install
+      - name: Run unit tests
+        run: pnpm test:unit run
