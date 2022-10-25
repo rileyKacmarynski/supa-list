@@ -14,7 +14,6 @@ export const parameters = {
 	},
 }
 
-export const colorOptions = ['grape', 'indigo', 'cyan', 'teal', 'yellow']
 export const argTypes = {
 	// this would be nice, but isn't working well with the mantine stuff
 	// theme: { control: 'select', options: ['light', 'dark'] },

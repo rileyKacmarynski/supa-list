@@ -105,8 +105,8 @@ const config: PlaywrightTestConfig = {
 	/* Run your local dev server before starting the tests */
 	webServer: {
 		command: !process.env.CI
-			? `pnpm dev:e2e -p ${PORT}`
-			: `pnpm start:e2e -p ${PORT}`,
+			? `yarn dev:e2e -p ${PORT}`
+			: `yarn start:e2e -p ${PORT}`,
 		url: URL,
 		timeout: 120 * 1000,
 		// spin up new server everytime, we want to make sure we're using msw

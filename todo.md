@@ -1,8 +1,8 @@
 # To Do
 
-- Deploy to vercel
-  - set up merge requests in github
-  - add husky to lint and stuff before committing
+- Create lists list component
+- Lists CRUD with SUPABASE
+  - don't forget about MSW
 - should I get things working with supabase now, or get it working locally?
   - Maybe try to do the supabase route to get something working, then attack storing it locally and other fun jazz
 

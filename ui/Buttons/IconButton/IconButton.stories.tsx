@@ -1,7 +1,7 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { IconSettings } from '@tabler/icons'
 import IconButton from './IconButton'
-import { colorOptions } from '.storybook/preview'
+import { colorOptions } from 'ui/Theme'
 
 export default {
 	title: 'UI/Buttons/IconButton',
