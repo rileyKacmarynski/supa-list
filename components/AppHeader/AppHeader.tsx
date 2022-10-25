@@ -11,12 +11,12 @@ export const AppHeader = () => {
 			{!user ? (
 				<>
 					<Link href="login" passHref>
-						<Button size="sm" component="a" variant="subtle">
+						<Button size="sm" variant="subtle">
 							Log In
 						</Button>
 					</Link>
 					<Link href="register" passHref>
-						<Button size="sm" component="a" variant="subtle">
+						<Button size="sm" variant="subtle">
 							Register
 						</Button>
 					</Link>

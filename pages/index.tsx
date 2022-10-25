@@ -23,7 +23,7 @@ export default function Home() {
 				</p>
 
 				<div className={styles.grid}>
-					<Link href="/about">
+					<Link legacyBehavior href="/about">
 						<a className={styles.card}>
 							<h2>About Page &rarr;</h2>
 							<p>Cypress will test if this link is working.</p>
