@@ -27,8 +27,11 @@ export class AuthClient {
 		return this._user
 	}
 
-	get session() {
-		return this._supabaseClient.auth.session()
+	async getSession() {
+		const {
+			data: { session },
+		} = await this._supabaseClient.auth.getSession()
+		return session
 	}
 
 	async signUp(credentials: LoginCredentials): Promise<AuthResponse> {
@@ -43,9 +46,11 @@ export class AuthClient {
 	}
 
 	async signIn(credentials: LoginCredentials): Promise<AuthResponse> {
-		const { user, error, ...rest } = await this._supabaseClient.auth.signIn(
-			credentials,
-		)
+		const {
+			data: { user },
+			error,
+			...rest
+		} = await this._supabaseClient.auth.signInWithPassword(credentials)
 
 		if (error) {
 			return { error, session: null, user: null }
@@ -100,8 +105,10 @@ export class AuthClient {
 		}
 	}
 
-	private _notifyAllSubscribers(event: AuthChangeEvent) {
-		const session = this._supabaseClient.auth.session()
+	private async _notifyAllSubscribers(event: AuthChangeEvent) {
+		const {
+			data: { session },
+		} = await this._supabaseClient.auth.getSession()
 		if (session && session.user) {
 			session.user = { ...session.user, ...this._user }
 		}

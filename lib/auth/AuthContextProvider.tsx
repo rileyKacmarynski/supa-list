@@ -1,8 +1,12 @@
+import { Subscription } from '@supabase/supabase-js'
 import React, { useContext, useEffect, useState } from 'react'
 import { LoginCredentials, Session, User } from '.'
 import { AuthClient } from './AuthClient'
 
-export type AuthContext = Omit<AuthClient, 'onAuthStateChange'>
+export type AuthContext = Omit<
+	AuthClient,
+	'onAuthStateChange' | 'getSession'
+> & { session: Session | null }
 
 const AuthContext = React.createContext<AuthContext | undefined>(undefined)
 
@@ -18,21 +22,25 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, client }) => {
 
 	useEffect(() => {
 		let mounted = true
-
-		const session = client.session
-		if (mounted) {
-			if (session) {
-				setSession(session)
-				setUser(client.user)
+		let subscription: Subscription | null = null
+		const getSession = async () => {
+			const session = await client.getSession()
+			if (mounted) {
+				if (session) {
+					setSession(session)
+					setUser(client.user)
+				}
 			}
-		}
 
-		const { data: subscription } = client.onAuthStateChange(
-			(_event, session) => {
+			const { data } = client.onAuthStateChange((_event, session) => {
 				setSession(session)
 				setUser(session?.user ?? null)
-			},
-		)
+			})
+
+			subscription = data
+		}
+
+		getSession()
 
 		return () => {
 			mounted = false
