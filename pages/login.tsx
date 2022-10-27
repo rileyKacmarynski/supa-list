@@ -20,11 +20,9 @@ export default function Login() {
 
 	const onSignIn = async (credentials: LoginCredentials) => {
 		setLoading(true)
-		console.log('signing in...')
 
 		const response = await signIn(credentials)
 		const { error } = response
-		console.log('response from component', response)
 
 		setLoading(false)
 

@@ -60,9 +60,6 @@ export class AuthClient {
 			...rest
 		} = await this._supabaseClient.auth.signInWithPassword(credentials)
 
-		console.log('session', session)
-		console.log('user', user)
-
 		if (error) {
 			return { error, session: null, user: null }
 		}
