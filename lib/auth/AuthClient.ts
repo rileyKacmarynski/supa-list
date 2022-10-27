@@ -1,6 +1,6 @@
 import {
-	ApiError,
 	AuthChangeEvent,
+	AuthError,
 	createClient,
 	Subscription,
 } from '@supabase/supabase-js'
@@ -36,29 +36,39 @@ export class AuthClient {
 
 	async signUp(credentials: LoginCredentials): Promise<AuthResponse> {
 		const avatarColor = randomColorOption()
-		const result = await this._supabaseClient.auth.signUp(credentials, {
-			data: { avatarColor },
+		const result = await this._supabaseClient.auth.signUp({
+			...credentials,
+			options: {
+				data: { avatarColor },
+			},
 		})
 
 		this._notifyAllSubscribers('SIGNED_IN')
 
-		return result
+		return {
+			user: result.data.user,
+			session: result.data.session,
+			error: result.error,
+		}
 	}
 
 	async signIn(credentials: LoginCredentials): Promise<AuthResponse> {
 		const {
-			data: { user },
+			data: { user, session },
 			error,
 			...rest
 		} = await this._supabaseClient.auth.signInWithPassword(credentials)
+
+		console.log('session', session)
+		console.log('user', user)
 
 		if (error) {
 			return { error, session: null, user: null }
 		}
 
 		if (!user) {
-			const e: ApiError = { status: 400, message: 'unable to login' }
-			return { error: e, session: null, user: null }
+			// shouldn't get here, error above should be defined
+			throw new Error('User is null')
 		}
 
 		const profile = await this._getProfile(user)
@@ -71,6 +81,7 @@ export class AuthClient {
 
 		return {
 			user: this._user,
+			session,
 			error: null,
 			...rest,
 		}
@@ -87,7 +98,7 @@ export class AuthClient {
 		callback: (event: AuthChangeEvent, session: Session | null) => void,
 	): {
 		data: Subscription | null
-		error: ApiError | null
+		error: AuthError | null
 	} {
 		try {
 			const id: string = uuid()
@@ -101,7 +112,7 @@ export class AuthClient {
 			this._stateChangeEmitters.set(id, subscription)
 			return { data: subscription, error: null }
 		} catch (e) {
-			return { data: null, error: e as ApiError }
+			return { data: null, error: e as AuthError }
 		}
 	}
 

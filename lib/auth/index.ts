@@ -1,7 +1,7 @@
 import {
 	User as SupaUser,
-	ApiError,
 	Session as SupaSession,
+	AuthError,
 } from '@supabase/supabase-js'
 import { ColorOption } from '../../ui/Theme'
 
@@ -15,7 +15,7 @@ export interface LoginCredentials {
 }
 
 export type AuthResponse = {
-	error: ApiError | null
+	error: AuthError | null
 	user: User | null
 	session: Session | null
 }

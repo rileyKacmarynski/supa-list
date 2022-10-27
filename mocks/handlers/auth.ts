@@ -2,26 +2,34 @@
 import { rest } from 'msw'
 
 const supabaseAuthSession = (userId, email) => ({
-	refresh_token: 'valid',
-	access_token: 'valid',
+	access_token: 'validaccesstoken',
+	token_type: 'bearer',
+	expires_in: 3600,
+	refresh_token: 'validrefreshtoken',
 	user: {
 		id: userId,
+		aud: 'authenticated',
+		role: 'authenticated',
 		email: email,
-		confirmed_at: Date.now().toString(),
-	},
-})
-
-const authSession = (userId, email) => ({
-	refreshToken: 'valid',
-	accessToken: 'valid',
-	userId: userId,
-	email: email,
-	expiresIn: -1,
-	expiresAt: -1,
-	user: {
-		id: userId,
-		email,
-		confirmed_at: Date.now().toString(),
+		email_confirmed_at: '2022-09-18T19:18:47.677849Z',
+		phone: '',
+		confirmed_at: Date.now.toString(),
+		last_sign_in_at: Date.now.toString(),
+		app_metadata: { provider: 'email', providers: ['email'] },
+		user_metadata: { avatarColor: 'cyan' },
+		identities: [
+			{
+				id: userId,
+				user_id: userId,
+				identity_data: { sub: userId },
+				provider: 'email',
+				last_sign_in_at: '2022-09-18T19:18:47.674315Z',
+				created_at: '2022-09-18T19:18:47.674366Z',
+				updated_at: '2022-09-18T19:18:47.67437Z',
+			},
+		],
+		created_at: '2022-09-18T19:18:47.66763Z',
+		updated_at: '2022-10-27T00:50:08.449452Z',
 	},
 })
 
