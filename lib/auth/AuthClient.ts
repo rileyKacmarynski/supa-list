@@ -23,15 +23,16 @@ export class AuthClient {
 	private _user: User | null
 	private _stateChangeEmitters: Map<string, Subscription> = new Map()
 
-	get user(): User | null {
-		return this._user
+	async getUser() {
+		const { data } = await this._supabaseClient.auth.getUser()
+
+		return data.user
 	}
 
 	async getSession() {
-		const {
-			data: { session },
-		} = await this._supabaseClient.auth.getSession()
-		return session
+		const { data } = await this._supabaseClient.auth.getSession()
+
+		return data.session
 	}
 
 	async signUp(credentials: LoginCredentials): Promise<AuthResponse> {

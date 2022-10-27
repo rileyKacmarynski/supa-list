@@ -5,8 +5,8 @@ import { AuthClient } from './AuthClient'
 
 export type AuthContext = Omit<
 	AuthClient,
-	'onAuthStateChange' | 'getSession'
-> & { session: Session | null }
+	'onAuthStateChange' | 'getSession' | 'getUser'
+> & { session: Session | null; user: User | null }
 
 const AuthContext = React.createContext<AuthContext | undefined>(undefined)
 
@@ -16,7 +16,6 @@ type AuthProviderProps = {
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children, client }) => {
-	// save session in the provider so we can trigger rerenders
 	const [session, setSession] = useState<Session | null>(null)
 	const [user, setUser] = useState<User | null>(null)
 
@@ -25,10 +24,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children, client }) => {
 		let subscription: Subscription | null = null
 		const getSession = async () => {
 			const session = await client.getSession()
+			const user = await client.getUser()
 			if (mounted) {
-				if (session) {
+				if (session && user) {
 					setSession(session)
-					setUser(client.user)
+					setUser(user)
 				}
 			}
 
