@@ -1,13 +1,14 @@
 module.exports = {
 	experimental: {
 		esmExternals: false,
+		appDir: true,
 	},
 	async redirects() {
 		return [
 			{
 				source: '/',
-				destination: '/app',
-				permanent: true,
+				destination: '/',
+				permanent: false,
 			},
 		]
 	},

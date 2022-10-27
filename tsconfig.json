@@ -15,8 +15,19 @@
 		"jsx": "preserve",
 		"incremental": true,
 		"types": ["node", "vitest/globals"],
-		"baseUrl": "."
+		"baseUrl": ".",
+		"plugins": [
+			{
+				"name": "next"
+			}
+		]
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "next.config.js"],
+	"include": [
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"next.config.js",
+		".next/types/**/*.ts"
+	],
 	"exclude": ["node_modules"]
 }
