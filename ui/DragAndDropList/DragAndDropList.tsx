@@ -1,5 +1,6 @@
 import { Checkbox, createStyles, Text } from '@mantine/core'
 import { IconGripVertical, IconX } from '@tabler/icons'
+import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import IconButton from '../Buttons/IconButton'
@@ -12,6 +13,8 @@ const useStyles = createStyles(theme => ({
 		borderRadius: theme.radius.md,
 		padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
 		marginBottom: theme.spacing.sm,
+
+		transition: 'color .1s ease',
 
 		'&:after': {
 			content: '""',
@@ -91,35 +94,41 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 	const draggableItems = items.map((item, index) => (
 		<Draggable key={item.id} index={index} draggableId={item.id}>
 			{(provided, snapshot) => (
-				<div
-					className={cx(classes.item, {
-						[classes.itemDragging]: snapshot.isDragging,
-						[classes.itemCompleted]: item.completed,
-					})}
+				<motion.li
+					animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
+					exit={{ opacity: 0, height: 0, x: -50 }}
+					initial={{ opacity: 0, height: 0, x: -50 }}
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 				>
-					<div {...provided.dragHandleProps} className={classes.dragHandle}>
-						<IconGripVertical size={18} stroke={1.5} />
-					</div>
-					<Text>{item.text}</Text>
-					<Checkbox
-						className={classes.checkbox}
-						onChange={() => toggleItemCompleted(item)}
-						checked={item.completed}
-						color="gray"
-						aria-label="completed"
-						radius="xl"
-						size="sm"
-					/>
-					<IconButton
-						sx={theme => ({
-							marginLeft: theme.spacing.xs,
+					<div
+						className={cx(classes.item, {
+							[classes.itemDragging]: snapshot.isDragging,
+							[classes.itemCompleted]: item.completed,
 						})}
-						Icon={IconX}
-						onClick={() => deleteItem(item)}
-					/>
-				</div>
+					>
+						<div {...provided.dragHandleProps} className={classes.dragHandle}>
+							<IconGripVertical size={18} stroke={1.5} />
+						</div>
+						<Text>{item.text}</Text>
+						<Checkbox
+							className={classes.checkbox}
+							onChange={() => toggleItemCompleted(item)}
+							checked={item.completed}
+							color="gray"
+							aria-label="completed"
+							radius="xl"
+							size="sm"
+						/>
+						<IconButton
+							sx={theme => ({
+								marginLeft: theme.spacing.xs,
+							})}
+							Icon={IconX}
+							onClick={() => deleteItem(item)}
+						/>
+					</div>
+				</motion.li>
 			)}
 		</Draggable>
 	))
@@ -140,14 +149,16 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 		>
 			<Droppable droppableId="dnd-list" direction="vertical">
 				{provided => (
-					<div
-						style={{ width: '100%' }}
+					<ul
+						style={{ width: '100%', listStyle: 'none', padding: 0 }}
 						{...provided.droppableProps}
 						ref={provided.innerRef}
 					>
-						{draggableItems}
-						{provided.placeholder}
-					</div>
+						<AnimatePresence initial={false}>
+							{draggableItems}
+							{provided.placeholder}
+						</AnimatePresence>
+					</ul>
 				)}
 			</Droppable>
 		</DragDropContext>
