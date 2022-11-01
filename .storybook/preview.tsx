@@ -21,10 +21,12 @@ export const argTypes = {
 }
 
 // The default value of the theme arg to all stories
-export const args = { theme: 'dark' }
+// export const args = { theme: 'dark', primaryColor: 'grape' }
 
 const withTheme: DecoratorFn = (Story, context) => {
-	const { theme, primaryColor } = context.args
+	// const { theme, primaryColor } = context.args
+	const theme = 'dark'
+	const primaryColor = 'grape'
 
 	if (context.parameters.skipLayout) {
 		return (
@@ -36,7 +38,7 @@ const withTheme: DecoratorFn = (Story, context) => {
 
 	return (
 		<ThemeProvider theme={theme} primaryColor={primaryColor}>
-			<Layout header="This is a header" navbar="This is a navbar">
+			<Layout header={<div>header component</div>}>
 				<Story />
 			</Layout>
 		</ThemeProvider>

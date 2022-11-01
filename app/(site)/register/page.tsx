@@ -39,11 +39,20 @@ export default function Register() {
 	}
 
 	return (
-		<AuthForm
-			submit={onSignUp}
-			type="register"
-			navigateToOtherType={() => router.replace('login')}
-			loading={loading}
-		/>
+		<div
+			style={{
+				position: 'absolute',
+				top: '50%',
+				left: '50%',
+				transform: 'translate(-50%, -50%)',
+			}}
+		>
+			<AuthForm
+				submit={onSignUp}
+				type="register"
+				navigateToOtherType={() => router.replace('login')}
+				loading={loading}
+			/>
+		</div>
 	)
 }

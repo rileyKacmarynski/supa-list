@@ -30,6 +30,7 @@
 		"@supabase/supabase-js": "^2.0.4",
 		"@tabler/icons": "^1.108.0",
 		"@types/react-beautiful-dnd": "^13.1.2",
+		"encoding": "^0.1.13",
 		"next": "^13.0.0",
 		"react": "18.2.0",
 		"react-beautiful-dnd": "^13.1.1",

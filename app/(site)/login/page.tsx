@@ -1,10 +1,12 @@
 'use client'
+import { Center } from '@mantine/core'
 import AuthForm from 'components/AuthForm'
 import { LoginCredentials } from 'lib/auth'
 import { useAuth } from 'lib/auth/AuthContextProvider'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useNotifications } from 'ui/Notifications'
+import { transferableAbortController } from 'util'
 
 export default function Login() {
 	const { signIn, session } = useAuth()
@@ -39,11 +41,20 @@ export default function Login() {
 	}
 
 	return (
-		<AuthForm
-			submit={onSignIn}
-			type="login"
-			navigateToOtherType={() => router.replace('register')}
-			loading={loading}
-		/>
+		<div
+			style={{
+				position: 'absolute',
+				top: '50%',
+				left: '50%',
+				transform: 'translate(-50%, -50%)',
+			}}
+		>
+			<AuthForm
+				submit={onSignIn}
+				type="login"
+				navigateToOtherType={() => router.replace('register')}
+				loading={loading}
+			/>
+		</div>
 	)
 }

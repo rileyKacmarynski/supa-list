@@ -140,7 +140,11 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 		>
 			<Droppable droppableId="dnd-list" direction="vertical">
 				{provided => (
-					<div {...provided.droppableProps} ref={provided.innerRef}>
+					<div
+						style={{ width: '100%' }}
+						{...provided.droppableProps}
+						ref={provided.innerRef}
+					>
 						{draggableItems}
 						{provided.placeholder}
 					</div>

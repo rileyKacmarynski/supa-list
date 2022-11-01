@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from 'react'
-import { AppShell, ScrollArea } from '@mantine/core'
+import { AppShell } from '@mantine/core'
 import Header from './Header/Header'
 import Navbar from './Navbar'
 import { useTheme } from '../Theme/ThemeProvider'
 export interface LayoutProps {
 	children: React.ReactNode
-	header: React.ReactNode
-	navbar: React.ReactNode
+	header: React.ReactElement
+	navbar?: React.ReactElement
 }
 
 const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
@@ -33,9 +33,11 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
 			navbarOffsetBreakpoint="sm"
 			asideOffsetBreakpoint="sm"
 			navbar={
-				<Navbar menuOpened={opened} sx={{ background: layoutBackground }}>
-					{navbar}
-				</Navbar>
+				navbar && (
+					<Navbar menuOpened={opened} sx={{ background: layoutBackground }}>
+						{navbar}
+					</Navbar>
+				)
 			}
 			header={
 				<Header
@@ -47,9 +49,7 @@ const Layout: React.FC<LayoutProps> = ({ children, header, navbar }) => {
 				</Header>
 			}
 		>
-			<ScrollArea offsetScrollbars sx={{ width: '100vw' }}>
-				{children}
-			</ScrollArea>
+			{children}
 		</AppShell>
 	)
 }

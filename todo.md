@@ -2,8 +2,6 @@
 
 ## Next 13 came out!!!
 
-- Move components to app folder
-  - will need to use uses or client component for client side rendering stuff
 - Create stories for each page
   - I think this should be pretty simple
 - Get things working, then worry about server components

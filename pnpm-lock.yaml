@@ -36,6 +36,7 @@ specifiers:
   babel-loader: ^8.2.5
   concurrently: ^7.5.0
   cross-env: ^7.0.3
+  encoding: ^0.1.13
   eslint: 8.26.0
   eslint-config-next: 13.0.0
   eslint-config-prettier: ^8.5.0
@@ -69,9 +70,10 @@ dependencies:
   '@mantine/modals': 5.6.3_hliqdvg4trnmlenfv3ync25tfa
   '@mantine/notifications': 5.6.3_hliqdvg4trnmlenfv3ync25tfa
   '@storybook/addon-a11y': 6.5.13_biqbaboplfbrettd7655fr4n2y
-  '@supabase/supabase-js': 2.0.4
+  '@supabase/supabase-js': 2.0.4_encoding@0.1.13
   '@tabler/icons': 1.108.0_biqbaboplfbrettd7655fr4n2y
   '@types/react-beautiful-dnd': 13.1.2
+  encoding: 0.1.13
   next: 13.0.0_qtpcxnaaarbm4ws7ughq6oxfve
   react: 18.2.0
   react-beautiful-dnd: 13.1.1_biqbaboplfbrettd7655fr4n2y
@@ -85,15 +87,15 @@ devDependencies:
   '@commitlint/cli': 17.1.2
   '@commitlint/config-conventional': 17.1.0
   '@faker-js/faker': 7.6.0
-  '@mswjs/data': 0.10.2_typescript@4.8.4
+  '@mswjs/data': 0.10.2_opw5f4r7dlcvp6bcmj4yhpm3qe
   '@playwright/test': 1.27.1
   '@storybook/addon-actions': 6.5.13_biqbaboplfbrettd7655fr4n2y
   '@storybook/addon-essentials': 6.5.13_5bazju2qexequgn2vnys3srusm
   '@storybook/addon-interactions': 6.5.13_4h23hwnphrzekshqlroolkfnbu
   '@storybook/addon-links': 6.5.13_biqbaboplfbrettd7655fr4n2y
   '@storybook/builder-webpack5': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
-  '@storybook/manager-webpack5': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
-  '@storybook/react': 6.5.13_sxi4ghn3vco5lu4yk3uhphw7kq
+  '@storybook/manager-webpack5': 6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq
+  '@storybook/react': 6.5.13_2ygpxj2b4vp24qeckzv6rnfn5y
   '@storybook/testing-library': 0.0.13_biqbaboplfbrettd7655fr4n2y
   '@testing-library/jest-dom': 5.16.5
   '@testing-library/react': 13.4.0_biqbaboplfbrettd7655fr4n2y
@@ -113,7 +115,7 @@ devDependencies:
   husky: 8.0.1
   hygen: 6.2.11
   jsdom: 20.0.1
-  msw: 0.47.4_typescript@4.8.4
+  msw: 0.47.4_opw5f4r7dlcvp6bcmj4yhpm3qe
   playwright-msw: 1.0.2_w7bjmk5oa2ig37wcygc4n6mwwe
   prettier: 2.7.1
   start-server-and-test: 1.14.0
@@ -2960,7 +2962,7 @@ packages:
       set-cookie-parser: 2.5.1
     dev: true
 
-  /@mswjs/data/0.10.2_typescript@4.8.4:
+  /@mswjs/data/0.10.2_opw5f4r7dlcvp6bcmj4yhpm3qe:
     resolution:
       {
         integrity: sha512-L6AGyse4GjFfyF9OI7AfYtcLbALN5MZQSvSr7p48wj6zlrrrgIKGkRVf9IEEfqaWimKP31mJDdHhie3lfJQ4SQ==,
@@ -2980,7 +2982,7 @@ packages:
       strict-event-emitter: 0.2.8
       uuid: 8.3.2
     optionalDependencies:
-      msw: 0.47.4_typescript@4.8.4
+      msw: 0.47.4_opw5f4r7dlcvp6bcmj4yhpm3qe
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -4383,7 +4385,7 @@ packages:
     dependencies:
       core-js: 3.26.0
 
-  /@storybook/core-server/6.5.13_kbsl2fmmqfdqeupl7ycwhjtgte:
+  /@storybook/core-server/6.5.13_lwzjmywgzlkrmxpqxf2co4laxm:
     resolution:
       {
         integrity: sha512-vs7tu3kAnFwuINio1p87WyqDNlFyZESmeh9s7vvrZVbe/xS/ElqDscr9DT5seW+jbtxufAaHsx+JUTver1dheQ==,
@@ -4410,12 +4412,12 @@ packages:
       '@storybook/core-events': 6.5.13
       '@storybook/csf': 0.0.2--canary.4566f4d.1
       '@storybook/csf-tools': 6.5.13
-      '@storybook/manager-webpack4': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
-      '@storybook/manager-webpack5': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
+      '@storybook/manager-webpack4': 6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq
+      '@storybook/manager-webpack5': 6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq
       '@storybook/node-logger': 6.5.13
       '@storybook/semver': 7.3.2
       '@storybook/store': 6.5.13_biqbaboplfbrettd7655fr4n2y
-      '@storybook/telemetry': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
+      '@storybook/telemetry': 6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq
       '@types/node': 16.18.2
       '@types/node-fetch': 2.6.2
       '@types/pretty-hrtime': 1.0.1
@@ -4435,7 +4437,7 @@ packages:
       globby: 11.1.0
       ip: 2.0.0
       lodash: 4.17.21
-      node-fetch: 2.6.7
+      node-fetch: 2.6.7_encoding@0.1.13
       open: 8.4.0
       pretty-hrtime: 1.0.3
       prompts: 2.4.2
@@ -4465,7 +4467,7 @@ packages:
       - webpack-command
     dev: true
 
-  /@storybook/core/6.5.13_a62uycf6bosw4qhdd2hqo6xqzu:
+  /@storybook/core/6.5.13_k2prds2nnkucrz2wkevelwid3i:
     resolution:
       {
         integrity: sha512-kw1lCgbsxzUimGww6t5rmuWJmFPe9kGGyzIqvj4RC4BBcEsP40LEu9XhSfvnb8vTOLIULFZeZpdRFfJs4TYbUw==,
@@ -4487,8 +4489,8 @@ packages:
     dependencies:
       '@storybook/builder-webpack5': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
       '@storybook/core-client': 6.5.13_glstf7nzdgkpv4airl4j7svpo4
-      '@storybook/core-server': 6.5.13_kbsl2fmmqfdqeupl7ycwhjtgte
-      '@storybook/manager-webpack5': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
+      '@storybook/core-server': 6.5.13_lwzjmywgzlkrmxpqxf2co4laxm
+      '@storybook/manager-webpack5': 6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       typescript: 4.8.4
@@ -4587,7 +4589,7 @@ packages:
       - react-dom
     dev: true
 
-  /@storybook/manager-webpack4/6.5.13_lepdvhpfl4ktcue7v6mt34wuv4:
+  /@storybook/manager-webpack4/6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq:
     resolution:
       {
         integrity: sha512-pURzS5W3XM0F7bCBWzpl7TRsuy+OXFwLXiWLaexuvo0POZe31Ueo2A1R4rx3MT5Iee8O9mYvG2XTmvK9MlLefQ==,
@@ -4621,7 +4623,7 @@ packages:
       find-up: 5.0.0
       fs-extra: 9.1.0
       html-webpack-plugin: 4.5.2_webpack@4.46.0
-      node-fetch: 2.6.7
+      node-fetch: 2.6.7_encoding@0.1.13
       pnp-webpack-plugin: 1.6.4_typescript@4.8.4
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -4648,7 +4650,7 @@ packages:
       - webpack-command
     dev: true
 
-  /@storybook/manager-webpack5/6.5.13_lepdvhpfl4ktcue7v6mt34wuv4:
+  /@storybook/manager-webpack5/6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq:
     resolution:
       {
         integrity: sha512-lQEZacSfeRsbqfJE7TVk35Hm1vkr0I2i1pyYqM+4862gRbMh1nJQXbJ5GqZ+Fo/bf0ZfyFZ32jGDIJAFdlpkuQ==,
@@ -4680,7 +4682,7 @@ packages:
       find-up: 5.0.0
       fs-extra: 9.1.0
       html-webpack-plugin: 5.5.0_webpack@5.74.0
-      node-fetch: 2.6.7
+      node-fetch: 2.6.7_encoding@0.1.13
       process: 0.11.10
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
@@ -4803,7 +4805,7 @@ packages:
       - supports-color
     dev: true
 
-  /@storybook/react/6.5.13_sxi4ghn3vco5lu4yk3uhphw7kq:
+  /@storybook/react/6.5.13_2ygpxj2b4vp24qeckzv6rnfn5y:
     resolution:
       {
         integrity: sha512-4gO8qihEkVZ8RNm9iQd7G2iZz4rRAHizJ6T5m58Sn21fxfyg9zAMzhgd0JzXuPXR8lTTj4AvRyPv1Qx7b43smg==,
@@ -4841,11 +4843,11 @@ packages:
       '@storybook/addons': 6.5.13_biqbaboplfbrettd7655fr4n2y
       '@storybook/builder-webpack5': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
       '@storybook/client-logger': 6.5.13
-      '@storybook/core': 6.5.13_a62uycf6bosw4qhdd2hqo6xqzu
+      '@storybook/core': 6.5.13_k2prds2nnkucrz2wkevelwid3i
       '@storybook/core-common': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
       '@storybook/csf': 0.0.2--canary.4566f4d.1
       '@storybook/docs-tools': 6.5.13_biqbaboplfbrettd7655fr4n2y
-      '@storybook/manager-webpack5': 6.5.13_lepdvhpfl4ktcue7v6mt34wuv4
+      '@storybook/manager-webpack5': 6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq
       '@storybook/node-logger': 6.5.13
       '@storybook/react-docgen-typescript-plugin': 1.0.2-canary.6.9d540b91e815f8fc2f8829189deb00553559ff63.0_qqxisngxjbp7lstdk7boexbu3e
       '@storybook/semver': 7.3.2
@@ -4976,7 +4978,7 @@ packages:
       util-deprecate: 1.0.2
     dev: true
 
-  /@storybook/telemetry/6.5.13_lepdvhpfl4ktcue7v6mt34wuv4:
+  /@storybook/telemetry/6.5.13_ck3yi4ijbvdvyxdjjuqlgz6gzq:
     resolution:
       {
         integrity: sha512-PFJEfGbunmfFWabD3rdCF8EHH+45578OHOkMPpXJjqXl94vPQxUH2XTVKQgEQJbYrgX0Vx9Z4tSkdMHuzYDbWQ==,
@@ -4990,7 +4992,7 @@ packages:
       fetch-retry: 5.0.3
       fs-extra: 9.1.0
       global: 4.4.0
-      isomorphic-unfetch: 3.1.0
+      isomorphic-unfetch: 3.1.0_encoding@0.1.13
       nanoid: 3.3.4
       read-pkg-up: 7.0.1
       regenerator-runtime: 0.13.10
@@ -5065,35 +5067,35 @@ packages:
       resolve-from: 5.0.0
     dev: true
 
-  /@supabase/functions-js/2.0.0:
+  /@supabase/functions-js/2.0.0_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-ozb7bds2yvf5k7NM2ZzUkxvsx4S4i2eRKFSJetdTADV91T65g4gCzEs9L3LUXSrghcGIkUaon03VPzOrFredqg==,
       }
     dependencies:
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.5_encoding@0.1.13
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@supabase/gotrue-js/2.2.1:
+  /@supabase/gotrue-js/2.2.1_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-CgQaYAJmGbOLPSqan4mjRgGikzsrlkKdPq0UNG7WZQv5HlHJlAYW8HeyNw/SKfIbxQBm8s2dBCeUyX+NdfB2Rw==,
       }
     dependencies:
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.5_encoding@0.1.13
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@supabase/postgrest-js/1.1.0:
+  /@supabase/postgrest-js/1.1.0_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-qkY8TqIu5sJuae8gjeDPjEqPrefzcTraW9PNSVJQHq4TEv98ZmwaXGwBGz0bVL63bqrGA5hqREbQHkANUTXrvA==,
       }
     dependencies:
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.5_encoding@0.1.13
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -5110,29 +5112,29 @@ packages:
       - supports-color
     dev: false
 
-  /@supabase/storage-js/2.0.0:
+  /@supabase/storage-js/2.0.0_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-7kXThdRt/xqnOOvZZxBqNkeX1CFNUWc0hYBJtNN/Uvt8ok9hD14foYmroWrHn046wEYFqUrB9U35JYsfTrvltA==,
       }
     dependencies:
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.5_encoding@0.1.13
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@supabase/supabase-js/2.0.4:
+  /@supabase/supabase-js/2.0.4_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-Z5uLyJm9bz5LMFnt5d1I6ccxVTdvKbJa0RsYGgKlA+QiyGvBxRRvVh8pqlYP1571DlycGG7bWngNwdv7/pehrg==,
       }
     dependencies:
-      '@supabase/functions-js': 2.0.0
-      '@supabase/gotrue-js': 2.2.1
-      '@supabase/postgrest-js': 1.1.0
+      '@supabase/functions-js': 2.0.0_encoding@0.1.13
+      '@supabase/gotrue-js': 2.2.1_encoding@0.1.13
+      '@supabase/postgrest-js': 1.1.0_encoding@0.1.13
       '@supabase/realtime-js': 2.1.0
-      '@supabase/storage-js': 2.0.0
-      cross-fetch: 3.1.5
+      '@supabase/storage-js': 2.0.0_encoding@0.1.13
+      cross-fetch: 3.1.5_encoding@0.1.13
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -8703,13 +8705,13 @@ packages:
       cross-spawn: 7.0.3
     dev: true
 
-  /cross-fetch/3.1.5:
+  /cross-fetch/3.1.5_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==,
       }
     dependencies:
-      node-fetch: 2.6.7
+      node-fetch: 2.6.7_encoding@0.1.13
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -9556,6 +9558,14 @@ packages:
       }
     engines: { node: '>= 0.8' }
     dev: true
+
+  /encoding/0.1.13:
+    resolution:
+      {
+        integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==,
+      }
+    dependencies:
+      iconv-lite: 0.6.3
 
   /end-of-stream/1.4.4:
     resolution:
@@ -12231,7 +12241,6 @@ packages:
     engines: { node: '>=0.10.0' }
     dependencies:
       safer-buffer: 2.1.2
-    dev: true
 
   /icss-utils/4.1.1:
     resolution:
@@ -13147,13 +13156,13 @@ packages:
       }
     engines: { node: '>=0.10.0' }
 
-  /isomorphic-unfetch/3.1.0:
+  /isomorphic-unfetch/3.1.0_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==,
       }
     dependencies:
-      node-fetch: 2.6.7
+      node-fetch: 2.6.7_encoding@0.1.13
       unfetch: 4.2.0
     transitivePeerDependencies:
       - encoding
@@ -14570,7 +14579,7 @@ packages:
       }
     dev: true
 
-  /msw/0.47.4_typescript@4.8.4:
+  /msw/0.47.4_opw5f4r7dlcvp6bcmj4yhpm3qe:
     resolution:
       {
         integrity: sha512-Psftt8Yfl0+l+qqg9OlmKEsxF8S/vtda0CmlR6y8wTaWrMMzuCDa55n2hEGC0ZRDwuV6FFWc/4CjoDsBpATKBw==,
@@ -14597,7 +14606,7 @@ packages:
       inquirer: 8.2.5
       is-node-process: 1.0.1
       js-levenshtein: 1.1.6
-      node-fetch: 2.6.7
+      node-fetch: 2.6.7_encoding@0.1.13
       outvariant: 1.3.0
       path-to-regexp: 6.2.1
       statuses: 2.0.1
@@ -14774,7 +14783,7 @@ packages:
       minimatch: 3.1.2
     dev: true
 
-  /node-fetch/2.6.7:
+  /node-fetch/2.6.7_encoding@0.1.13:
     resolution:
       {
         integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==,
@@ -14786,6 +14795,7 @@ packages:
       encoding:
         optional: true
     dependencies:
+      encoding: 0.1.13
       whatwg-url: 5.0.0
 
   /node-gyp-build/4.5.0:
@@ -15799,7 +15809,7 @@ packages:
       msw: '>=0.44.0'
     dependencies:
       '@playwright/test': 1.27.1
-      msw: 0.47.4_typescript@4.8.4
+      msw: 0.47.4_opw5f4r7dlcvp6bcmj4yhpm3qe
     dev: true
 
   /pluralize/8.0.0:
@@ -17324,7 +17334,6 @@ packages:
       {
         integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==,
       }
-    dev: true
 
   /sane/4.1.0:
     resolution:

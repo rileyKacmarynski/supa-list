@@ -16,11 +16,17 @@ const Template: ComponentStory<typeof Layout> = args => <Layout {...args} />
 
 export const Primary = Template.bind({})
 Primary.args = {
-	header: 'This is a header',
-	navbar: 'This is a navbar',
+	header: <div>header content</div>,
 }
 Primary.parameters = {
 	skipLayout: true,
+}
+
+export const WithNav = Template.bind({})
+WithNav.parameters = Primary.parameters
+WithNav.args = {
+	...Primary.args,
+	navbar: <div>navbar content</div>,
 }
 
 export const LightTheme = Template.bind({})
