@@ -1,0 +1,37 @@
+import { NotificationsProvider } from '@mantine/notifications'
+import AppHeader from 'components/AppHeader'
+import { client } from 'lib/auth/AuthClient'
+import AuthProvider from 'lib/auth/AuthContextProvider'
+import type { AppProps } from 'next/app'
+import '../styles/globals.css'
+import Layout from '../ui/Layout'
+import ComponentWrapper from '../ui/Layout/ComponentWrapper'
+import { ThemeProvider } from '../ui/Theme'
+
+if (process.env.NEXT_PUBLIC_API_MOCKING == 'true') {
+	import('../mocks').then(mod => mod.initMocks())
+}
+
+function MyApp({ Component, pageProps, ...appProps }: AppProps) {
+	const isApp = ['/app'].includes(appProps.router.pathname)
+
+	return (
+		<AuthProvider client={client}>
+			<ThemeProvider>
+				<NotificationsProvider>
+					{isApp ? (
+						<Layout header={<AppHeader />}>
+							<Component {...pageProps} />
+						</Layout>
+					) : (
+						<ComponentWrapper>
+							<Component {...pageProps} />
+						</ComponentWrapper>
+					)}
+				</NotificationsProvider>
+			</ThemeProvider>
+		</AuthProvider>
+	)
+}
+
+export default MyApp
