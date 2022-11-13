@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import AuthForm from 'components/AuthForm'
 import { LoginCredentials } from 'lib/auth'
@@ -14,7 +14,7 @@ export default function Register() {
 
 	useEffect(() => {
 		if (session) {
-			router.replace('/app')
+			router.push('/app')
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -34,7 +34,7 @@ export default function Register() {
 				title: 'Congrats!',
 				message: 'Your account has been created.',
 			})
-			router.replace('/app')
+			router.push('/app')
 		}
 	}
 

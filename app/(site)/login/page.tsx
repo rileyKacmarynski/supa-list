@@ -1,12 +1,10 @@
 'use client'
-import { Center } from '@mantine/core'
 import AuthForm from 'components/AuthForm'
 import { LoginCredentials } from 'lib/auth'
 import { useAuth } from 'lib/auth/AuthContextProvider'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useNotifications } from 'ui/Notifications'
-import { transferableAbortController } from 'util'
 
 export default function Login() {
 	const { signIn, session } = useAuth()
@@ -16,7 +14,7 @@ export default function Login() {
 
 	useEffect(() => {
 		if (session) {
-			router.replace('/app')
+			router.push('/app')
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [])
@@ -32,11 +30,12 @@ export default function Login() {
 		if (error) {
 			return error.message
 		} else {
+			console.log(router)
+			router.push('/app')
 			showNotification({
 				title: 'Hey!',
 				message: 'Welcome back.',
 			})
-			router.replace('/app')
 		}
 	}
 

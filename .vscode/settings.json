@@ -1,5 +1,5 @@
 {
-  "vitest.commandLine": "yarn test:unit",
+  "vitest.commandLine": "pnpm test:unit",
   "vitest.enable": true,
   "vitest.showFailMessages": true,
   "vitest.exclude": [
@@ -10,6 +10,6 @@
     "**/.{idea,git,cache,output,temp}/**"
   ],
   "testing.automaticallyOpenPeekView": "never",
-  "typescript.tsdk": "./node_modules/typescript/lib",
+  "typescript.tsdk": "node_modules/.pnpm/typescript@4.8.4/node_modules/typescript/lib",
   "typescript.enablePromptUseWorkspaceTsdk": true
 }

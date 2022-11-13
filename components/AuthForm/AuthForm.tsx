@@ -79,8 +79,6 @@ const AuthForm: React.FC<AuthFormProps> = ({
 				<Group position="apart" mt="xl">
 					<Anchor
 						data-testid="AuthForm-navigate"
-						component="button"
-						type="button"
 						color="dimmed"
 						onClick={() => navigateToOtherType()}
 						size="xs"

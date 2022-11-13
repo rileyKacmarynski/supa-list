@@ -29,7 +29,7 @@ test('register', async ({ page }) => {
 	await passwordInput.click()
 	await passwordInput.fill('Password123')
 
-	await page.locator('button:has-text("Register")').click()
+	await page.getByRole('button', { name: /register/i }).click()
 
 	await expect(page).toHaveURL('./app')
 	await expect(page.locator('[aria-label="open user menu"]')).toContainText(

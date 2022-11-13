@@ -1,13 +1,5 @@
-import { expect, test as base } from '@playwright/test'
-import type { MockServiceWorker } from 'playwright-msw'
-import { createWorkerFixture } from 'playwright-msw'
+import { expect, test } from '@playwright/test'
 
-import handlers from '../mocks/handlers'
-
-const test = base.extend<{
-	worker: MockServiceWorker
-}>({
-	worker: createWorkerFixture(...handlers),
-})
+// can customize base test here
 
 export { test, expect }
