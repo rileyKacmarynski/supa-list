@@ -5,7 +5,6 @@ import AuthProvider from 'lib/auth/AuthContextProvider'
 import type { AppProps } from 'next/app'
 import '../styles/globals.css'
 import Layout from '../ui/Layout'
-import ComponentWrapper from '../ui/Layout/ComponentWrapper'
 import { ThemeProvider } from '../ui/Theme'
 
 if (process.env.NEXT_PUBLIC_API_MOCKING == 'true') {
@@ -20,13 +19,12 @@ function MyApp({ Component, pageProps, ...appProps }: AppProps) {
 			<ThemeProvider>
 				<NotificationsProvider>
 					{isApp ? (
+						// Layout is on the app component itself so it can be context aware
+						<Component {...pageProps} />
+					) : (
 						<Layout header={<AppHeader />}>
 							<Component {...pageProps} />
 						</Layout>
-					) : (
-						<ComponentWrapper>
-							<Component {...pageProps} />
-						</ComponentWrapper>
 					)}
 				</NotificationsProvider>
 			</ThemeProvider>
