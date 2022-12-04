@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { DeepPartial, renderWithProviders } from '__tests__/testUtils'
-import Lists, { ListActions, ListsProps } from './Lists'
+import ListsMenu, { ListActions, ListsMenuProps } from './Lists'
 import { makeTestList, getTestListName } from './listTestUtils'
 
 describe('<Lists />', () => {
@@ -19,7 +19,7 @@ describe('<Lists />', () => {
 		}
 	}
 
-	const mountComponent = (props?: Partial<ListsProps>) => {
+	const mountComponent = (props?: Partial<ListsMenuProps>) => {
 		if (!props) {
 			props = {}
 		}
@@ -27,6 +27,7 @@ describe('<Lists />', () => {
 		const {
 			lists = defaultList,
 			activeListId = '2',
+			loadingLists = false,
 			listActions = {
 				...createDefaultActions({}),
 				...props.listActions,
@@ -34,7 +35,8 @@ describe('<Lists />', () => {
 		} = props
 
 		return renderWithProviders(
-			<Lists
+			<ListsMenu
+				loadingLists={loadingLists}
 				lists={lists}
 				activeListId={activeListId}
 				listActions={listActions}
@@ -63,7 +65,7 @@ describe('<Lists />', () => {
 		const activeItem = lists[2]
 		const { container } = mountComponent({ lists, activeListId: activeItem.id })
 
-		const activeEl = container.querySelector('li[data-active="true"]')
+		const activeEl = container.querySelector('li *[data-active="true"]')
 		expect(activeEl).not.toBeNull()
 		expect(
 			within(activeEl as HTMLElement).getByText(activeItem.name),
@@ -95,15 +97,25 @@ describe('<Lists />', () => {
 
 		mountComponent({ lists, activeListId: '1', listActions })
 
+		// open menu and click "rename"
 		const listItemEl = within(screen.getByTestId(`lists-${listItem.id}`))
 		listItemEl.getByRole('button', { name: /open list menu/i }).click()
 
 		const menuItem = await listItemEl.findByRole('menuitem', {
 			name: /rename/i,
 		})
-		menuItem.click()
+		await userEvent.click(menuItem)
 
-		expect(renameItem).toHaveBeenCalledWith(listItem.id)
+		// rename item
+		const listName = getTestListName()
+		const input = listItemEl.getByLabelText(/list name/i)
+		await userEvent.clear(input)
+		await userEvent.type(input, listName)
+
+		const submitButton = listItemEl.getByLabelText(/submit/i)
+		await userEvent.click(submitButton)
+
+		expect(renameItem).toHaveBeenCalledWith(listItem.id, listName)
 	})
 
 	it('can delete item', async () => {
@@ -136,10 +148,10 @@ describe('<Lists />', () => {
 
 		mountComponent({ listActions })
 
-		const input = screen.getByLabelText(/new list name/i)
+		const input = screen.getByLabelText(/list name/i)
 		await userEvent.type(input, listName)
 
-		const submitButton = screen.getByLabelText(/create new list/i)
+		const submitButton = screen.getByLabelText(/submit/i)
 		await userEvent.click(submitButton)
 
 		expect(createList).toHaveBeenCalledWith(listName)
@@ -153,7 +165,7 @@ describe('<Lists />', () => {
 
 		mountComponent({ listActions })
 
-		const submitButton = screen.getByLabelText(/create new list/i)
+		const submitButton = screen.getByLabelText(/list name/i)
 		await userEvent.click(submitButton)
 
 		expect(createList).not.toHaveBeenCalled()

@@ -1,17 +1,18 @@
 import {
 	ActionIcon,
 	Box,
-	Button,
 	createStyles,
-	Flex,
 	List,
+	LoadingOverlay,
 	Menu,
+	Navbar,
 	NavLink,
 	Stack,
 	TextInput,
 	Title,
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
+import { useClickOutside } from '@mantine/hooks'
 import { IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons'
 import React, { useState } from 'react'
 import IconButton from 'ui/Buttons/IconButton'
@@ -21,71 +22,136 @@ export type ListId = string
 
 export interface ListActions {
 	setActive(id: ListId): Promise<void>
-	renameItem(id: ListId): Promise<void>
+	renameItem(id: ListId, name: string): Promise<void>
 	deleteItem(id: ListId): Promise<void>
 	createList(name: string): Promise<void>
 }
 
-export interface ListsProps {
-	lists: {
-		name: string
-		id: ListId
-	}[]
-	activeListId: ListId
+export type List = {
+	name: string
+	id: ListId
+}
+export interface ListsMenuProps {
+	lists: List[]
+	activeListId: ListId | null
 	listActions: ListActions
+	loading: boolean
 }
 
-const Lists: React.FC<ListsProps> = ({ lists, activeListId, listActions }) => {
-	const { primaryColorOption, colorScheme } = useTheme()
+const ListsMenu: React.FC<ListsMenuProps> = ({
+	lists,
+	activeListId,
+	listActions,
+	loading,
+}) => {
+	return (
+		<>
+			<Navbar.Section
+				sx={theme => ({
+					textAlign: 'center',
+					paddingTop: theme.spacing.lg,
+					paddingBottom: theme.spacing.sm,
+				})}
+			>
+				<Title
+					order={2}
+					sx={theme => ({ fontWeight: 'normal', fontSize: theme.fontSizes.xl })}
+				>
+					Lists
+				</Title>
+			</Navbar.Section>
+			<Navbar.Section grow sx={{ width: '100%' }}>
+				<LoadingOverlay
+					visible={loading}
+					overlayBlur={2}
+					transitionDuration={500}
+				/>
+				{!lists.length && !loading ? (
+					<Stack sx={{ textAlign: 'center' }} data-testid="lists-empty-state">
+						<Title
+							order={3}
+							sx={theme => ({
+								fontSize: theme.fontSizes.md,
+								color:
+									theme.colorScheme === 'dark'
+										? theme.colors.dark[2]
+										: theme.colors.gray[6],
+							})}
+						>
+							Get started by creating a list.
+						</Title>
+						<ListForm onSubmit={listActions.createList} />
+					</Stack>
+				) : (
+					<Stack>
+						<List listStyleType="none">
+							{lists.map(list => (
+								<ListItem
+									key={list.id}
+									item={list}
+									listActions={listActions}
+									isActive={activeListId === list.id}
+								/>
+							))}
+							{!loading && (
+								<Box
+									component="li"
+									sx={theme => ({ padding: `0 ${theme.spacing.xs}px` })}
+								>
+									<ListForm onSubmit={listActions.createList} />
+								</Box>
+							)}
+						</List>
+					</Stack>
+				)}
+			</Navbar.Section>
+		</>
+	)
+}
+
+interface ListItemProps {
+	listActions: ListActions
+	item: List
+	isActive: boolean
+}
+
+const ListItem: React.FC<ListItemProps> = ({ listActions, item, isActive }) => {
+	const [renaming, setRenaming] = useState(false)
+	const ref = useClickOutside(() => setRenaming(false))
+	const { primaryColorOption } = useTheme()
+
+	const onRename = async (name: string) => {
+		await listActions.renameItem(item.id, name)
+		setRenaming(false)
+	}
 
 	return (
-		<Box sx={{ width: 240 }}>
-			{!lists.length ? (
-				<Stack data-testid="lists-empty-state">
-					<Title
-						order={3}
-						sx={theme => ({
-							fontSize: theme.fontSizes.md,
-							color:
-								theme.colorScheme === 'dark'
-									? theme.colors.dark[2]
-									: theme.colors.gray[6],
-						})}
-					>
-						Get started by creating a list.
-					</Title>
-					<NewListForm createList={listActions.createList} />
-				</Stack>
+		<li ref={renaming ? ref : null} data-testid={`lists-${item.id}`}>
+			{renaming ? (
+				<Box
+					sx={theme => ({
+						padding: `4px ${theme.spacing.sm}px`,
+					})}
+				>
+					<ListForm autoFocus initialValue={item.name} onSubmit={onRename} />
+				</Box>
 			) : (
-				<Stack>
-					<List listStyleType="none">
-						{lists.map(list => (
-							<NavLink
-								label={list.name}
-								active={list.id === activeListId}
-								onClick={() => listActions.setActive(list.id)}
-								color={primaryColorOption}
-								component="li"
-								data-testid={`lists-${list.id}`}
-								key={list.id}
-								rightSection={
-									<ListOptions
-										deleteItem={() => listActions.deleteItem(list.id)}
-										renameItem={() => listActions.renameItem(list.id)}
-									/>
-								}
-							/>
-						))}
-						<Box
-							component="li"
-							sx={theme => ({ padding: ` 0 ${theme.spacing.xs}px` })}
-						>
-							<NewListForm createList={listActions.createList} />
-						</Box>
-					</List>
-				</Stack>
+				<NavLink
+					component="div"
+					label={item.name}
+					active={isActive}
+					onClick={() => listActions.setActive(item.id)}
+					color={primaryColorOption}
+					key={item.id}
+					rightSection={
+						<ListOptions
+							deleteItem={() => listActions.deleteItem(item.id)}
+							renameItem={() => setRenaming(true)}
+						/>
+					}
+				/>
 			)}
-		</Box>
+		</li>
 	)
 }
 
@@ -97,28 +163,40 @@ const useFormStyles = createStyles(theme => {
 	return {
 		wrapper: {
 			borderBottom: `1px solid ${borderColor}`,
+			marginBottom: '-1px',
 			'&:focus-within': {
 				borderBottom: `1px solid ${primaryColor}`,
 			},
 		},
+		input: {
+			padding: 0,
+		},
 	}
 })
 
-type NewListFormProps = Pick<ListActions, 'createList'>
+interface ListFormProps {
+	onSubmit: (name: string) => Promise<void>
+	initialValue?: string
+	autoFocus?: boolean
+}
 
-const NewListForm: React.FC<NewListFormProps> = ({ createList }) => {
+const ListForm: React.FC<ListFormProps> = ({
+	onSubmit,
+	initialValue,
+	autoFocus = false,
+}) => {
 	const [loading, setLoading] = useState(false)
 	const { classes } = useFormStyles()
 	const form = useForm({
 		initialValues: {
-			name: '',
+			name: initialValue ?? '',
 		},
 	})
 
 	const submit = async (values: typeof form.values) => {
 		if (values.name) {
 			setLoading(true)
-			await createList(values.name)
+			await onSubmit(values.name)
 			setLoading(false)
 			form.reset()
 		}
@@ -139,15 +217,16 @@ const NewListForm: React.FC<NewListFormProps> = ({ createList }) => {
 				name="name"
 				variant="unstyled"
 				placeholder="create new list"
-				aria-label="new list name"
-				classNames={{ wrapper: classes.wrapper }}
+				aria-label="list name"
+				classNames={{ wrapper: classes.wrapper, input: classes.input }}
+				autoFocus={autoFocus}
 				{...form.getInputProps('name')}
 			/>
 			<IconButton
 				type="submit"
 				Icon={IconPlus}
 				size="sm"
-				aria-label="create new list"
+				aria-label="submit"
 				loading={loading}
 			/>
 		</Box>
@@ -156,7 +235,7 @@ const NewListForm: React.FC<NewListFormProps> = ({ createList }) => {
 
 // todo: can I make this a mapped type?
 interface ListOptionsProps {
-	renameItem(): Promise<void>
+	renameItem(): void
 	deleteItem(): Promise<void>
 }
 
@@ -195,4 +274,4 @@ const ListOptions: React.FC<ListOptionsProps> = ({
 	)
 }
 
-export default Lists
+export default ListsMenu

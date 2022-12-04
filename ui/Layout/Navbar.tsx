@@ -9,7 +9,6 @@ export interface NavbarProps extends MantineNavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ menuOpened, children, ...rest }) => {
 	return (
 		<MantineNavbar
-			p="md"
 			hiddenBreakpoint="sm"
 			hidden={!menuOpened}
 			width={{ sm: 200, lg: 300 }}

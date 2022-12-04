@@ -1,6 +1,6 @@
 import { NotificationsProvider } from '@mantine/notifications'
 import AppHeader from 'components/AppHeader'
-import { client } from 'lib/auth/AuthClient'
+import { authClient } from 'lib/auth/AuthClient'
 import AuthProvider from 'lib/auth/AuthContextProvider'
 import type { AppProps } from 'next/app'
 import '../styles/globals.css'
@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps, ...appProps }: AppProps) {
 	const isApp = ['/app'].includes(appProps.router.pathname)
 
 	return (
-		<AuthProvider client={client}>
+		<AuthProvider client={authClient}>
 			<ThemeProvider>
 				<NotificationsProvider>
 					{isApp ? (

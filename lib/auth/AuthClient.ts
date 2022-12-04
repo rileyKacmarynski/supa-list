@@ -1,21 +1,13 @@
-import {
-	AuthChangeEvent,
-	AuthError,
-	createClient,
-	Subscription,
-} from '@supabase/supabase-js'
+import { AuthChangeEvent, AuthError, Subscription } from '@supabase/supabase-js'
 // @ts-ignore
+import supabaseClient from 'lib/supabaseClient'
 import { v4 as uuid } from 'uuid'
 import { AuthResponse, LoginCredentials, Session, User } from '.'
 import { randomColorOption } from '../../ui/Theme'
 
 export class AuthClient {
 	constructor() {
-		const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-		const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-		if (!url || !key) throw new Error('Unable to read supabase configuration')
-
-		this._supabaseClient = createClient(url, key)
+		this._supabaseClient = supabaseClient
 		this._user = null
 	}
 
@@ -137,4 +129,4 @@ export class AuthClient {
 	}
 }
 
-export const client = new AuthClient()
+export const authClient = new AuthClient()
