@@ -5,7 +5,8 @@ import { forwardRef, MouseEventHandler } from 'react'
 export interface IconButtonProps extends ActionIconProps {
 	size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 	Icon: TablerIcon
-	onClick: MouseEventHandler<HTMLButtonElement>
+	onClick?: MouseEventHandler<HTMLButtonElement>
+	type?: 'button' | 'submit' | 'reset'
 }
 
 // eslint-disable-next-line react/display-name

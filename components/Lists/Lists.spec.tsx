@@ -1,8 +1,10 @@
+import { faker } from '@faker-js/faker'
 import { screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { DeepPartial, renderWithProviders } from '__tests__/testUtils'
 import Lists, { ListActions, ListsProps } from './Lists'
-import { makeTestList } from './listTestUtils'
+import { makeTestList, getTestListName } from './listTestUtils'
 
 describe('<Lists />', () => {
 	const defaultList = makeTestList(5)
@@ -12,6 +14,7 @@ describe('<Lists />', () => {
 			deleteItem: vi.fn(),
 			renameItem: vi.fn(),
 			setActive: vi.fn(),
+			createList: vi.fn(),
 			...actions,
 		}
 	}
@@ -52,7 +55,7 @@ describe('<Lists />', () => {
 			lists: [],
 		})
 
-		expect(screen.queryByText(/no lists/i)).toBeInTheDocument()
+		expect(screen.queryByTestId('lists-empty-state')).toBeInTheDocument()
 	})
 
 	it('shows active list', () => {
@@ -122,5 +125,37 @@ describe('<Lists />', () => {
 		menuItem.click()
 
 		expect(deleteItem).toHaveBeenCalledWith(listItem.id)
+	})
+
+	it('can create item', async () => {
+		const createList = vi.fn()
+		const listActions = createDefaultActions({
+			createList,
+		})
+		const listName = getTestListName()
+
+		mountComponent({ listActions })
+
+		const input = screen.getByLabelText(/new list name/i)
+		await userEvent.type(input, listName)
+
+		const submitButton = screen.getByLabelText(/create new list/i)
+		await userEvent.click(submitButton)
+
+		expect(createList).toHaveBeenCalledWith(listName)
+	})
+
+	it('validates input', async () => {
+		const createList = vi.fn()
+		const listActions = createDefaultActions({
+			createList,
+		})
+
+		mountComponent({ listActions })
+
+		const submitButton = screen.getByLabelText(/create new list/i)
+		await userEvent.click(submitButton)
+
+		expect(createList).not.toHaveBeenCalled()
 	})
 })

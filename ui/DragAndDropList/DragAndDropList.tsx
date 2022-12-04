@@ -112,6 +112,7 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 						</div>
 						<Text>{item.text}</Text>
 						<Checkbox
+							sx={{ cursor: 'pointer' }}
 							className={classes.checkbox}
 							onChange={() => toggleItemCompleted(item)}
 							checked={item.completed}

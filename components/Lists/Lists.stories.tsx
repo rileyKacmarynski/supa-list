@@ -1,7 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { useState } from 'react'
-import { act } from 'react-dom/test-utils'
-import Lists, { ListActions, ListId } from './Lists'
+import Lists, { ListId } from './Lists'
 import { makeTestList } from './listTestUtils'
 
 const defaultList = makeTestList(5)
@@ -16,6 +15,7 @@ export default {
 			deleteItem: (id: ListId) => console.log('deleting item', id),
 			renameItem: (id: ListId) => console.log('renaming item', id),
 			setActive: (id: ListId) => console.log('active item', id),
+			createList: (name: string) => console.log('create list', name),
 		},
 	},
 } as ComponentMeta<typeof Lists>
@@ -36,3 +36,9 @@ const Template: ComponentStory<typeof Lists> = args => {
 }
 
 export const Primary = Template.bind({})
+
+export const EmptyList = Template.bind({})
+EmptyList.args = {
+	...Primary.args,
+	lists: [],
+}

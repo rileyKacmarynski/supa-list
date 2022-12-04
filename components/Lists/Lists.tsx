@@ -1,6 +1,20 @@
-import { ActionIcon, Box, List, Menu, NavLink } from '@mantine/core'
-import { IconDots, IconEdit, IconTrash } from '@tabler/icons'
-import React from 'react'
+import {
+	ActionIcon,
+	Box,
+	Button,
+	createStyles,
+	Flex,
+	List,
+	Menu,
+	NavLink,
+	Stack,
+	TextInput,
+	Title,
+} from '@mantine/core'
+import { useForm } from '@mantine/form'
+import { IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons'
+import React, { useState } from 'react'
+import IconButton from 'ui/Buttons/IconButton'
 import { useTheme } from 'ui/Theme'
 
 export type ListId = string
@@ -9,6 +23,7 @@ export interface ListActions {
 	setActive(id: ListId): Promise<void>
 	renameItem(id: ListId): Promise<void>
 	deleteItem(id: ListId): Promise<void>
+	createList(name: string): Promise<void>
 }
 
 export interface ListsProps {
@@ -21,33 +36,120 @@ export interface ListsProps {
 }
 
 const Lists: React.FC<ListsProps> = ({ lists, activeListId, listActions }) => {
-	const { primaryColorOption } = useTheme()
+	const { primaryColorOption, colorScheme } = useTheme()
 
 	return (
 		<Box sx={{ width: 240 }}>
 			{!lists.length ? (
-				<p>no lists</p>
+				<Stack data-testid="lists-empty-state">
+					<Title
+						order={3}
+						sx={theme => ({
+							fontSize: theme.fontSizes.md,
+							color:
+								theme.colorScheme === 'dark'
+									? theme.colors.dark[2]
+									: theme.colors.gray[6],
+						})}
+					>
+						Get started by creating a list.
+					</Title>
+					<NewListForm createList={listActions.createList} />
+				</Stack>
 			) : (
-				<List listStyleType="none">
-					{lists.map(list => (
-						<NavLink
-							label={list.name}
-							active={list.id === activeListId}
-							onClick={() => listActions.setActive(list.id)}
-							color={primaryColorOption}
+				<Stack>
+					<List listStyleType="none">
+						{lists.map(list => (
+							<NavLink
+								label={list.name}
+								active={list.id === activeListId}
+								onClick={() => listActions.setActive(list.id)}
+								color={primaryColorOption}
+								component="li"
+								data-testid={`lists-${list.id}`}
+								key={list.id}
+								rightSection={
+									<ListOptions
+										deleteItem={() => listActions.deleteItem(list.id)}
+										renameItem={() => listActions.renameItem(list.id)}
+									/>
+								}
+							/>
+						))}
+						<Box
 							component="li"
-							data-testid={`lists-${list.id}`}
-							key={list.id}
-							rightSection={
-								<ListOptions
-									deleteItem={() => listActions.deleteItem(list.id)}
-									renameItem={() => listActions.renameItem(list.id)}
-								/>
-							}
-						/>
-					))}
-				</List>
+							sx={theme => ({ padding: ` 0 ${theme.spacing.xs}px` })}
+						>
+							<NewListForm createList={listActions.createList} />
+						</Box>
+					</List>
+				</Stack>
 			)}
+		</Box>
+	)
+}
+
+const useFormStyles = createStyles(theme => {
+	const isDarkTheme = theme.colorScheme === 'dark'
+	const borderColor = isDarkTheme ? theme.colors.dark[6] : theme.colors.gray[3]
+	const primaryColor = theme.colors[theme.primaryColor][8]
+
+	return {
+		wrapper: {
+			borderBottom: `1px solid ${borderColor}`,
+			'&:focus-within': {
+				borderBottom: `1px solid ${primaryColor}`,
+			},
+		},
+	}
+})
+
+type NewListFormProps = Pick<ListActions, 'createList'>
+
+const NewListForm: React.FC<NewListFormProps> = ({ createList }) => {
+	const [loading, setLoading] = useState(false)
+	const { classes } = useFormStyles()
+	const form = useForm({
+		initialValues: {
+			name: '',
+		},
+	})
+
+	const submit = async (values: typeof form.values) => {
+		if (values.name) {
+			setLoading(true)
+			await createList(values.name)
+			setLoading(false)
+			form.reset()
+		}
+	}
+
+	return (
+		<Box
+			component="form"
+			onSubmit={form.onSubmit(submit)}
+			sx={{
+				display: 'flex',
+				justifyContent: 'space-between',
+				alignItems: 'end',
+			}}
+		>
+			<TextInput
+				id="name"
+				name="name"
+				variant="unstyled"
+				placeholder="create new list"
+				aria-label="new list name"
+				classNames={{ wrapper: classes.wrapper }}
+				{...form.getInputProps('name')}
+			/>
+			<IconButton
+				type="submit"
+				Icon={IconPlus}
+				size="sm"
+				aria-label="create new list"
+				loading={loading}
+			/>
 		</Box>
 	)
 }
