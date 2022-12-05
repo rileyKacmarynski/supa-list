@@ -1,6 +1,6 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import { useState } from 'react'
-import ListsMenu, { ListId } from './Lists'
+import ListsMenu, { ListId } from './ListsMenu'
 import { makeTestList } from './listTestUtils'
 
 const defaultList = makeTestList(5)

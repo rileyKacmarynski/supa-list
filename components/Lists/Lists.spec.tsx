@@ -3,7 +3,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { DeepPartial, renderWithProviders } from '__tests__/testUtils'
-import ListsMenu, { ListActions, ListsMenuProps } from './Lists'
+import ListsMenu, { ListActions, ListsMenuProps } from './ListsMenu'
 import { makeTestList, getTestListName } from './listTestUtils'
 
 describe('<Lists />', () => {

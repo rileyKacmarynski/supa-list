@@ -1,277 +1,100 @@
-import {
-	ActionIcon,
-	Box,
-	createStyles,
-	List,
-	LoadingOverlay,
-	Menu,
-	Navbar,
-	NavLink,
-	Stack,
-	TextInput,
-	Title,
-} from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { useClickOutside } from '@mantine/hooks'
-import { IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons'
-import React, { useState } from 'react'
-import IconButton from 'ui/Buttons/IconButton'
-import { useTheme } from 'ui/Theme'
+import { useAuth } from 'lib/auth/AuthContextProvider'
+import { useEffect, useState } from 'react'
+import ListsMenu, { List, ListActions, ListId } from './ListsMenu'
+import { showNotification } from '@mantine/notifications'
+import { createList, deleteList, getLists, renameList } from 'lib/listService'
+import { ApiResponse } from 'lib/utils'
 
-export type ListId = string
+const Lists = () => {
+	const { user } = useAuth()
+	const [lists, setLists] = useState<List[]>([])
+	const [loadingLists, setLoadingLists] = useState(true)
+	const [activeListId, setActiveListId] = useState<string | null>(null)
 
-export interface ListActions {
-	setActive(id: ListId): Promise<void>
-	renameItem(id: ListId, name: string): Promise<void>
-	deleteItem(id: ListId): Promise<void>
-	createList(name: string): Promise<void>
-}
+	useEffect(() => {
+		async function get() {
+			if (!user) return []
 
-export type List = {
-	name: string
-	id: ListId
-}
-export interface ListsMenuProps {
-	lists: List[]
-	activeListId: ListId | null
-	listActions: ListActions
-	loading: boolean
-}
+			try {
+				setLoadingLists(true)
 
-const ListsMenu: React.FC<ListsMenuProps> = ({
-	lists,
-	activeListId,
-	listActions,
-	loading,
-}) => {
-	return (
-		<>
-			<Navbar.Section
-				sx={theme => ({
-					textAlign: 'center',
-					paddingTop: theme.spacing.lg,
-					paddingBottom: theme.spacing.sm,
-				})}
-			>
-				<Title
-					order={2}
-					sx={theme => ({ fontWeight: 'normal', fontSize: theme.fontSizes.xl })}
-				>
-					Lists
-				</Title>
-			</Navbar.Section>
-			<Navbar.Section grow sx={{ width: '100%' }}>
-				<LoadingOverlay
-					visible={loading}
-					overlayBlur={2}
-					transitionDuration={500}
-				/>
-				{!lists.length && !loading ? (
-					<Stack sx={{ textAlign: 'center' }} data-testid="lists-empty-state">
-						<Title
-							order={3}
-							sx={theme => ({
-								fontSize: theme.fontSizes.md,
-								color:
-									theme.colorScheme === 'dark'
-										? theme.colors.dark[2]
-										: theme.colors.gray[6],
-							})}
-						>
-							Get started by creating a list.
-						</Title>
-						<ListForm onSubmit={listActions.createList} />
-					</Stack>
-				) : (
-					<Stack>
-						<List listStyleType="none">
-							{lists.map(list => (
-								<ListItem
-									key={list.id}
-									item={list}
-									listActions={listActions}
-									isActive={activeListId === list.id}
-								/>
-							))}
-							{!loading && (
-								<Box
-									component="li"
-									sx={theme => ({ padding: `0 ${theme.spacing.xs}px` })}
-								>
-									<ListForm onSubmit={listActions.createList} />
-								</Box>
-							)}
-						</List>
-					</Stack>
-				)}
-			</Navbar.Section>
-		</>
-	)
-}
+				const { data: lists, error } = await getLists()
 
-interface ListItemProps {
-	listActions: ListActions
-	item: List
-	isActive: boolean
-}
+				if (lists?.length) {
+					setLists(
+						lists?.map((l: any) => ({
+							name: l.name,
+							id: l.id,
+						})),
+					)
 
-const ListItem: React.FC<ListItemProps> = ({ listActions, item, isActive }) => {
-	const [renaming, setRenaming] = useState(false)
-	const ref = useClickOutside(() => setRenaming(false))
-	const { primaryColorOption } = useTheme()
-
-	const onRename = async (name: string) => {
-		await listActions.renameItem(item.id, name)
-		setRenaming(false)
-	}
-
-	return (
-		<li ref={renaming ? ref : null} data-testid={`lists-${item.id}`}>
-			{renaming ? (
-				<Box
-					sx={theme => ({
-						padding: `4px ${theme.spacing.sm}px`,
-					})}
-				>
-					<ListForm autoFocus initialValue={item.name} onSubmit={onRename} />
-				</Box>
-			) : (
-				<NavLink
-					component="div"
-					label={item.name}
-					active={isActive}
-					onClick={() => listActions.setActive(item.id)}
-					color={primaryColorOption}
-					key={item.id}
-					rightSection={
-						<ListOptions
-							deleteItem={() => listActions.deleteItem(item.id)}
-							renameItem={() => setRenaming(true)}
-						/>
+					if (!activeListId) {
+						setActiveListId(lists[0].id)
 					}
-				/>
-			)}
-		</li>
-	)
-}
+				}
 
-const useFormStyles = createStyles(theme => {
-	const isDarkTheme = theme.colorScheme === 'dark'
-	const borderColor = isDarkTheme ? theme.colors.dark[6] : theme.colors.gray[3]
-	const primaryColor = theme.colors[theme.primaryColor][8]
+				console.log('lists', lists)
+				console.log('error', error)
+			} catch (ex) {
+				console.log(ex)
+			}
 
-	return {
-		wrapper: {
-			borderBottom: `1px solid ${borderColor}`,
-			marginBottom: '-1px',
-			'&:focus-within': {
-				borderBottom: `1px solid ${primaryColor}`,
-			},
-		},
-		input: {
-			padding: 0,
-		},
-	}
-})
+			setLoadingLists(false)
+		}
+		get()
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [user])
 
-interface ListFormProps {
-	onSubmit: (name: string) => Promise<void>
-	initialValue?: string
-	autoFocus?: boolean
-}
+	const handleListChanges: (
+		fn: () => Promise<ApiResponse<any>>,
+		message: string,
+	) => Promise<void> = async (fn, message) => {
+		const { error } = await fn()
 
-const ListForm: React.FC<ListFormProps> = ({
-	onSubmit,
-	initialValue,
-	autoFocus = false,
-}) => {
-	const [loading, setLoading] = useState(false)
-	const { classes } = useFormStyles()
-	const form = useForm({
-		initialValues: {
-			name: initialValue ?? '',
-		},
-	})
+		// TODO: handle successful changes
 
-	const submit = async (values: typeof form.values) => {
-		if (values.name) {
-			setLoading(true)
-			await onSubmit(values.name)
-			setLoading(false)
-			form.reset()
+		if (error) {
+			console.error(error)
+
+			showNotification({
+				message,
+				color: 'red',
+			})
+		}
+
+		const { data } = await getLists()
+
+		console.log('lists changed', data)
+
+		if (data.length) {
+			setLists(
+				data?.map((l: any) => ({
+					name: l.name,
+					id: l.id,
+				})),
+			)
 		}
 	}
 
+	const listActions: ListActions = {
+		deleteItem: (id: ListId) =>
+			handleListChanges(() => deleteList(id), 'Error deleting list.'),
+		renameItem: (id: ListId, name: string) =>
+			handleListChanges(() => renameList(id, name), 'Error renaming list.'),
+		// handle fetching list items later
+		setActive: (id: ListId) => Promise.resolve(setActiveListId(id)),
+		createList: (name: string) =>
+			handleListChanges(() => createList(name), 'Error creating list.'),
+	}
+
 	return (
-		<Box
-			component="form"
-			onSubmit={form.onSubmit(submit)}
-			sx={{
-				display: 'flex',
-				justifyContent: 'space-between',
-				alignItems: 'end',
-			}}
-		>
-			<TextInput
-				id="name"
-				name="name"
-				variant="unstyled"
-				placeholder="create new list"
-				aria-label="list name"
-				classNames={{ wrapper: classes.wrapper, input: classes.input }}
-				autoFocus={autoFocus}
-				{...form.getInputProps('name')}
-			/>
-			<IconButton
-				type="submit"
-				Icon={IconPlus}
-				size="sm"
-				aria-label="submit"
-				loading={loading}
-			/>
-		</Box>
+		<ListsMenu
+			lists={lists}
+			listActions={listActions}
+			activeListId={activeListId}
+			loading={loadingLists}
+		/>
 	)
 }
 
-// todo: can I make this a mapped type?
-interface ListOptionsProps {
-	renameItem(): void
-	deleteItem(): Promise<void>
-}
-
-const ListOptions: React.FC<ListOptionsProps> = ({
-	renameItem,
-	deleteItem,
-}) => {
-	return (
-		<Menu>
-			{/* This seems hacky, but I don't know how else to stop propagation */}
-			<div onClick={e => e.stopPropagation()}>
-				<Menu.Target>
-					<ActionIcon
-						variant="subtle"
-						role="button"
-						aria-label="open list menu"
-					>
-						<IconDots size={16} />
-					</ActionIcon>
-				</Menu.Target>
-			</div>
-			<Menu.Dropdown>
-				<Menu.Item onClick={renameItem} icon={<IconEdit size={14} />}>
-					Rename
-				</Menu.Item>
-				<Menu.Item
-					name="delete"
-					color="red"
-					onClick={deleteItem}
-					icon={<IconTrash size={14} />}
-				>
-					Delete this list
-				</Menu.Item>
-			</Menu.Dropdown>
-		</Menu>
-	)
-}
-
-export default ListsMenu
+export default Lists
