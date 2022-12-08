@@ -3,12 +3,11 @@ import { useEffect, useState } from 'react'
 import ListsMenu, { List, ListActions, ListId } from './ListsMenu'
 import { showNotification } from '@mantine/notifications'
 import { createList, deleteList, getLists, renameList } from 'lib/listService'
-import { ApiResponse } from 'lib/utils'
 
 const Lists = () => {
 	const { user } = useAuth()
 	const [lists, setLists] = useState<List[]>([])
-	const [loadingLists, setLoadingLists] = useState(true)
+	const [loadingLists, setLoadingLists] = useState(false)
 	const [activeListId, setActiveListId] = useState<string | null>(null)
 
 	useEffect(() => {
@@ -18,7 +17,7 @@ const Lists = () => {
 			try {
 				setLoadingLists(true)
 
-				const { data: lists, error } = await getLists()
+				const { lists, error } = await getLists()
 
 				if (lists?.length) {
 					setLists(
@@ -46,29 +45,32 @@ const Lists = () => {
 	}, [user])
 
 	const handleListChanges: (
-		fn: () => Promise<ApiResponse<any>>,
-		message: string,
-	) => Promise<void> = async (fn, message) => {
+		fn: () => Promise<{ error: unknown }>,
+		errorMessage: string,
+		successMessage?: string,
+	) => Promise<void> = async (fn, errorMessage, successMessage) => {
 		const { error } = await fn()
-
-		// TODO: handle successful changes
 
 		if (error) {
 			console.error(error)
 
 			showNotification({
-				message,
+				message: errorMessage,
 				color: 'red',
 			})
 		}
 
-		const { data } = await getLists()
+		if (successMessage) {
+			showNotification({ message: successMessage })
+		}
 
-		console.log('lists changed', data)
+		const { lists } = await getLists()
 
-		if (data.length) {
+		console.log('lists changed', lists)
+
+		if (lists && lists.length) {
 			setLists(
-				data?.map((l: any) => ({
+				lists?.map((l: any) => ({
 					name: l.name,
 					id: l.id,
 				})),

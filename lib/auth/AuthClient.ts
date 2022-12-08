@@ -3,7 +3,7 @@ import { AuthChangeEvent, AuthError, Subscription } from '@supabase/supabase-js'
 import supabaseClient from 'lib/supabaseClient'
 import { v4 as uuid } from 'uuid'
 import { AuthResponse, LoginCredentials, Session, User } from '.'
-import { randomColorOption } from '../../ui/Theme'
+import { ColorOption, randomColorOption } from '../../ui/Theme'
 
 export class AuthClient {
 	constructor() {
@@ -64,7 +64,7 @@ export class AuthClient {
 		const profile = await this._getProfile(user)
 		this._user = {
 			...user,
-			user_metadata: { avatarColor: profile.avatar_color },
+			user_metadata: { avatarColor: profile.avatar_color as ColorOption },
 		}
 
 		this._notifyAllSubscribers('SIGNED_IN')

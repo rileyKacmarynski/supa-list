@@ -8,7 +8,7 @@ import Layout from '../ui/Layout'
 import { ThemeProvider } from '../ui/Theme'
 
 if (process.env.NEXT_PUBLIC_API_MOCKING == 'true') {
-	import('../mocks').then(mod => mod.initMocks())
+	import('../mocks')
 }
 
 function MyApp({ Component, pageProps, ...appProps }: AppProps) {

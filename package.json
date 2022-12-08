@@ -16,7 +16,8 @@
 		"storybook": "start-storybook -p 6006",
 		"build-storybook": "build-storybook",
 		"gen:component": "hygen component new",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"supa-types": "npx supabase gen types typescript --project-id 'dydoinxeicqbpcqlpood' --schema public > types/supabase.ts"
 	},
 	"dependencies": {
 		"@babel/core": "^7.20.2",
@@ -38,7 +39,6 @@
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.39.3",
 		"server-only": "^0.0.1",
-		"uuid": "^9.0.0",
 		"webpack": "^5.75.0"
 	},
 	"devDependencies": {

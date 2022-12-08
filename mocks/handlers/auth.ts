@@ -1,4 +1,5 @@
 // @ts-nocheck
+import { faker } from '@faker-js/faker'
 import { rest } from 'msw'
 
 const supabaseAuthSession = (userId, email) => ({
@@ -44,7 +45,7 @@ const userProfile = {
 	avatar_color: 'grape',
 }
 
-const SUPABASE_URL = 'https://dydoinxeicqbpcqlpood.supabase.co'
+export const SUPABASE_URL = 'https://dydoinxeicqbpcqlpood.supabase.co'
 const SUPABASE_AUTH_TOKEN_API = '/auth/v1/token'
 const SUPABASE_AUTH_USER_API = '/auth/v1/user'
 const SUPABASE_AUTH_LOGOUT = '/auth/v1/logout'
@@ -117,16 +118,16 @@ export const handlers = [
 	rest.get(
 		`${SUPABASE_URL}${SUPABASE_AUTH_USER_API}`,
 		async (req, res, ctx) => {
-			console.log('get supabase user...')
+			console.log('get supabase user...', req)
 
-			const token = req.headers.get('authorization')?.split('Bearer ')?.[1]
-
-			const { id } = await req.json()
+			// const data = await req.json()
 			// if (token !== 'valid') {
 			//   return res(ctx.status(401), ctx.json({ error: 'Token expired' }))
 			// }
 
-			return res(ctx.status(200), ctx.json({ id: id }))
+			// console.log(data)
+
+			return res(ctx.status(200), ctx.json({ id: faker.datatype.uuid() }))
 		},
 	),
 	rest.post(

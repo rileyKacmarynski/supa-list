@@ -67,7 +67,13 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 					transitionDuration={500}
 				/>
 				{!lists.length && !loading ? (
-					<Stack sx={{ textAlign: 'center' }} data-testid="lists-empty-state">
+					<Stack
+						sx={theme => ({
+							textAlign: 'center',
+							padding: `0 ${theme.spacing.sm}px`,
+						})}
+						data-testid="lists-empty-state"
+					>
 						<Title
 							order={3}
 							sx={theme => ({

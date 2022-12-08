@@ -4,4 +4,3 @@
 pnpm lint
 pnpm format
 git add --all
-pnpm test:unit run

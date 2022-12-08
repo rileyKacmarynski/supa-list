@@ -7,8 +7,3 @@ export function getRandomInt(max: number) {
 export function getErrorMessage(e: unknown) {
 	return e instanceof Error ? e.message : 'An error occured.'
 }
-
-export interface ApiResponse<T> {
-	data?: T
-	error?: string | PostgrestError | null
-}
