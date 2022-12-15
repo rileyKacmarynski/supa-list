@@ -46,7 +46,7 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 }) => {
 	return (
 		<>
-			<Navbar.Section
+			{/* <Navbar.Section
 				sx={theme => ({
 					textAlign: 'center',
 					paddingTop: theme.spacing.lg,
@@ -59,8 +59,8 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 				>
 					Lists
 				</Title>
-			</Navbar.Section>
-			<Navbar.Section grow sx={{ width: '100%' }}>
+			</Navbar.Section> */}
+			<Navbar.Section grow sx={theme => ({ width: '100%' })}>
 				<LoadingOverlay
 					visible={loading}
 					overlayBlur={2}
@@ -78,6 +78,7 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 							order={3}
 							sx={theme => ({
 								fontSize: theme.fontSizes.md,
+								padding: theme.spacing.lg,
 								color:
 									theme.colorScheme === 'dark'
 										? theme.colors.dark[2]
@@ -89,7 +90,7 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 						<ListForm onSubmit={listActions.createList} />
 					</Stack>
 				) : (
-					<Stack>
+					<Stack sx={{ marginBottom: '1rem' }}>
 						<List listStyleType="none">
 							{lists.map(list => (
 								<ListItem
@@ -223,7 +224,7 @@ const ListForm: React.FC<ListFormProps> = ({
 				id="name"
 				name="name"
 				variant="unstyled"
-				placeholder="create new list"
+				placeholder="create a list"
 				aria-label="list name"
 				sx={{ flexGrow: 1 }}
 				classNames={{ wrapper: classes.wrapper, input: classes.input }}
@@ -234,7 +235,7 @@ const ListForm: React.FC<ListFormProps> = ({
 				type="submit"
 				Icon={IconPlus}
 				size="sm"
-				aria-label="submit"
+				aria-label="submit list form"
 				loading={loading}
 			/>
 		</Box>

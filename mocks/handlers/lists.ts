@@ -11,7 +11,7 @@ export const handlers = [
 		console.log('querying lists', req)
 
 		const lists = db.lists.getAll()
-		console.log(lists)
+		console.log('db lists', lists)
 
 		return res(ctx.status(200), ctx.json(lists))
 	}),

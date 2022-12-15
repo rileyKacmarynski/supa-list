@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker'
 import { expect, Page, PlaywrightTestArgs, test } from '@playwright/test'
 import { ERROR_USER } from 'mocks/handlers/auth'
+import { loginAsUser } from './test'
 
 test('login', async ({ page }: PlaywrightTestArgs) => {
 	const email = faker.internet.email()
@@ -57,18 +58,3 @@ test('login error', async ({ page }) => {
 
 	await expect(page.locator(`[data-testid=AuthForm-errorText]`)).toBeVisible()
 })
-
-async function loginAsUser(page: Page, username: string) {
-	await page.locator('text=Log In').click()
-	await expect(page).toHaveURL('./login')
-
-	const emailInput = page.locator('text=email')
-	await emailInput.click()
-	await emailInput.fill(username)
-
-	const passwordInput = page.locator('text=password')
-	await passwordInput.click()
-	await passwordInput.fill('Password123')
-
-	await page.locator('button:has-text("Login")').click()
-}

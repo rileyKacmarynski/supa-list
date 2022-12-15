@@ -68,7 +68,7 @@ const Lists = () => {
 
 		console.log('lists changed', lists)
 
-		if (lists && lists.length) {
+		if (lists) {
 			setLists(
 				lists?.map((l: any) => ({
 					name: l.name,

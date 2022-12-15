@@ -27,7 +27,7 @@ describe('<Lists />', () => {
 		const {
 			lists = defaultList,
 			activeListId = '2',
-			loadingLists = false,
+			loading = false,
 			listActions = {
 				...createDefaultActions({}),
 				...props.listActions,
@@ -36,7 +36,7 @@ describe('<Lists />', () => {
 
 		return renderWithProviders(
 			<ListsMenu
-				loadingLists={loadingLists}
+				loading={loading}
 				lists={lists}
 				activeListId={activeListId}
 				listActions={listActions}
