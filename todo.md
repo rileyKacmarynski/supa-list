@@ -1,17 +1,13 @@
 # To Do
 
-- Lists CRUD with SUPABASE
-  - just redirect back to login if user is unauthed. It's being a huge pain
-- write playwright tests
-- finish up styling
-  - add some nice animations
+- start working on list items
 - Bring in react query
+  - maybe not yet, hopefully we can do most things with supabase realtime.
   - I'm already getting annoyed at a bunch of useEffect stuff
 
 # At some point
 
-- What happens when you log out? should you keep your lists?
-  - Maybe just redirect to login until I get to offline features
+- we should handle the lists through dynamic routing. Easier to just treat it as a SPA for now I think.
 - How do we manage offline features?
   - I think (as of right now), I want to use React Query initially until things are functionally complete, then move to replicache
   - is it worth bringing in something like replicache?

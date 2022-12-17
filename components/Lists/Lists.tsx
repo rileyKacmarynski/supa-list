@@ -27,7 +27,8 @@ const Lists = () => {
 						})),
 					)
 
-					if (!activeListId) {
+					console.log('active list id', activeListId)
+					if (!activeListId || lists.some(l => l.id === activeListId)) {
 						setActiveListId(lists[0].id)
 					}
 				}
@@ -84,7 +85,10 @@ const Lists = () => {
 		renameItem: (id: ListId, name: string) =>
 			handleListChanges(() => renameList(id, name), 'Error renaming list.'),
 		// handle fetching list items later
-		setActive: (id: ListId) => Promise.resolve(setActiveListId(id)),
+		setActive: (id: ListId) => {
+			console.log('setting active list', id)
+			return Promise.resolve(setActiveListId(id))
+		},
 		createList: (name: string) =>
 			handleListChanges(() => createList(name), 'Error creating list.'),
 	}
