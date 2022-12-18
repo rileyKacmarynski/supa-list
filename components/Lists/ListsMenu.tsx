@@ -1,10 +1,9 @@
 import { Box, List, LoadingOverlay, Navbar, Stack, Title } from '@mantine/core'
 import { AnimatePresence, motion } from 'framer-motion'
+import { ListId } from 'lib/listService'
 import React from 'react'
 import { ListForm } from './ListForm'
 import { ListItem } from './ListItem'
-
-export type ListId = string
 
 export interface ListActions {
 	// I don't care what is returned. I'm giving the updated lists to the component
@@ -18,6 +17,7 @@ export type List = {
 	name: string
 	id: ListId
 }
+
 export interface ListsMenuProps {
 	lists: List[]
 	activeListId: ListId | null

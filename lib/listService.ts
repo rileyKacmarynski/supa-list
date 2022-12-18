@@ -2,6 +2,8 @@ import { authClient } from './auth/AuthClient'
 import supabaseClient from './supabaseClient'
 import { getErrorMessage } from './utils'
 
+export type ListId = string
+
 export async function getLists() {
 	try {
 		const { data, error } = await supabaseClient
@@ -15,9 +17,26 @@ export async function getLists() {
 	}
 }
 
-export type GetListFn = typeof getLists
 export type GetListsResult = Awaited<ReturnType<typeof getLists>>
 export type GetListsArgs = Parameters<typeof getLists>
+
+export async function getList(id: ListId) {
+	try {
+		const { data, error } = await supabaseClient
+			.from('lists')
+			.select('*, list_items(*)')
+			.eq('id', id)
+
+		if (!data) throw new Error(`unable to find list with id: ${id}`)
+
+		return { list: data[0], error }
+	} catch (e) {
+		return { list: null, error: getErrorMessage(e) }
+	}
+}
+
+export type GetListResult = Awaited<ReturnType<typeof getList>>
+export type GetListArgs = Parameters<typeof getList>
 
 export async function deleteList(id: string) {
 	try {

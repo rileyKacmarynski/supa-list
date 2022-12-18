@@ -1,11 +1,16 @@
-import { useEffect, useState } from 'react'
-import ListsMenu, { ListActions, ListId } from './ListsMenu'
+import { ListId } from 'lib/listService'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import ListsMenu, { ListActions } from './ListsMenu'
 import { useLists } from './useListsHook'
 
-const Lists = () => {
-	const [activeListId, setActiveListId] = useState<string | null>(null)
+export interface ListProps {
+	activeListId: ListId | null
+	setActiveListId: Dispatch<SetStateAction<ListId | null>>
+}
 
+const Lists: React.FC<ListProps> = ({ activeListId, setActiveListId }) => {
 	const { data, isLoading, create, rename, remove } = useLists()
+
 	useEffect(() => {
 		if (!data?.lists?.length) return
 
