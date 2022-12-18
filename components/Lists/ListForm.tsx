@@ -3,9 +3,10 @@ import { useForm } from '@mantine/form'
 import { IconPlus } from '@tabler/icons'
 import React, { useState } from 'react'
 import IconButton from 'ui/Buttons/IconButton'
+import type { ListActions } from './ListsMenu'
 
 export interface ListFormProps {
-	onSubmit: (name: string) => Promise<void>
+	onSubmit: (name: string) => ReturnType<ListActions['createList']>
 	initialValue?: string
 	autoFocus?: boolean
 }

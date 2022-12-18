@@ -1,104 +1,40 @@
-import { useAuth } from 'lib/auth/AuthContextProvider'
 import { useEffect, useState } from 'react'
-import ListsMenu, { List, ListActions, ListId } from './ListsMenu'
-import { showNotification } from '@mantine/notifications'
-import { createList, deleteList, getLists, renameList } from 'lib/listService'
+import ListsMenu, { ListActions, ListId } from './ListsMenu'
+import { useLists } from './useListsHook'
 
 const Lists = () => {
-	const { user } = useAuth()
-	const [lists, setLists] = useState<List[]>([])
-	const [loadingLists, setLoadingLists] = useState(false)
 	const [activeListId, setActiveListId] = useState<string | null>(null)
 
+	const { data, isLoading, create, rename, remove } = useLists()
 	useEffect(() => {
-		async function get() {
-			if (!user) return []
+		if (!data?.lists?.length) return
 
-			try {
-				setLoadingLists(true)
-
-				const { lists, error } = await getLists()
-
-				if (lists?.length) {
-					setLists(
-						lists?.map((l: any) => ({
-							name: l.name,
-							id: l.id,
-						})),
-					)
-
-					console.log('active list id', activeListId)
-					if (!activeListId || lists.some(l => l.id === activeListId)) {
-						setActiveListId(lists[0].id)
-					}
-				}
-
-				console.log('lists', lists)
-				console.log('error', error)
-			} catch (ex) {
-				console.log(ex)
-			}
-
-			setLoadingLists(false)
+		if (!data.lists.some(l => l.id === activeListId)) {
+			setActiveListId(data.lists[0].id)
 		}
-		get()
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [user])
+	}, [data?.lists?.length])
 
-	const handleListChanges: (
-		fn: () => Promise<{ error: unknown }>,
-		errorMessage: string,
-		successMessage?: string,
-	) => Promise<void> = async (fn, errorMessage, successMessage) => {
-		const { error } = await fn()
-
-		if (error) {
-			console.error(error)
-
-			showNotification({
-				message: errorMessage,
-				color: 'red',
-			})
-		}
-
-		if (successMessage) {
-			showNotification({ message: successMessage })
-		}
-
-		const { lists } = await getLists()
-
-		console.log('lists changed', lists)
-
-		if (lists) {
-			setLists(
-				lists?.map((l: any) => ({
-					name: l.name,
-					id: l.id,
-				})),
-			)
-		}
-	}
+	const mappedLists = data?.lists?.map(l => ({ name: l.name, id: l.id }))
 
 	const listActions: ListActions = {
-		deleteItem: (id: ListId) =>
-			handleListChanges(() => deleteList(id), 'Error deleting list.'),
-		renameItem: (id: ListId, name: string) =>
-			handleListChanges(() => renameList(id, name), 'Error renaming list.'),
+		deleteItem: (id: ListId) => remove([id]),
+		renameItem: (id: ListId, name: string) => rename([id, name]),
 		// handle fetching list items later
 		setActive: (id: ListId) => {
 			console.log('setting active list', id)
 			return Promise.resolve(setActiveListId(id))
 		},
-		createList: (name: string) =>
-			handleListChanges(() => createList(name), 'Error creating list.'),
+		createList: async (name: string) => create([name]),
 	}
 
 	return (
 		<ListsMenu
-			lists={lists}
+			lists={mappedLists ?? []}
 			listActions={listActions}
 			activeListId={activeListId}
-			loading={loadingLists}
+			loading={isLoading}
 		/>
 	)
 }

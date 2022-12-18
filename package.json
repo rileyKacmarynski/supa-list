@@ -39,6 +39,7 @@
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.39.3",
 		"server-only": "^0.0.1",
+		"swr": "^2.0.0",
 		"webpack": "^5.75.0"
 	},
 	"devDependencies": {

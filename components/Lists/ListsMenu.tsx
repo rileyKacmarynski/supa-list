@@ -1,12 +1,4 @@
-import {
-	Box,
-	createStyles,
-	List,
-	LoadingOverlay,
-	Navbar,
-	Stack,
-	Title,
-} from '@mantine/core'
+import { Box, List, LoadingOverlay, Navbar, Stack, Title } from '@mantine/core'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
 import { ListForm } from './ListForm'
@@ -15,10 +7,11 @@ import { ListItem } from './ListItem'
 export type ListId = string
 
 export interface ListActions {
-	setActive(id: ListId): Promise<void>
-	renameItem(id: ListId, name: string): Promise<void>
-	deleteItem(id: ListId): Promise<void>
-	createList(name: string): Promise<void>
+	// I don't care what is returned. I'm giving the updated lists to the component
+	setActive(id: ListId): Promise<unknown>
+	renameItem(id: ListId, name: string): Promise<unknown>
+	deleteItem(id: ListId): Promise<unknown>
+	createList(name: string): Promise<unknown>
 }
 
 export type List = {

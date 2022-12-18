@@ -15,6 +15,10 @@ export async function getLists() {
 	}
 }
 
+export type GetListFn = typeof getLists
+export type GetListsResult = Awaited<ReturnType<typeof getLists>>
+export type GetListsArgs = Parameters<typeof getLists>
+
 export async function deleteList(id: string) {
 	try {
 		const { error } = await supabaseClient.from('lists').delete().eq('id', id)
@@ -24,6 +28,9 @@ export async function deleteList(id: string) {
 		return { error: getErrorMessage(e) }
 	}
 }
+
+export type DeleteListResult = Awaited<ReturnType<typeof deleteList>>
+export type DeleteListArgs = Parameters<typeof deleteList>
 
 export async function renameList(id: string, name: string) {
 	try {
@@ -38,6 +45,9 @@ export async function renameList(id: string, name: string) {
 		return { error: getErrorMessage(e) }
 	}
 }
+
+export type RenameListResult = Awaited<ReturnType<typeof renameList>>
+export type RenameListArgs = Parameters<typeof renameList>
 
 export async function createList(name: string) {
 	try {
@@ -55,3 +65,6 @@ export async function createList(name: string) {
 		return { error: getErrorMessage(e) }
 	}
 }
+
+export type CreateListResult = Awaited<ReturnType<typeof createList>>
+export type CreateListArgs = Parameters<typeof createList>
