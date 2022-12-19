@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { expect, Page, PlaywrightTestArgs, test } from '@playwright/test'
-import { loginAsUser } from './test'
+import { createList, loginAsUser } from './test'
 
 test('create list', async ({ page }: PlaywrightTestArgs) => {
 	const email = faker.internet.email()
@@ -53,9 +53,3 @@ test('delete list', async ({ page }: PlaywrightTestArgs) => {
 
 	await expect(page.getByText(listName)).not.toBeVisible()
 })
-
-async function createList(page: Page, name: string) {
-	await page.getByPlaceholder('create a list').fill(name)
-
-	await page.getByRole('button', { name: /submit list form/i }).click()
-}

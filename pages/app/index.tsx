@@ -12,9 +12,11 @@ import { ListId, useListService } from 'lib/ListService'
 import { useSupabaseClient } from 'lib/supabaseClient'
 import { GetServerSideProps } from 'next'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
+import { Database } from 'types/supabase'
 
+// this will give us the initial session in the _app.tsx component I think
 export const getServerSideProps: GetServerSideProps = async ctx => {
-	const supabase = createServerSupabaseClient(ctx)
+	const supabase = createServerSupabaseClient<Database>(ctx)
 	// Check if we have a session
 	const {
 		data: { session },
@@ -23,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 	if (!session)
 		return {
 			redirect: {
-				destination: '/',
+				destination: '/login',
 				permanent: false,
 			},
 		}
@@ -35,10 +37,11 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 		},
 	}
 }
-const App = ({ user }: { user: User }) => {
+
+const App = () => {
 	// this will come from the query string eventually
 	const [activeListId, setActiveListId] = useState<ListId | null>(null)
-	console.log('user in client', user)
+	const user = useUser()
 
 	const supabaseClient = useSupabaseClient()
 	const listService = useListService(supabaseClient)

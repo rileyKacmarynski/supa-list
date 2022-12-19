@@ -1,38 +1,42 @@
 // @ts-nocheck
 import { faker } from '@faker-js/faker'
 import { rest } from 'msw'
+import jwt from 'jsonwebtoken'
 
-const supabaseAuthSession = (userId, email) => ({
-	access_token: 'validaccesstoken',
-	token_type: 'bearer',
-	expires_in: 3600,
-	refresh_token: 'validrefreshtoken',
-	user: {
-		id: userId,
-		aud: 'authenticated',
-		role: 'authenticated',
-		email: email,
-		email_confirmed_at: '2022-09-18T19:18:47.677849Z',
-		phone: '',
-		confirmed_at: Date.now.toString(),
-		last_sign_in_at: Date.now.toString(),
-		app_metadata: { provider: 'email', providers: ['email'] },
-		user_metadata: { avatarColor: 'cyan' },
-		identities: [
-			{
-				id: userId,
-				user_id: userId,
-				identity_data: { sub: userId },
-				provider: 'email',
-				last_sign_in_at: '2022-09-18T19:18:47.674315Z',
-				created_at: '2022-09-18T19:18:47.674366Z',
-				updated_at: '2022-09-18T19:18:47.67437Z',
-			},
-		],
-		created_at: '2022-09-18T19:18:47.66763Z',
-		updated_at: '2022-10-27T00:50:08.449452Z',
-	},
-})
+const supabaseAuthSession = (userId, email) => {
+	return {
+		access_token:
+			'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjcxNjMzODExLCJzdWIiOiJmZHNhZmRzYWZkc2FkZnNhZGYiLCJlbWFpbCI6ImVtYWlsQGRvbWFpbi5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImF2YXRhckNvbG9yIjoiY3lhbiJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNjcxNjMwMjExfV0sInNlc3Npb25faWQiOiJhc2RmYXNkZmFzZGZzYWZkc2FkcyJ9.Xd-2nb3pV-6RIxEI3lcSWrVOnejFCdNdaTgnQhAkj24',
+		token_type: 'bearer',
+		expires_in: 3600,
+		refresh_token: 'qkgiarA0NZiU5dVwXT9lEA',
+		user: {
+			id: userId,
+			aud: 'authenticated',
+			role: 'authenticated',
+			email: email,
+			email_confirmed_at: '2022-09-18T19:18:47.677849Z',
+			phone: '',
+			confirmed_at: '2022-09-18T19:18:47.677849Z',
+			last_sign_in_at: '2022-09-18T19:18:47.677849Z',
+			app_metadata: { provider: 'email', providers: ['email'] },
+			user_metadata: { avatarColor: 'cyan' },
+			identities: [
+				{
+					id: userId,
+					user_id: userId,
+					identity_data: { sub: userId },
+					provider: 'email',
+					last_sign_in_at: '2022-09-18T19:18:47.674315Z',
+					created_at: '2022-09-18T19:18:47.674366Z',
+					updated_at: '2022-09-18T19:18:47.67437Z',
+				},
+			],
+			created_at: '2022-09-18T19:18:47.66763Z',
+			updated_at: '2022-10-27T00:50:08.449452Z',
+		},
+	}
+}
 
 const authAccount = (userId, email) => ({
 	id: userId,
@@ -60,7 +64,6 @@ export const handlers = [
 			console.log('post to supabase token api...', req)
 
 			const { email, password } = await req.json()
-			console.log('parsed json body')
 
 			if (email == ERROR_USER) {
 				console.log('invalid credentials')
@@ -69,6 +72,10 @@ export const handlers = [
 					error_description: 'Invalid login credentials',
 				}
 				return res(ctx.status(401), ctx.json(errorResponse))
+			}
+
+			if (req.url.searchParams.get('grant_type') === 'refresh_token') {
+				return res(ctx.status(200))
 			}
 
 			console.log('about to create supabase session')
