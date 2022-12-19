@@ -1,12 +1,15 @@
+import { useSession } from '@supabase/auth-helpers-react'
 import AuthForm from 'components/AuthForm'
-import { LoginCredentials } from 'lib/auth'
-import { useAuth } from 'lib/auth/AuthContextProvider'
+import { LoginCredentials } from 'components/AuthForm/AuthForm'
+import { useSupabaseClient } from 'lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useNotifications } from 'ui/Notifications'
 
 export default function Login() {
-	const { signIn, session } = useAuth()
+	const supabaseClient = useSupabaseClient()
+	const session = useSession()
+	// const { signIn, session } = useAuth()
 	const router = useRouter()
 	const [loading, setLoading] = useState(false)
 	const { showNotification } = useNotifications()
@@ -16,13 +19,12 @@ export default function Login() {
 			router.push('/app')
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [])
+	}, [session])
 
 	const onSignIn = async (credentials: LoginCredentials) => {
 		setLoading(true)
 
-		const response = await signIn(credentials)
-		const { error } = response
+		const { error } = await supabaseClient.auth.signInWithPassword(credentials)
 
 		setLoading(false)
 

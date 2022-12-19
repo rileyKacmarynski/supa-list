@@ -1,7 +1,8 @@
-import { ListId } from 'lib/listService'
+import { useUser } from '@supabase/auth-helpers-react'
+import { ListId } from 'lib/ListService'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import ListsMenu, { ListActions } from './ListsMenu'
-import { useLists } from './useListsHook'
+import { useLists } from './useLists'
 
 export interface ListProps {
 	activeListId: ListId | null
@@ -31,6 +32,7 @@ const Lists: React.FC<ListProps> = ({ activeListId, setActiveListId }) => {
 			console.log('setting active list', id)
 			return Promise.resolve(setActiveListId(id))
 		},
+		// we'll have the user by the time a list can be created
 		createList: async (name: string) => create([name]),
 	}
 

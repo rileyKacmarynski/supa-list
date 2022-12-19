@@ -1,12 +1,16 @@
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import AuthForm from 'components/AuthForm'
-import { LoginCredentials } from 'lib/auth'
-import { useAuth } from 'lib/auth/AuthContextProvider'
 import { useNotifications } from 'ui/Notifications'
+import { useSession } from '@supabase/auth-helpers-react'
+import { useSupabaseClient } from 'lib/supabaseClient'
+import { randomColorOption } from 'ui/Theme'
+import { LoginCredentials } from 'components/AuthForm/AuthForm'
 
 export default function Register() {
-	const { session, signUp } = useAuth()
+	// const { session, signUp } = useAuth()
+	const supabaseClient = useSupabaseClient()
+	const session = useSession()
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
 	const { showNotification } = useNotifications()
@@ -23,7 +27,16 @@ export default function Register() {
 	) => Promise<string | undefined> = async credentials => {
 		setLoading(true)
 
-		const { error } = await signUp(credentials)
+		const avatarColor = randomColorOption()
+
+		// const { error } = await signUp(credentials)
+		const { error } = await supabaseClient.auth.signUp({
+			...credentials,
+			options: {
+				data: { avatarColor },
+			},
+		})
+
 		setLoading(false)
 
 		if (error) {

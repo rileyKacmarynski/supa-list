@@ -1,6 +1,6 @@
 import { Box, List, LoadingOverlay, Navbar, Stack, Title } from '@mantine/core'
-import { AnimatePresence, motion } from 'framer-motion'
-import { ListId } from 'lib/listService'
+import { AnimatePresence, motion, MotionProps } from 'framer-motion'
+import { ListId } from 'lib/ListService'
 import React from 'react'
 import { ListForm } from './ListForm'
 import { ListItem } from './ListItem'
@@ -25,9 +25,9 @@ export interface ListsMenuProps {
 	loading: boolean
 }
 
-const animateProps = {
+const animateProps: MotionProps = {
 	animate: { opacity: 1, height: 'auto' },
-	exit: { opacity: 0, height: 0, x: -50 },
+	exit: { opacity: 0, height: 0 },
 	initial: { opacity: 0, height: 0 },
 }
 
@@ -46,7 +46,7 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 			/>
 			<Stack sx={{ marginBottom: '1rem' }}>
 				<List listStyleType="none">
-					<AnimatePresence>
+					<AnimatePresence initial={false}>
 						{!lists.length && !loading && (
 							<motion.div key={-2} {...animateProps}>
 								<Stack

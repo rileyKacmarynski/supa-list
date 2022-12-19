@@ -1,10 +1,12 @@
 import { Button, Group } from '@mantine/core'
+import { useUser } from '@supabase/auth-helpers-react'
+import { useSupabaseClient } from 'lib/supabaseClient'
 import Link from 'next/link'
-import { useAuth } from '../../lib/auth/AuthContextProvider'
 import UserMenu from '../UserMenu'
 
 export const AppHeader = () => {
-	const { user, signOut } = useAuth()
+	const supabaseClient = useSupabaseClient()
+	const user = useUser()
 
 	return (
 		<Group spacing="sm">
@@ -22,7 +24,7 @@ export const AppHeader = () => {
 					</Link>
 				</>
 			) : (
-				<UserMenu user={user} signOut={signOut} />
+				<UserMenu user={user} signOut={() => supabaseClient.auth.signOut()} />
 			)}
 		</Group>
 	)

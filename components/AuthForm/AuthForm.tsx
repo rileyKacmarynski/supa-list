@@ -11,7 +11,12 @@ import {
 import { useForm } from '@mantine/form'
 import { upperFirst } from '@mantine/hooks'
 import { useState } from 'react'
-import { LoginCredentials } from '../../lib/auth'
+
+// TODO: these should probably go somewhere else
+export type LoginCredentials = {
+	email: string
+	password: string
+}
 
 type ErrorMessage = string
 export interface AuthFormProps {
