@@ -1,12 +1,11 @@
 // @ts-nocheck
 import { faker } from '@faker-js/faker'
 import { rest } from 'msw'
+import add from 'date-fns/add'
 import jwt from 'jsonwebtoken'
 
 const supabaseAuthSession = (userId, email) => {
-	return {
-		access_token:
-			'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNjcxNjMzODExLCJzdWIiOiJmZHNhZmRzYWZkc2FkZnNhZGYiLCJlbWFpbCI6ImVtYWlsQGRvbWFpbi5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImF2YXRhckNvbG9yIjoiY3lhbiJ9LCJyb2xlIjoiYXV0aGVudGljYXRlZCIsImFhbCI6ImFhbDEiLCJhbXIiOlt7Im1ldGhvZCI6InBhc3N3b3JkIiwidGltZXN0YW1wIjoxNjcxNjMwMjExfV0sInNlc3Npb25faWQiOiJhc2RmYXNkZmFzZGZzYWZkc2FkcyJ9.Xd-2nb3pV-6RIxEI3lcSWrVOnejFCdNdaTgnQhAkj24',
+	const session = {
 		token_type: 'bearer',
 		expires_in: 3600,
 		refresh_token: 'qkgiarA0NZiU5dVwXT9lEA',
@@ -35,6 +34,39 @@ const supabaseAuthSession = (userId, email) => {
 			created_at: '2022-09-18T19:18:47.66763Z',
 			updated_at: '2022-10-27T00:50:08.449452Z',
 		},
+	}
+
+	const token = {
+		aud: 'authenticated',
+		exp: add(new Date(), { days: 1 }).getTime(),
+		sub: userId,
+		email: email,
+		phone: '',
+		app_metadata: {
+			provider: 'email',
+			providers: ['email'],
+		},
+		user_metadata: {
+			avatarColor: 'cyan',
+		},
+		role: 'authenticated',
+		aal: 'aal1',
+		amr: [
+			{
+				method: 'password',
+				timestamp: new Date().getTime(),
+			},
+		],
+		session_id: '9f7bb64d-4c15-4f29-8a41-026cc1b057f6',
+	}
+
+	const access_token = jwt.sign(token, null, {
+		algorithm: 'none',
+	})
+
+	return {
+		...session,
+		access_token,
 	}
 }
 

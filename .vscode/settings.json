@@ -11,5 +11,6 @@
     "**/.{idea,git,cache,output,temp}/**"
   ],
   "typescript.tsdk": "node_modules/.pnpm/typescript@4.8.4/node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "testing.automaticallyOpenPeekView": "never"
 }

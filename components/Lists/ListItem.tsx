@@ -22,7 +22,7 @@ export const ListItem: React.FC<ListItemProps> = ({
 	const { primaryColorOption } = useTheme()
 
 	const onRename = async (name: string) => {
-		await listActions.renameItem(item.id, name)
+		await listActions.rename(item.id, name)
 		setRenaming(false)
 	}
 
@@ -46,7 +46,7 @@ export const ListItem: React.FC<ListItemProps> = ({
 					key={item.id}
 					rightSection={
 						<ListOptions
-							deleteItem={() => listActions.deleteItem(item.id)}
+							deleteItem={() => listActions.remove(item.id)}
 							renameItem={() => setRenaming(true)}
 						/>
 					}

@@ -1,4 +1,4 @@
-import { SupabaseClient } from './supabaseClient'
+import { SupabaseClient, useSupabaseClient } from './supabaseClient'
 import { getErrorMessage } from './utils'
 
 export type ListId = string
@@ -10,7 +10,7 @@ export default class ListService {
 		try {
 			const { data, error } = await this._supabaseClient
 				.from('lists')
-				.select('*')
+				.select('*, list_items(*)')
 
 			return { lists: data, error }
 		} catch (e) {
@@ -74,6 +74,8 @@ export default class ListService {
 	}
 }
 
-export function useListService(supabaseClient: SupabaseClient) {
-	return new ListService(supabaseClient)
-}
+export type GetListFn = ListService['getList']
+export type GetListsFn = ListService['getLists']
+export type DeleteListFn = ListService['deleteList']
+export type CreateListFn = ListService['createList']
+export type RenameListFn = ListService['renameList']

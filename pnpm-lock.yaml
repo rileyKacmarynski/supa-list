@@ -39,6 +39,7 @@ specifiers:
   babel-loader: ^8.3.0
   concurrently: ^7.5.0
   cross-env: ^7.0.3
+  date-fns: ^2.29.3
   encoding: ^0.1.13
   eslint: 8.26.0
   eslint-config-next: 13.0.0
@@ -81,6 +82,7 @@ dependencies:
   '@tabler/icons': 1.111.0_biqbaboplfbrettd7655fr4n2y
   '@types/jsonwebtoken': 8.5.9
   '@types/react-beautiful-dnd': 13.1.2
+  date-fns: 2.29.3
   encoding: 0.1.13
   framer-motion: 7.6.6_biqbaboplfbrettd7655fr4n2y
   jose: 4.11.1
@@ -9105,7 +9107,6 @@ packages:
         integrity: sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==,
       }
     engines: { node: '>=0.11' }
-    dev: true
 
   /debug/2.6.9:
     resolution:

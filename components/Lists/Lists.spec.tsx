@@ -11,10 +11,10 @@ describe('<Lists />', () => {
 
 	const createDefaultActions = (actions: Partial<ListActions>) => {
 		return {
-			deleteItem: vi.fn(),
-			renameItem: vi.fn(),
+			remove: vi.fn(),
+			rename: vi.fn(),
 			setActive: vi.fn(),
-			createList: vi.fn(),
+			create: vi.fn(),
 			...actions,
 		}
 	}
@@ -90,9 +90,9 @@ describe('<Lists />', () => {
 	it('can rename item', async () => {
 		const lists = makeTestList(3)
 		const listItem = lists[1]
-		const renameItem = vi.fn()
+		const rename = vi.fn()
 		const listActions = createDefaultActions({
-			renameItem,
+			rename,
 		})
 
 		mountComponent({ lists, activeListId: '1', listActions })
@@ -115,15 +115,15 @@ describe('<Lists />', () => {
 		const submitButton = listItemEl.getByLabelText(/submit/i)
 		await userEvent.click(submitButton)
 
-		expect(renameItem).toHaveBeenCalledWith(listItem.id, listName)
+		expect(rename).toHaveBeenCalledWith(listItem.id, listName)
 	})
 
 	it('can delete item', async () => {
 		const lists = makeTestList(3)
 		const listItem = lists[1]
-		const deleteItem = vi.fn()
+		const remove = vi.fn()
 		const listActions = createDefaultActions({
-			deleteItem,
+			remove,
 		})
 
 		mountComponent({ lists, activeListId: '1', listActions })
@@ -136,13 +136,13 @@ describe('<Lists />', () => {
 		})
 		menuItem.click()
 
-		expect(deleteItem).toHaveBeenCalledWith(listItem.id)
+		expect(remove).toHaveBeenCalledWith(listItem.id)
 	})
 
 	it('can create item', async () => {
-		const createList = vi.fn()
+		const create = vi.fn()
 		const listActions = createDefaultActions({
-			createList,
+			create,
 		})
 		const listName = getTestListName()
 
@@ -154,13 +154,13 @@ describe('<Lists />', () => {
 		const submitButton = screen.getByLabelText(/submit/i)
 		await userEvent.click(submitButton)
 
-		expect(createList).toHaveBeenCalledWith(listName)
+		expect(create).toHaveBeenCalledWith(listName)
 	})
 
 	it('validates input', async () => {
-		const createList = vi.fn()
+		const create = vi.fn()
 		const listActions = createDefaultActions({
-			createList,
+			create,
 		})
 
 		mountComponent({ listActions })
@@ -168,6 +168,6 @@ describe('<Lists />', () => {
 		const submitButton = screen.getByLabelText(/list name/i)
 		await userEvent.click(submitButton)
 
-		expect(createList).not.toHaveBeenCalled()
+		expect(create).not.toHaveBeenCalled()
 	})
 })

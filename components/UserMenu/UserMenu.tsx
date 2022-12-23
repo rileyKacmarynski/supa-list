@@ -1,7 +1,7 @@
 import { createStyles, Group, Menu, Text, UnstyledButton } from '@mantine/core'
+import { User } from '@supabase/supabase-js'
 import { IconLogout } from '@tabler/icons'
 import React from 'react'
-import { User } from '../../lib/auth'
 import Avatar from '../../ui/Avatar'
 
 export interface UserMenuProps {

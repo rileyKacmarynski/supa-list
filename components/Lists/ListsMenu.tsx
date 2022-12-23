@@ -7,10 +7,10 @@ import { ListItem } from './ListItem'
 
 export interface ListActions {
 	// I don't care what is returned. I'm giving the updated lists to the component
-	setActive(id: ListId): Promise<unknown>
-	renameItem(id: ListId, name: string): Promise<unknown>
-	deleteItem(id: ListId): Promise<unknown>
-	createList(name: string): Promise<unknown>
+	setActive(id: ListId): Promise<unknown | undefined>
+	rename(id: ListId, name: string): Promise<unknown | undefined>
+	remove(id: ListId): Promise<unknown | undefined>
+	create(name: string): Promise<unknown | undefined>
 }
 
 export type List = {
@@ -87,7 +87,7 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 									component="li"
 									sx={theme => ({ padding: `0 ${theme.spacing.xs}px` })}
 								>
-									<ListForm onSubmit={listActions.createList} />
+									<ListForm onSubmit={listActions.create} />
 								</Box>
 							</motion.div>
 						)}

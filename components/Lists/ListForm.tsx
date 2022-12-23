@@ -6,7 +6,7 @@ import IconButton from 'ui/Buttons/IconButton'
 import type { ListActions } from './ListsMenu'
 
 export interface ListFormProps {
-	onSubmit: (name: string) => ReturnType<ListActions['createList']>
+	onSubmit: (name: string) => ReturnType<ListActions['create']>
 	initialValue?: string
 	autoFocus?: boolean
 }

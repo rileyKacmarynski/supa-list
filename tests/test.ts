@@ -1,6 +1,12 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, Page, test, TestInfo } from '@playwright/test'
+import { drop } from '@mswjs/data'
+import { db } from '../mocks/db'
 
 // can customize base test here
+
+test.afterEach(async ({ page }: { page: Page }, testInfo: TestInfo) => {
+	drop(db)
+})
 
 export async function loginAsUser(page: Page, username: string) {
 	await page.locator('text=Log In').click()

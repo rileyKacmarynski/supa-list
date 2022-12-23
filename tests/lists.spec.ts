@@ -14,7 +14,7 @@ test('create list', async ({ page }: PlaywrightTestArgs) => {
 	const listName = faker.name.jobTitle()
 	await createList(page, listName)
 
-	await expect(page.getByText(listName)).toBeVisible()
+	await expect(page.getByRole('listitem').getByText(listName)).toBeVisible()
 })
 
 test('rename list', async ({ page }: PlaywrightTestArgs) => {
@@ -36,7 +36,7 @@ test('rename list', async ({ page }: PlaywrightTestArgs) => {
 	await listItem.getByRole('textbox').fill(newListName)
 	await listItem.getByRole('button', { name: /submit list form/i }).click()
 
-	await expect(page.getByText(newListName)).toBeVisible()
+	await expect(page.getByRole('listitem').getByText(newListName)).toBeVisible()
 })
 
 test('delete list', async ({ page }: PlaywrightTestArgs) => {
@@ -51,5 +51,8 @@ test('delete list', async ({ page }: PlaywrightTestArgs) => {
 	await listItem.getByRole('button', { name: /open list menu/i }).click()
 	await page.getByRole('menuitem', { name: /delete*/i }).click()
 
-	await expect(page.getByText(listName)).not.toBeVisible()
+	// couldn't find a good way to make sure both the active title and
+	// menu item dissapear
+	const deletedItem = page.getByText(listName).first()
+	expect(await deletedItem.waitFor({ state: 'hidden' }))
 })

@@ -1,6 +1,7 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
+import { ListId } from 'lib/ListService'
 import { useState } from 'react'
-import ListsMenu, { ListId } from './ListsMenu'
+import ListsMenu from './ListsMenu'
 import { makeTestList } from './listTestUtils'
 
 const defaultList = makeTestList(5)
@@ -12,11 +13,11 @@ export default {
 	args: {
 		lists: defaultList,
 		listActions: {
-			deleteItem: (id: ListId) => console.log('deleting item', id),
-			renameItem: (id: ListId, name: string) =>
+			remove: (id: ListId) => console.log('deleting item', id),
+			rename: (id: ListId, name: string) =>
 				console.log('renaming item', id, name),
 			setActive: (id: ListId) => console.log('active item', id),
-			createList: (name: string) => console.log('create list', name),
+			create: (name: string) => console.log('create list', name),
 		},
 	},
 } as ComponentMeta<typeof ListsMenu>
