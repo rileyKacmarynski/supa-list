@@ -1,7 +1,10 @@
 import { useListState } from '@mantine/hooks'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import React from 'react'
-import DragAndDropList, { ListItem, onDragEndArgs } from './DragAndDropList'
+import DragAndDropList, {
+	DragAndDropItem,
+	OnDragEndArgs,
+} from './DragAndDropList'
 
 export default {
 	title: 'UI/DragAndDropList',
@@ -18,16 +21,19 @@ const Template: ComponentStory<typeof DragAndDropList> = args => {
 		listItems.sort((a, b) => a.order - b.order),
 	)
 
-	const completeItem: (item: ListItem) => void = ({ completed, order }) => {
+	const completeItem: (item: DragAndDropItem) => void = ({
+		completed,
+		order,
+	}) => {
 		handlers.setItemProp(order - 1, 'completed', !completed)
 	}
 
-	const deleteItem = (item: ListItem) => {
+	const deleteItem = (item: DragAndDropItem) => {
 		handlers.remove(item.order - 1)
 		handleOrderChange()
 	}
 
-	const onDragEnd = ({ item, source, destination }: onDragEndArgs) => {
+	const onDragEnd = ({ item, source, destination }: OnDragEndArgs) => {
 		handlers.reorder({ from: source, to: destination })
 		handleOrderChange()
 	}
@@ -49,7 +55,7 @@ const Template: ComponentStory<typeof DragAndDropList> = args => {
 	)
 }
 
-const listItems: ListItem[] = [
+const listItems: DragAndDropItem[] = [
 	{ id: '1', order: 1, text: 'item 1', completed: true },
 	{ id: '2', order: 2, text: 'item 2', completed: false },
 	{ id: '3', order: 3, text: 'item 3', completed: false },

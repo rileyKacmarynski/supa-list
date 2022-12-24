@@ -9,7 +9,7 @@ import { ListId } from 'lib/ListService'
 import { GetServerSideProps } from 'next'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from 'types/supabase'
-import List, { ListItem } from 'components/List'
+import List, { ListData, ListItem } from 'components/List'
 import { useFetchLists } from 'components/Lists/useLists'
 import { PostgrestError } from '@supabase/supabase-js'
 
@@ -47,6 +47,7 @@ const App = () => {
 	const lists = mapLists(data)
 	const activeList = lists?.find(l => l.id === activeListId)
 
+	// we might not need this
 	useEffect(() => {
 		if (!user) {
 			router.push('login')
@@ -55,6 +56,18 @@ const App = () => {
 	}, [user])
 
 	console.log('mapped lists', lists)
+
+	const addItemToList = (itemId: string) => {
+		console.log('adding item to list', itemId)
+	}
+
+	const markItemComplete = (itemId: string) => {
+		console.log('marked item as complete', itemId)
+	}
+
+	const removeItem = (itemId: string) => {
+		console.log('marked items as complete', itemId)
+	}
 
 	return (
 		<Layout
@@ -72,7 +85,13 @@ const App = () => {
 				offsetScrollbars
 				sx={{ width: '100vw', position: 'relative' }}
 			>
-				<List list={activeList} isLoading={isLoading} />
+				<List
+					addItem={addItemToList}
+					markItemComplete={markItemComplete}
+					removeItem={removeItem}
+					list={activeList}
+					isLoading={isLoading}
+				/>
 			</ScrollArea>
 		</Layout>
 	)
@@ -80,45 +99,8 @@ const App = () => {
 
 // this type is really gross to work with
 // hide it here
-function mapLists(
-	data:
-		| {
-				lists:
-					| ({
-							id: string
-							name: string
-							created_at: string
-							last_modified: string
-							created_by: string
-							contributors: string[]
-					  } & {
-							list_items:
-								| {
-										id: string
-										list_id: string
-										created_by: string
-										text: string
-										order: number
-										created_at: string
-								  }
-								| {
-										id: string
-										list_id: string
-										created_by: string
-										text: string
-										order: number
-										created_at: string
-								  }[]
-								| null
-					  })[]
-					| null
-				error: PostgrestError | null
-				data?: undefined
-		  }
-		| { data: null; error: string; lists?: undefined }
-		| undefined,
-) {
-	return data?.lists?.map(l => ({
+function mapLists(data: any): ListData[] {
+	return data?.lists?.map((l: any) => ({
 		id: l.id,
 		name: l.name,
 		contributors: l.contributors,
@@ -131,6 +113,7 @@ function mapLists(
 			createdAt: new Date(l.created_at),
 			createdBy: l.created_by,
 			order: l.order,
+			completed: l.completed,
 		})) as ListItem[],
 	}))
 }

@@ -2,8 +2,6 @@ import { faker } from '@faker-js/faker'
 import { expect, Page, PlaywrightTestArgs, test } from '@playwright/test'
 import { loginAsUser, createList } from './test'
 
-// going to try to TDD my way through this might end up in too many tests
-// we'll see
 test('shows active list', async ({ page }: PlaywrightTestArgs) => {
 	const email = faker.internet.email()
 	await page.goto('./login')

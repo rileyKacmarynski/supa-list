@@ -17,6 +17,7 @@ export interface Database {
 					text: string
 					order: number
 					created_at: string
+					completed: boolean
 				}
 				Insert: {
 					id?: string
@@ -25,6 +26,7 @@ export interface Database {
 					text: string
 					order?: number
 					created_at?: string
+					completed?: boolean
 				}
 				Update: {
 					id?: string
@@ -33,6 +35,7 @@ export interface Database {
 					text?: string
 					order?: number
 					created_at?: string
+					completed?: boolean
 				}
 			}
 			lists: {

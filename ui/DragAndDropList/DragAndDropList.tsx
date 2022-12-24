@@ -63,24 +63,25 @@ const useStyles = createStyles(theme => ({
 	},
 }))
 
-export interface ListItem {
+export interface DragAndDropItem {
 	id: string
 	order: number
 	text: string
 	completed: boolean
+	[key: string]: any
 }
 
-export interface onDragEndArgs {
-	item: ListItem
+export interface OnDragEndArgs {
+	item: DragAndDropItem
 	source: number
 	destination: number
 }
 
 export interface DragAndDropListProps {
-	items: ListItem[]
-	toggleItemCompleted: (item: ListItem) => void
-	deleteItem: (item: ListItem) => void
-	onDragEnd: (args: onDragEndArgs) => void
+	items: DragAndDropItem[]
+	toggleItemCompleted: (item: DragAndDropItem) => void
+	deleteItem: (item: DragAndDropItem) => void
+	onDragEnd: (args: OnDragEndArgs) => void
 }
 
 const DragAndDropList: React.FC<DragAndDropListProps> = ({
@@ -125,6 +126,7 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 							sx={theme => ({
 								marginLeft: theme.spacing.xs,
 							})}
+							aria-label="delete item"
 							Icon={IconX}
 							onClick={() => deleteItem(item)}
 						/>
