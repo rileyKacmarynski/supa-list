@@ -75,7 +75,7 @@ export type RenameListConfiguration = TypedMutationConfiguration<
 export const useRenameList = (options?: RenameListConfiguration) => {
 	const { renameList } = useLists()
 
-	const { trigger } = useSWRMutation<
+	const { trigger, isMutating } = useSWRMutation<
 		AwaitedReturn<RenameListFn>,
 		SupabaseError,
 		string,
@@ -89,7 +89,10 @@ export const useRenameList = (options?: RenameListConfiguration) => {
 		...options,
 	})
 
-	return (id: ListId, name: string) => trigger([id, name])
+	return {
+		trigger: (id: ListId, name: string) => trigger([id, name]),
+		isMutating,
+	}
 }
 
 type RemoveListArgs = [id: string]
@@ -101,7 +104,7 @@ export type RemoveListConfiguration = TypedMutationConfiguration<
 export const useDeleteList = (options?: RemoveListConfiguration) => {
 	const { deleteList } = useLists()
 
-	const { trigger } = useSWRMutation<
+	const { trigger, isMutating } = useSWRMutation<
 		AwaitedReturn<DeleteListFn>,
 		SupabaseError,
 		string | null,
@@ -122,7 +125,10 @@ export const useDeleteList = (options?: RemoveListConfiguration) => {
 		},
 	)
 
-	return (id: ListId) => trigger([id])
+	return {
+		trigger: (id: ListId) => trigger([id]),
+		isMutating,
+	}
 }
 
 type AwaitedReturn<T extends (...args: any) => any> = Awaited<ReturnType<T>>

@@ -1,4 +1,4 @@
-import { Box, NavLink } from '@mantine/core'
+import { Box, Loader, NavLink } from '@mantine/core'
 import { useClickOutside } from '@mantine/hooks'
 import { ListId } from 'lib/ListService'
 import React, { Dispatch, SetStateAction, useState } from 'react'
@@ -19,8 +19,8 @@ export const ListItem: React.FC<ListItemProps> = ({
 	isActive,
 	setActiveListId,
 }) => {
-	const rename = useRenameList()
-	const remove = useDeleteList()
+	const { trigger: rename } = useRenameList()
+	const { trigger: remove, isMutating } = useDeleteList()
 	const [renaming, setRenaming] = useState(false)
 	const ref = useClickOutside(() => setRenaming(false))
 	const { primaryColorOption } = useTheme()
@@ -49,10 +49,14 @@ export const ListItem: React.FC<ListItemProps> = ({
 					color={primaryColorOption}
 					key={item.id}
 					rightSection={
-						<ListOptions
-							deleteItem={() => remove(item.id)}
-							renameItem={() => setRenaming(true)}
-						/>
+						isMutating ? (
+							<Loader color="gray" size="xs" />
+						) : (
+							<ListOptions
+								deleteItem={() => remove(item.id)}
+								renameItem={() => setRenaming(true)}
+							/>
+						)
 					}
 				/>
 			)}

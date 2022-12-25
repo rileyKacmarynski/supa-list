@@ -1,17 +1,15 @@
-import { faker } from '@faker-js/faker'
-import { screen, waitFor, within } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { ListData } from 'components/List'
-import { describe, expect, it, vi, afterEach } from 'vitest'
-import { DeepPartial, renderWithProviders } from '__tests__/testUtils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import { renderWithProviders } from '__tests__/testUtils'
 import ListsMenu, { ListsMenuProps } from './ListsMenu'
-import { makeTestList, getTestListName } from './listTestUtils'
+import { getTestListName, makeTestList } from './listTestUtils'
 import * as listHooks from './useLists'
 
 vi.mock('./useLists')
 
 describe('<ListsMenu />', () => {
-	const defaultList = makeTestList(5)
 	const mountComponent = (props?: Partial<ListsMenuProps>) => {
 		if (!props) {
 			props = {}
@@ -32,13 +30,15 @@ describe('<ListsMenu />', () => {
 	})
 
 	it('renders lists', () => {
-		const returnValue = useSWRReturnValue(defaultList)
+		const list = makeTestList(5)
+
+		const returnValue = useSWRReturnValue(list)
 		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 
 		mountComponent()
 
-		defaultList.forEach(async list =>
-			expect(await screen.findByText(list.name)).toBeInTheDocument(),
+		list.forEach(list =>
+			expect(screen.getByText(list.name)).toBeInTheDocument(),
 		)
 	})
 
@@ -84,7 +84,10 @@ describe('<ListsMenu />', () => {
 		const lists = makeTestList(3)
 		const listItem = lists[1]
 		const renameMock = vi.fn()
-		vi.mocked(listHooks.useRenameList).mockReturnValue(renameMock)
+		vi.mocked(listHooks.useRenameList).mockReturnValue({
+			trigger: renameMock,
+			isMutating: false,
+		})
 
 		mountComponent({ activeListId: '1' })
 
@@ -113,7 +116,10 @@ describe('<ListsMenu />', () => {
 		const lists = makeTestList(3)
 		const listItem = lists[1]
 		const remove = vi.fn()
-		vi.mocked(listHooks.useDeleteList).mockReturnValue(remove)
+		vi.mocked(listHooks.useDeleteList).mockReturnValue({
+			trigger: remove,
+			isMutating: false,
+		})
 
 		mountComponent({ activeListId: '1' })
 

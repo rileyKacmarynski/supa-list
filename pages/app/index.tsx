@@ -9,7 +9,7 @@ import { ListId } from 'lib/ListService'
 import { GetServerSideProps } from 'next'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from 'types/supabase'
-import List, { ListData, ListItem } from 'components/List'
+import List from 'components/List'
 import { useFetchLists } from 'components/ListsMenu/useLists'
 
 // this will give us the initial session in the _app.tsx component I think
@@ -53,18 +53,6 @@ const App = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [user])
 
-	const addItemToList = (itemId: string) => {
-		console.log('adding item to list', itemId)
-	}
-
-	const markItemComplete = (itemId: string) => {
-		console.log('marked item as complete', itemId)
-	}
-
-	const removeItem = (itemId: string) => {
-		console.log('marked items as complete', itemId)
-	}
-
 	return (
 		<Layout
 			header={<AppHeader />}
@@ -79,13 +67,7 @@ const App = () => {
 				offsetScrollbars
 				sx={{ width: '100vw', position: 'relative' }}
 			>
-				<List
-					addItem={addItemToList}
-					markItemComplete={markItemComplete}
-					removeItem={removeItem}
-					list={activeList}
-					isLoading={isLoading}
-				/>
+				<List list={activeList} isLoading={isLoading} />
 			</ScrollArea>
 		</Layout>
 	)

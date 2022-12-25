@@ -1,5 +1,5 @@
 import { ListData, ListItem } from 'components/List'
-import { SupabaseClient, useSupabaseClient } from './supabaseClient'
+import { SupabaseClient } from './supabaseClient'
 import { getErrorMessage } from './utils'
 
 export type ListId = string

@@ -15,6 +15,10 @@ import {
 	DragAndDropItem,
 	OnDragEndArgs,
 } from 'ui/DragAndDropList/DragAndDropList'
+// import useAddItem from './hooks/useAddItem'
+// import useToggleCompleted from './hooks/__mocks__/useToggleCompleted'
+
+import { useAddItem, useToggleCompleted } from './hooks'
 
 export interface ListItem {
 	id: string
@@ -38,19 +42,10 @@ export interface ListData {
 
 export interface ListProps {
 	isLoading: boolean
-	addItem(itemId: string): void
-	removeItem(itemId: string): void
-	markItemComplete(itemId: string): void
 	list?: ListData
 }
 
-const List: React.FC<ListProps> = ({
-	isLoading,
-	list,
-	addItem,
-	removeItem,
-	markItemComplete,
-}) => {
+const List: React.FC<ListProps> = ({ isLoading, list }) => {
 	return (
 		<Box component="section" sx={{ height: '100%' }} data-testid="todos">
 			{/* at some point the list will be loaded server side and we'll let prefetching do it's thing */}
@@ -60,33 +55,17 @@ const List: React.FC<ListProps> = ({
 				overlayBlur={2}
 				transitionDuration={500}
 			/>
-			{!list && <ListEmptyState />}
+			{!list && !isLoading && <ListEmptyState />}
 			{list && !isLoading && <Title order={1}>{list.name}</Title>}
-			{list && (
-				<ListItems
-					addItem={addItem}
-					removeItem={removeItem}
-					markItemComplete={markItemComplete}
-					list={list}
-				/>
-			)}
+			{list && <ListItems list={list} />}
 		</Box>
 	)
 }
 
-export type ListItemProps = Required<
-	Pick<ListProps, 'list' | 'addItem' | 'removeItem' | 'markItemComplete'>
->
-
-const ListItems: React.FC<ListItemProps> = ({
-	list,
-	addItem,
-	removeItem,
-	markItemComplete,
-}) => {
+const ListItems: React.FC<{ list: ListData }> = ({ list }) => {
+	const { trigger } = useToggleCompleted()
 	const onDeleteItem = (item: DragAndDropItem) => {
 		console.log('deleting item', item)
-		removeItem(item.id)
 	}
 
 	const onDragEnd = (args: OnDragEndArgs) => {
@@ -95,12 +74,10 @@ const ListItems: React.FC<ListItemProps> = ({
 
 	const toggleItemCompleted = (item: DragAndDropItem) => {
 		console.log('item completed', item)
-		markItemComplete(item.id)
+		trigger(item.id)
 	}
 
 	const onSubmit = (text: string) => {
-		addItem(text)
-
 		return Promise.resolve()
 	}
 
@@ -121,15 +98,14 @@ const ListItems: React.FC<ListItemProps> = ({
 					/>
 				</ScrollArea>
 			)}
-			<ItemForm onSubmit={onSubmit} />
+			<ItemForm />
 		</Box>
 	)
 }
 
-export const ItemForm: React.FC<{
-	onSubmit: (text: string) => Promise<unknown>
-}> = ({ onSubmit }) => {
+export const ItemForm = () => {
 	const [loading, setLoading] = useState(false)
+	const { trigger } = useAddItem()
 	const { classes } = useFormStyles()
 	const form = useForm({
 		initialValues: {
@@ -137,10 +113,14 @@ export const ItemForm: React.FC<{
 		},
 	})
 
+	const onSubmit = (text: string) => {
+		trigger(text)
+	}
+
 	const submit = async (values: typeof form.values) => {
 		if (values.text) {
 			setLoading(true)
-			await onSubmit(values.text)
+			onSubmit(values.text)
 			setLoading(false)
 			form.reset()
 		}

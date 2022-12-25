@@ -41,6 +41,9 @@ class ResizeObserver {
 }
 window.ResizeObserver = ResizeObserver
 
-afterEach(cleanup)
+afterEach(() => {
+	vi.clearAllMocks()
+	cleanup()
+})
 
 expect.extend(matchers)
