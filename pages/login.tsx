@@ -31,7 +31,6 @@ export default function Login() {
 		if (error) {
 			return error.message
 		} else {
-			console.log(router)
 			router.push('/app')
 			showNotification({
 				title: 'Hey!',

@@ -1,28 +1,32 @@
 import { Box, NavLink } from '@mantine/core'
 import { useClickOutside } from '@mantine/hooks'
-import React, { useState } from 'react'
+import { ListId } from 'lib/ListService'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useTheme } from 'ui/Theme'
 import { ListForm } from './ListForm'
 import { ListOptions } from './ListOptions'
-import { ListActions, List } from './ListsMenu'
+import { List } from './ListsMenu'
+import { useDeleteList, useRenameList } from './useLists'
 
 export interface ListItemProps {
-	listActions: ListActions
 	item: List
 	isActive: boolean
+	setActiveListId: Dispatch<SetStateAction<ListId | null>>
 }
 
 export const ListItem: React.FC<ListItemProps> = ({
-	listActions,
 	item,
 	isActive,
+	setActiveListId,
 }) => {
+	const rename = useRenameList()
+	const remove = useDeleteList()
 	const [renaming, setRenaming] = useState(false)
 	const ref = useClickOutside(() => setRenaming(false))
 	const { primaryColorOption } = useTheme()
 
 	const onRename = async (name: string) => {
-		await listActions.rename(item.id, name)
+		await rename(item.id, name)
 		setRenaming(false)
 	}
 
@@ -41,12 +45,12 @@ export const ListItem: React.FC<ListItemProps> = ({
 					component="div"
 					label={item.name}
 					active={isActive}
-					onClick={() => listActions.setActive(item.id)}
+					onClick={() => setActiveListId(item.id)}
 					color={primaryColorOption}
 					key={item.id}
 					rightSection={
 						<ListOptions
-							deleteItem={() => listActions.remove(item.id)}
+							deleteItem={() => remove(item.id)}
 							renameItem={() => setRenaming(true)}
 						/>
 					}

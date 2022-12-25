@@ -1,4 +1,4 @@
-import useSWR, { Key, SWRConfiguration } from 'swr'
+import useSWR, { SWRConfiguration } from 'swr'
 import useSWRMutation, { SWRMutationConfiguration } from 'swr/mutation'
 import { checkForError } from 'lib/utils'
 import { SupabaseError } from 'lib/supabaseClient'

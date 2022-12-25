@@ -1,3 +1,4 @@
+import { ListData, ListItem } from 'components/List'
 import { SupabaseClient, useSupabaseClient } from './supabaseClient'
 import { getErrorMessage } from './utils'
 
@@ -12,7 +13,9 @@ export default class ListService {
 				.from('lists')
 				.select('*, list_items(*)')
 
-			return { lists: data, error }
+			const lists = mapLists(data)
+
+			return { lists, error }
 		} catch (e) {
 			return { data: null, error: getErrorMessage(e) }
 		}
@@ -72,6 +75,29 @@ export default class ListService {
 			return { error: getErrorMessage(e) }
 		}
 	}
+}
+
+// this type is really gross to work with
+// hide it here
+function mapLists(data: any[] | null): ListData[] {
+	if (!data) return []
+
+	return data?.map((l: any) => ({
+		id: l.id,
+		name: l.name,
+		contributors: l.contributors,
+		createdAt: new Date(l.created_at),
+		lastModified: new Date(l.last_modified),
+		createdBy: l.created_by,
+		items: (l.list_items as any[])?.map(l => ({
+			id: l.id,
+			text: l.text,
+			createdAt: new Date(l.created_at),
+			createdBy: l.created_by,
+			order: l.order,
+			completed: l.completed,
+		})) as ListItem[],
+	}))
 }
 
 export type GetListFn = ListService['getList']

@@ -1,7 +1,7 @@
 import { ScrollArea } from '@mantine/core'
 import AppHeader from 'components/AppHeader'
 import Layout from 'ui/Layout'
-import Lists from 'components/Lists'
+import ListsMenu from 'components/ListsMenu'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@supabase/auth-helpers-react'
@@ -10,8 +10,7 @@ import { GetServerSideProps } from 'next'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from 'types/supabase'
 import List, { ListData, ListItem } from 'components/List'
-import { useFetchLists } from 'components/Lists/useLists'
-import { PostgrestError } from '@supabase/supabase-js'
+import { useFetchLists } from 'components/ListsMenu/useLists'
 
 // this will give us the initial session in the _app.tsx component I think
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -44,8 +43,7 @@ const App = () => {
 	const user = useUser()
 	const router = useRouter()
 
-	const lists = mapLists(data)
-	const activeList = lists?.find(l => l.id === activeListId)
+	const activeList = data?.lists?.find(l => l.id === activeListId)
 
 	// we might not need this
 	useEffect(() => {
@@ -54,8 +52,6 @@ const App = () => {
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [user])
-
-	console.log('mapped lists', lists)
 
 	const addItemToList = (itemId: string) => {
 		console.log('adding item to list', itemId)
@@ -73,9 +69,7 @@ const App = () => {
 		<Layout
 			header={<AppHeader />}
 			navbar={
-				<Lists
-					isLoading={isLoading}
-					lists={lists}
+				<ListsMenu
 					activeListId={activeListId}
 					setActiveListId={setActiveListId}
 				/>
@@ -95,27 +89,6 @@ const App = () => {
 			</ScrollArea>
 		</Layout>
 	)
-}
-
-// this type is really gross to work with
-// hide it here
-function mapLists(data: any): ListData[] {
-	return data?.lists?.map((l: any) => ({
-		id: l.id,
-		name: l.name,
-		contributors: l.contributors,
-		createdAt: new Date(l.created_at),
-		lastModified: new Date(l.last_modified),
-		createdBy: l.created_by,
-		items: (l.list_items as any[]).map(l => ({
-			id: l.id,
-			text: l.text,
-			createdAt: new Date(l.created_at),
-			createdBy: l.created_by,
-			order: l.order,
-			completed: l.completed,
-		})) as ListItem[],
-	}))
 }
 
 export default App

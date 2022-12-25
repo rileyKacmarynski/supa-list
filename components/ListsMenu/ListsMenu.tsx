@@ -1,17 +1,11 @@
-import { Box, List, LoadingOverlay, Navbar, Stack, Title } from '@mantine/core'
+import { Box, List, LoadingOverlay, Navbar, Stack } from '@mantine/core'
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { ListId } from 'lib/ListService'
-import React from 'react'
+import React, { Dispatch, SetStateAction } from 'react'
 import { ListForm } from './ListForm'
 import { ListItem } from './ListItem'
-
-export interface ListActions {
-	// I don't care what is returned. I'm giving the updated lists to the component
-	setActive(id: ListId): Promise<unknown | undefined>
-	rename(id: ListId, name: string): Promise<unknown | undefined>
-	remove(id: ListId): Promise<unknown | undefined>
-	create(name: string): Promise<unknown | undefined>
-}
+import { ListMenuEmptyState } from './ListMenuEmptyState'
+import { useCreateLists, useFetchLists } from './useLists'
 
 export type List = {
 	name: string
@@ -19,10 +13,8 @@ export type List = {
 }
 
 export interface ListsMenuProps {
-	lists: List[]
 	activeListId: ListId | null
-	listActions: ListActions
-	loading: boolean
+	setActiveListId: Dispatch<SetStateAction<ListId | null>>
 }
 
 const animateProps: MotionProps = {
@@ -32,62 +24,59 @@ const animateProps: MotionProps = {
 }
 
 const ListsMenu: React.FC<ListsMenuProps> = ({
-	lists,
 	activeListId,
-	listActions,
-	loading,
+	setActiveListId,
 }) => {
+	const create = useCreateLists()
+
+	const lists = useFetchLists({
+		onSuccess: ({ lists }) => {
+			if (lists && !lists.some(l => l.id === activeListId)) {
+				setActiveListId(lists[0].id)
+			}
+		},
+	})
+
+	const mappedLists =
+		lists.data?.lists?.map(l => ({ name: l.name, id: l.id })) ?? []
+
+	const createList = async (name: string) => {
+		await create(name)
+	}
+
+	const noLists = !mappedLists.length && !lists.isLoading
+
 	return (
 		<Navbar.Section grow sx={theme => ({ width: '100%' })}>
 			<LoadingOverlay
-				visible={loading}
+				visible={lists.isLoading}
 				overlayBlur={2}
 				transitionDuration={500}
 			/>
 			<Stack sx={{ marginBottom: '1rem' }}>
 				<List listStyleType="none">
 					<AnimatePresence initial={false}>
-						{!lists.length && !loading && (
+						{noLists && (
 							<motion.div key={-2} {...animateProps}>
-								<Stack
-									sx={theme => ({
-										textAlign: 'center',
-										padding: `0 ${theme.spacing.sm}px`,
-									})}
-									data-testid="lists-empty-state"
-								>
-									<Title
-										order={3}
-										sx={theme => ({
-											fontSize: theme.fontSizes.md,
-											padding: theme.spacing.lg,
-											color:
-												theme.colorScheme === 'dark'
-													? theme.colors.dark[2]
-													: theme.colors.gray[6],
-										})}
-									>
-										Get started by creating a list.
-									</Title>
-								</Stack>
+								<ListMenuEmptyState />
 							</motion.div>
 						)}
-						{lists.map(list => (
+						{mappedLists.map(list => (
 							<motion.div key={list.id} {...animateProps}>
 								<ListItem
+									setActiveListId={setActiveListId}
 									item={list}
-									listActions={listActions}
 									isActive={activeListId === list.id}
 								/>
 							</motion.div>
 						))}
-						{!loading && (
+						{!lists.isLoading && (
 							<motion.div {...animateProps} key={-1}>
 								<Box
 									component="li"
 									sx={theme => ({ padding: `0 ${theme.spacing.xs}px` })}
 								>
-									<ListForm onSubmit={listActions.create} />
+									<ListForm onSubmit={createList} />
 								</Box>
 							</motion.div>
 						)}

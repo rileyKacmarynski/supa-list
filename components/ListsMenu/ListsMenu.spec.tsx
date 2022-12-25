@@ -1,69 +1,63 @@
 import { faker } from '@faker-js/faker'
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it, vi } from 'vitest'
+import { ListData } from 'components/List'
+import { describe, expect, it, vi, afterEach } from 'vitest'
 import { DeepPartial, renderWithProviders } from '__tests__/testUtils'
-import ListsMenu, { ListActions, ListsMenuProps } from './ListsMenu'
+import ListsMenu, { ListsMenuProps } from './ListsMenu'
 import { makeTestList, getTestListName } from './listTestUtils'
+import * as listHooks from './useLists'
 
-describe('<Lists />', () => {
+vi.mock('./useLists')
+
+describe('<ListsMenu />', () => {
 	const defaultList = makeTestList(5)
-
-	const createDefaultActions = (actions: Partial<ListActions>) => {
-		return {
-			remove: vi.fn(),
-			rename: vi.fn(),
-			setActive: vi.fn(),
-			create: vi.fn(),
-			...actions,
-		}
-	}
-
 	const mountComponent = (props?: Partial<ListsMenuProps>) => {
 		if (!props) {
 			props = {}
 		}
 
-		const {
-			lists = defaultList,
-			activeListId = '2',
-			loading = false,
-			listActions = {
-				...createDefaultActions({}),
-				...props.listActions,
-			},
-		} = props
+		const { activeListId = '2', setActiveListId = vi.fn() } = props
 
 		return renderWithProviders(
 			<ListsMenu
-				loading={loading}
-				lists={lists}
+				setActiveListId={setActiveListId}
 				activeListId={activeListId}
-				listActions={listActions}
 			/>,
 		)
 	}
 
+	afterEach(() => {
+		vi.clearAllMocks()
+	})
+
 	it('renders lists', () => {
+		const returnValue = useSWRReturnValue(defaultList)
+		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
+
 		mountComponent()
 
-		defaultList.forEach(list =>
-			expect(screen.queryByText(list.name)).toBeInTheDocument(),
+		defaultList.forEach(async list =>
+			expect(await screen.findByText(list.name)).toBeInTheDocument(),
 		)
 	})
 
 	it('shows empty state', () => {
-		mountComponent({
-			lists: [],
-		})
+		const returnValue = useSWRReturnValue([])
+		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 
-		expect(screen.queryByTestId('lists-empty-state')).toBeInTheDocument()
+		mountComponent()
+
+		expect(screen.getByTestId('lists-empty-state')).toBeInTheDocument()
 	})
 
 	it('shows active list', () => {
 		const lists = makeTestList(4)
+		const returnValue = useSWRReturnValue(lists)
+		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 		const activeItem = lists[2]
-		const { container } = mountComponent({ lists, activeListId: activeItem.id })
+
+		const { container } = mountComponent({ activeListId: activeItem.id })
 
 		const activeEl = container.querySelector('li *[data-active="true"]')
 		expect(activeEl).not.toBeNull()
@@ -74,28 +68,25 @@ describe('<Lists />', () => {
 
 	it('calls setActive when item is clicked', () => {
 		const lists = makeTestList(3)
+		const returnValue = useSWRReturnValue(lists)
+		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 		const listItem = lists[1]
-		const setActive = vi.fn()
-		const listActions = createDefaultActions({
-			setActive,
-		})
+		const setActiveListId = vi.fn()
 
-		mountComponent({ lists, activeListId: '1', listActions })
+		mountComponent({ activeListId: '1', setActiveListId })
 
 		screen.getByText(listItem.name).click()
 
-		expect(setActive).toHaveBeenCalledWith(listItem.id)
+		expect(setActiveListId).toHaveBeenCalledWith(listItem.id)
 	})
 
 	it('can rename item', async () => {
 		const lists = makeTestList(3)
 		const listItem = lists[1]
-		const rename = vi.fn()
-		const listActions = createDefaultActions({
-			rename,
-		})
+		const renameMock = vi.fn()
+		vi.mocked(listHooks.useRenameList).mockReturnValue(renameMock)
 
-		mountComponent({ lists, activeListId: '1', listActions })
+		mountComponent({ activeListId: '1' })
 
 		// open menu and click "rename"
 		const listItemEl = within(screen.getByTestId(`lists-${listItem.id}`))
@@ -115,18 +106,16 @@ describe('<Lists />', () => {
 		const submitButton = listItemEl.getByLabelText(/submit/i)
 		await userEvent.click(submitButton)
 
-		expect(rename).toHaveBeenCalledWith(listItem.id, listName)
+		expect(renameMock).toHaveBeenCalledWith(listItem.id, listName)
 	})
 
 	it('can delete item', async () => {
 		const lists = makeTestList(3)
 		const listItem = lists[1]
 		const remove = vi.fn()
-		const listActions = createDefaultActions({
-			remove,
-		})
+		vi.mocked(listHooks.useDeleteList).mockReturnValue(remove)
 
-		mountComponent({ lists, activeListId: '1', listActions })
+		mountComponent({ activeListId: '1' })
 
 		const listItemEl = within(screen.getByTestId(`lists-${listItem.id}`))
 		listItemEl.getByRole('button', { name: /open list menu/i }).click()
@@ -141,12 +130,10 @@ describe('<Lists />', () => {
 
 	it('can create item', async () => {
 		const create = vi.fn()
-		const listActions = createDefaultActions({
-			create,
-		})
 		const listName = getTestListName()
+		vi.mocked(listHooks.useCreateLists).mockReturnValue(create)
 
-		mountComponent({ listActions })
+		mountComponent()
 
 		const input = screen.getByLabelText(/list name/i)
 		await userEvent.type(input, listName)
@@ -159,11 +146,8 @@ describe('<Lists />', () => {
 
 	it('validates input', async () => {
 		const create = vi.fn()
-		const listActions = createDefaultActions({
-			create,
-		})
 
-		mountComponent({ listActions })
+		mountComponent()
 
 		const submitButton = screen.getByLabelText(/list name/i)
 		await userEvent.click(submitButton)
@@ -171,3 +155,16 @@ describe('<Lists />', () => {
 		expect(create).not.toHaveBeenCalled()
 	})
 })
+
+function useSWRReturnValue(lists: ListData[]) {
+	return {
+		data: {
+			lists,
+			error: null,
+		},
+		isLoading: false,
+		error: null,
+		mutate: vi.fn(),
+		isValidating: false,
+	}
+}
