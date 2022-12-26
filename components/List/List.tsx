@@ -8,64 +8,56 @@ import {
 } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { IconPlus } from '@tabler/icons'
-import React, { useState } from 'react'
+import { ListDetail, ListId } from 'lib/ListService'
+import React from 'react'
 import IconButton from 'ui/Buttons/IconButton'
 import DragAndDropList from 'ui/DragAndDropList'
 import {
 	DragAndDropItem,
 	OnDragEndArgs,
 } from 'ui/DragAndDropList/DragAndDropList'
-// import useAddItem from './hooks/useAddItem'
-// import useToggleCompleted from './hooks/__mocks__/useToggleCompleted'
 
-import { useAddItem, useToggleCompleted } from './hooks'
-
-export interface ListItem {
-	id: string
-	text: string
-	createdBy: string
-	order: number
-	createdAt: Date
-	completed: boolean
-}
-
-export interface ListData {
-	id: string
-	name: string
-	lastModified: Date
-	createdAt: Date
-	items: ListItem[]
-	// will need to figure more out here
-	createdBy: string
-	contributors: string[]
-}
+import {
+	useAddItem,
+	useDeleteItem,
+	useToggleCompleted,
+	useFetchList,
+} from './hooks'
 
 export interface ListProps {
-	isLoading: boolean
-	list?: ListData
+	listId: ListId
 }
 
-const List: React.FC<ListProps> = ({ isLoading, list }) => {
+const List: React.FC<ListProps> = ({ listId }) => {
+	const list = useFetchList(listId)
+
 	return (
 		<Box component="section" sx={{ height: '100%' }} data-testid="todos">
 			{/* at some point the list will be loaded server side and we'll let prefetching do it's thing */}
 			{/* if not I'll have to move the scroll box guy in here probably should do that anyway */}
 			<LoadingOverlay
-				visible={isLoading}
+				visible={list.isLoading}
 				overlayBlur={2}
 				transitionDuration={500}
 			/>
-			{!list && !isLoading && <ListEmptyState />}
-			{list && !isLoading && <Title order={1}>{list.name}</Title>}
-			{list && <ListItems list={list} />}
+			{list.data && !list.isLoading && (
+				<>
+					<Title order={1}>{list.data.name}</Title>
+					<ListItems list={list.data} />
+				</>
+			)}
+			{!list.data && !list.isLoading && <ListEmptyState />}
 		</Box>
 	)
 }
 
-const ListItems: React.FC<{ list: ListData }> = ({ list }) => {
-	const { trigger } = useToggleCompleted()
+const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
+	const toggleCompleted = useToggleCompleted()
+	const removeItem = useDeleteItem()
+
 	const onDeleteItem = (item: DragAndDropItem) => {
 		console.log('deleting item', item)
+		removeItem.mutate({ itemId: item.id })
 	}
 
 	const onDragEnd = (args: OnDragEndArgs) => {
@@ -74,11 +66,7 @@ const ListItems: React.FC<{ list: ListData }> = ({ list }) => {
 
 	const toggleItemCompleted = (item: DragAndDropItem) => {
 		console.log('item completed', item)
-		trigger(item.id)
-	}
-
-	const onSubmit = (text: string) => {
-		return Promise.resolve()
+		toggleCompleted.mutate({ completed: item.completed, itemId: item.id })
 	}
 
 	return (
@@ -98,14 +86,13 @@ const ListItems: React.FC<{ list: ListData }> = ({ list }) => {
 					/>
 				</ScrollArea>
 			)}
-			<ItemForm />
+			<ItemForm listId={list.id} />
 		</Box>
 	)
 }
 
-export const ItemForm = () => {
-	const [loading, setLoading] = useState(false)
-	const { trigger } = useAddItem()
+export const ItemForm: React.FC<{ listId: ListId }> = ({ listId }) => {
+	const { mutate, isLoading } = useAddItem(listId)
 	const { classes } = useFormStyles()
 	const form = useForm({
 		initialValues: {
@@ -113,15 +100,9 @@ export const ItemForm = () => {
 		},
 	})
 
-	const onSubmit = (text: string) => {
-		trigger(text)
-	}
-
 	const submit = async (values: typeof form.values) => {
 		if (values.text) {
-			setLoading(true)
-			onSubmit(values.text)
-			setLoading(false)
+			mutate({ text: values.text })
 			form.reset()
 		}
 	}
@@ -152,7 +133,7 @@ export const ItemForm = () => {
 				Icon={IconPlus}
 				size="sm"
 				aria-label="add item to list"
-				loading={loading}
+				loading={isLoading}
 			/>
 		</Box>
 	)

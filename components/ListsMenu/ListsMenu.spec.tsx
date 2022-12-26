@@ -1,13 +1,14 @@
+import { PostgrestError } from '@supabase/supabase-js'
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { ListData } from 'components/List'
+import { List } from 'lib/ListService'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '__tests__/testUtils'
 import ListsMenu, { ListsMenuProps } from './ListsMenu'
 import { getTestListName, makeTestList } from './listTestUtils'
-import * as listHooks from './useLists'
+import * as listHooks from './listsHooks'
 
-vi.mock('./useLists')
+vi.mock('./listsHooks')
 
 describe('<ListsMenu />', () => {
 	const mountComponent = (props?: Partial<ListsMenuProps>) => {
@@ -25,14 +26,10 @@ describe('<ListsMenu />', () => {
 		)
 	}
 
-	afterEach(() => {
-		vi.clearAllMocks()
-	})
-
 	it('renders lists', () => {
 		const list = makeTestList(5)
 
-		const returnValue = useSWRReturnValue(list)
+		const returnValue = useQueryReturnValue(list)
 		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 
 		mountComponent()
@@ -43,7 +40,7 @@ describe('<ListsMenu />', () => {
 	})
 
 	it('shows empty state', () => {
-		const returnValue = useSWRReturnValue([])
+		const returnValue = useQueryReturnValue([])
 		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 
 		mountComponent()
@@ -53,7 +50,7 @@ describe('<ListsMenu />', () => {
 
 	it('shows active list', () => {
 		const lists = makeTestList(4)
-		const returnValue = useSWRReturnValue(lists)
+		const returnValue = useQueryReturnValue(lists)
 		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 		const activeItem = lists[2]
 
@@ -68,7 +65,7 @@ describe('<ListsMenu />', () => {
 
 	it('calls setActive when item is clicked', () => {
 		const lists = makeTestList(3)
-		const returnValue = useSWRReturnValue(lists)
+		const returnValue = useQueryReturnValue(lists)
 		vi.mocked(listHooks.useFetchLists).mockReturnValue(returnValue)
 		const listItem = lists[1]
 		const setActiveListId = vi.fn()
@@ -85,11 +82,14 @@ describe('<ListsMenu />', () => {
 		const listItem = lists[1]
 		const renameMock = vi.fn()
 		vi.mocked(listHooks.useRenameList).mockReturnValue({
-			trigger: renameMock,
-			isMutating: false,
-		})
+			mutateAsync: renameMock,
+			isLoading: false,
+		} as unknown as any)
+		vi.mocked(listHooks.useFetchLists).mockReturnValue(
+			useQueryReturnValue(lists),
+		)
 
-		mountComponent({ activeListId: '1' })
+		mountComponent({ activeListId: listItem.id })
 
 		// open menu and click "rename"
 		const listItemEl = within(screen.getByTestId(`lists-${listItem.id}`))
@@ -109,17 +109,17 @@ describe('<ListsMenu />', () => {
 		const submitButton = listItemEl.getByLabelText(/submit/i)
 		await userEvent.click(submitButton)
 
-		expect(renameMock).toHaveBeenCalledWith(listItem.id, listName)
-	})
+		expect(renameMock).toHaveBeenCalled()
+	}, 10000)
 
 	it('can delete item', async () => {
 		const lists = makeTestList(3)
 		const listItem = lists[1]
 		const remove = vi.fn()
 		vi.mocked(listHooks.useDeleteList).mockReturnValue({
-			trigger: remove,
-			isMutating: false,
-		})
+			mutate: remove,
+			isLoading: false,
+		} as unknown as any)
 
 		mountComponent({ activeListId: '1' })
 
@@ -131,13 +131,16 @@ describe('<ListsMenu />', () => {
 		})
 		menuItem.click()
 
-		expect(remove).toHaveBeenCalledWith(listItem.id)
+		expect(remove).toHaveBeenCalled()
 	})
 
-	it('can create item', async () => {
+	it('can create list', async () => {
 		const create = vi.fn()
 		const listName = getTestListName()
-		vi.mocked(listHooks.useCreateLists).mockReturnValue(create)
+		vi.mocked(listHooks.useCreateList).mockReturnValue({
+			isLoading: false,
+			mutateAsync: create,
+		} as unknown as any)
 
 		mountComponent()
 
@@ -147,7 +150,7 @@ describe('<ListsMenu />', () => {
 		const submitButton = screen.getByLabelText(/submit/i)
 		await userEvent.click(submitButton)
 
-		expect(create).toHaveBeenCalledWith(listName)
+		expect(create).toHaveBeenCalled()
 	})
 
 	it('validates input', async () => {
@@ -162,15 +165,29 @@ describe('<ListsMenu />', () => {
 	})
 })
 
-function useSWRReturnValue(lists: ListData[]) {
+function useQueryReturnValue<T>(lists: T) {
 	return {
-		data: {
-			lists,
-			error: null,
-		},
+		data: lists,
 		isLoading: false,
 		error: null,
-		mutate: vi.fn(),
-		isValidating: false,
-	}
+		isError: false,
+		isIdle: false,
+		isLoadingError: false,
+		isRefetchError: false,
+		isSuccess: true,
+		status: 'success',
+		dataUpdatedAt: 0,
+		errorUpdatedAt: 0,
+		failureCount: 0,
+		errorUpdateCount: 0,
+		isFetched: false,
+		isFetchedAfterMount: false,
+		isFetching: false,
+		isPlaceholderData: false,
+		isPreviousData: false,
+		isRefetching: false,
+		isStale: false,
+		refetch: vi.fn(),
+		remove: vi.fn(),
+	} as const
 }

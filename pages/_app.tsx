@@ -8,12 +8,15 @@ import { Database } from 'types/supabase'
 import '../styles/globals.css'
 import Layout from '../ui/Layout'
 import { ThemeProvider } from '../ui/Theme'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
 if (process.env.NEXT_PUBLIC_API_MOCKING == 'true') {
 	import('../mocks')
 }
 
-function MyApp({
+const queryClient = new QueryClient()
+
+function App({
 	Component,
 	pageProps,
 	...appProps
@@ -32,18 +35,20 @@ function MyApp({
 		>
 			<ThemeProvider>
 				<NotificationsProvider>
-					{isApp ? (
-						// Layout is on the app component itself so it can be context aware
-						<Component {...pageProps} />
-					) : (
-						<Layout header={<AppHeader />}>
+					<QueryClientProvider client={queryClient}>
+						{isApp ? (
+							// Layout is on the app component itself so it can be context aware
 							<Component {...pageProps} />
-						</Layout>
-					)}
+						) : (
+							<Layout header={<AppHeader />}>
+								<Component {...pageProps} />
+							</Layout>
+						)}
+					</QueryClientProvider>
 				</NotificationsProvider>
 			</ThemeProvider>
 		</SessionContextProvider>
 	)
 }
 
-export default MyApp
+export default App

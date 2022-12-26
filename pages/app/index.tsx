@@ -1,4 +1,3 @@
-import { ScrollArea } from '@mantine/core'
 import AppHeader from 'components/AppHeader'
 import Layout from 'ui/Layout'
 import ListsMenu from 'components/ListsMenu'
@@ -10,7 +9,7 @@ import { GetServerSideProps } from 'next'
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from 'types/supabase'
 import List from 'components/List'
-import { useFetchLists } from 'components/ListsMenu/useLists'
+import { useFetchLists } from 'components/ListsMenu/listsHooks'
 
 // this will give us the initial session in the _app.tsx component I think
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -39,13 +38,9 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 const App = () => {
 	// this will come from the query string eventually
 	const [activeListId, setActiveListId] = useState<ListId | null>(null)
-	const { data, isLoading } = useFetchLists()
 	const user = useUser()
 	const router = useRouter()
 
-	const activeList = data?.lists?.find(l => l.id === activeListId)
-
-	// we might not need this
 	useEffect(() => {
 		if (!user) {
 			router.push('login')
@@ -63,12 +58,7 @@ const App = () => {
 				/>
 			}
 		>
-			<ScrollArea
-				offsetScrollbars
-				sx={{ width: '100vw', position: 'relative' }}
-			>
-				<List list={activeList} isLoading={isLoading} />
-			</ScrollArea>
+			{activeListId && <List listId={activeListId} />}
 		</Layout>
 	)
 }

@@ -8,14 +8,15 @@ export interface ListFormProps {
 	onSubmit(name: string): Promise<void>
 	initialValue?: string
 	autoFocus?: boolean
+	isLoading: boolean
 }
 
 export const ListForm: React.FC<ListFormProps> = ({
 	onSubmit,
 	initialValue,
 	autoFocus = false,
+	isLoading,
 }) => {
-	const [loading, setLoading] = useState(false)
 	const { classes } = useFormStyles()
 	const form = useForm({
 		initialValues: {
@@ -25,9 +26,7 @@ export const ListForm: React.FC<ListFormProps> = ({
 
 	const submit = async (values: typeof form.values) => {
 		if (values.name) {
-			setLoading(true)
 			await onSubmit(values.name)
-			setLoading(false)
 			form.reset()
 		}
 	}
@@ -59,7 +58,7 @@ export const ListForm: React.FC<ListFormProps> = ({
 				Icon={IconPlus}
 				size="sm"
 				aria-label="submit list form"
-				loading={loading}
+				loading={isLoading}
 			/>
 		</Box>
 	)

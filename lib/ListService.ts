@@ -1,42 +1,44 @@
-import { ListData, ListItem } from 'components/List'
 import { SupabaseClient } from './supabaseClient'
 import { getErrorMessage } from './utils'
 
 export type ListId = string
 
+export interface List {
+	id: string
+	name: string
+	lastModified: Date
+	createdAt: Date
+	// will need to figure more out here
+	createdBy: string
+	contributors: string[]
+}
+
+export interface ListItem {
+	id: string
+	text: string
+	createdBy: string
+	order: number
+	createdAt: Date
+	completed: boolean
+}
+
+export interface ListDetail extends List {
+	items: ListItem[]
+}
 export default class ListService {
 	constructor(private _supabaseClient: SupabaseClient) {}
 
 	getLists = async () => {
-		try {
-			const { data, error } = await this._supabaseClient
-				.from('lists')
-				.select('*, list_items(*)')
+		const { data, error } = await this._supabaseClient.from('lists').select('*')
 
-			const lists = mapLists(data)
-
-			return { lists, error }
-		} catch (e) {
-			return { data: null, error: getErrorMessage(e) }
+		if (error) {
+			throw new Error(error.message)
 		}
+
+		return mapLists(data)
 	}
 
-	getList = async (id: ListId) => {
-		try {
-			const { data, error } = await this._supabaseClient
-				.from('lists')
-				.select('*, list_items(*)')
-				.eq('id', id)
-
-			if (!data) throw new Error(`unable to find list with id: ${id}`)
-
-			return { list: data[0], error }
-		} catch (e) {
-			return { list: null, error: getErrorMessage(e) }
-		}
-	}
-
-	deleteList = async (id: string) => {
+	deleteList = async (id: ListId) => {
 		try {
 			const { error } = await this._supabaseClient
 				.from('lists')
@@ -49,7 +51,7 @@ export default class ListService {
 		}
 	}
 
-	renameList = async (id: string, name: string) => {
+	renameList = async (id: ListId, name: string) => {
 		try {
 			const { data, error } = await this._supabaseClient
 				.from('lists')
@@ -77,19 +79,15 @@ export default class ListService {
 	}
 }
 
-// this type is really gross to work with
-// hide it here
-function mapLists(data: any[] | null): ListData[] {
-	if (!data) return []
-
-	return data?.map((l: any) => ({
-		id: l.id,
-		name: l.name,
-		contributors: l.contributors,
-		createdAt: new Date(l.created_at),
-		lastModified: new Date(l.last_modified),
-		createdBy: l.created_by,
-		items: (l.list_items as any[])?.map(l => ({
+export function MapListDetails(data: any): ListDetail {
+	return {
+		id: data.id,
+		name: data.name,
+		contributors: data.contributors,
+		createdAt: new Date(data.created_at),
+		lastModified: new Date(data.last_modified),
+		createdBy: data.created_by,
+		items: (data.list_items as any[])?.map(l => ({
 			id: l.id,
 			text: l.text,
 			createdAt: new Date(l.created_at),
@@ -97,10 +95,24 @@ function mapLists(data: any[] | null): ListData[] {
 			order: l.order,
 			completed: l.completed,
 		})) as ListItem[],
+	}
+}
+
+// this type is really gross to work with
+// hide it here
+export function mapLists(data: any[] | null): List[] {
+	if (!data) return []
+
+	return data?.map(l => ({
+		id: l.id,
+		name: l.name,
+		contributors: l.contributors,
+		createdAt: new Date(l.created_at),
+		lastModified: new Date(l.last_modified),
+		createdBy: l.created_by,
 	}))
 }
 
-export type GetListFn = ListService['getList']
 export type GetListsFn = ListService['getLists']
 export type DeleteListFn = ListService['deleteList']
 export type CreateListFn = ListService['createList']

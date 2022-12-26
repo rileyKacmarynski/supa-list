@@ -5,11 +5,15 @@ import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useTheme } from 'ui/Theme'
 import { ListForm } from './ListForm'
 import { ListOptions } from './ListOptions'
-import { List } from './ListsMenu'
-import { useDeleteList, useRenameList } from './useLists'
+import { useDeleteList, useRenameList } from './listsHooks'
+
+export type ListItemDisplayValues = {
+	name: string
+	id: ListId
+}
 
 export interface ListItemProps {
-	item: List
+	item: ListItemDisplayValues
 	isActive: boolean
 	setActiveListId: Dispatch<SetStateAction<ListId | null>>
 }
@@ -19,15 +23,28 @@ export const ListItem: React.FC<ListItemProps> = ({
 	isActive,
 	setActiveListId,
 }) => {
-	const { trigger: rename } = useRenameList()
-	const { trigger: remove, isMutating } = useDeleteList()
+	const rename = useRenameList()
+	const remove = useDeleteList()
 	const [renaming, setRenaming] = useState(false)
 	const ref = useClickOutside(() => setRenaming(false))
 	const { primaryColorOption } = useTheme()
 
 	const onRename = async (name: string) => {
-		await rename(item.id, name)
+		await rename.mutateAsync({ name, id: item.id })
 		setRenaming(false)
+	}
+
+	const deleteItem = () => {
+		remove.mutate(
+			{ id: item.id },
+			{
+				onSuccess: () => {
+					if (isActive) {
+						setActiveListId(null)
+					}
+				},
+			},
+		)
 	}
 
 	return (
@@ -38,7 +55,12 @@ export const ListItem: React.FC<ListItemProps> = ({
 						padding: `4px ${theme.spacing.sm}px`,
 					})}
 				>
-					<ListForm autoFocus initialValue={item.name} onSubmit={onRename} />
+					<ListForm
+						autoFocus
+						isLoading={rename.isLoading}
+						initialValue={item.name}
+						onSubmit={onRename}
+					/>
 				</Box>
 			) : (
 				<NavLink
@@ -49,11 +71,11 @@ export const ListItem: React.FC<ListItemProps> = ({
 					color={primaryColorOption}
 					key={item.id}
 					rightSection={
-						isMutating ? (
+						remove.isLoading ? (
 							<Loader color="gray" size="xs" />
 						) : (
 							<ListOptions
-								deleteItem={() => remove(item.id)}
+								deleteItem={() => deleteItem()}
 								renameItem={() => setRenaming(true)}
 							/>
 						)

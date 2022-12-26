@@ -5,7 +5,7 @@ import React from 'react'
 // todo: can I make this a mapped type?
 export interface ListOptionsProps {
 	renameItem(): void
-	deleteItem(): Promise<unknown>
+	deleteItem(): void
 }
 
 export const ListOptions: React.FC<ListOptionsProps> = ({

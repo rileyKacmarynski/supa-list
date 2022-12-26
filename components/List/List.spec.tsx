@@ -3,30 +3,42 @@ import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '__tests__/testUtils'
-import List, { ListItem, ListData, ListProps } from './List'
-// import useAddItem from './hooks/useAddItem'
-// import useToggleCompleted from './hooks/useToggleCompleted'
-import { useAddItem, useToggleCompleted, useDeleteItem } from './hooks'
+import List, { ListProps } from './List'
+import {
+	useAddItem,
+	useToggleCompleted,
+	useDeleteItem,
+	useFetchList,
+} from './hooks'
 
-// vi.mock('./hooks/useAddItem')
-// vi.mock('./hooks/useToggleCompleted')
 vi.mock('./hooks')
 
 describe('<List />', () => {
 	const mountComponent = (props: Partial<ListProps> = {}) => {
-		const { list = undefined, isLoading = false } = props
+		const { listId = faker.datatype.uuid() } = props
 
-		return renderWithProviders(<List list={list} isLoading={isLoading} />)
+		return renderWithProviders(<List listId={listId} />)
 	}
 
 	it('render the list name', () => {
 		const list = createList()
-		mountComponent({ list })
+
+		vi.mocked(useFetchList).mockReturnValue({
+			data: list,
+			isLoading: false,
+		} as unknown as any)
+
+		mountComponent({ listId: list.id })
 
 		expect(screen.queryByText(list.name)).toBeInTheDocument()
 	})
 
 	it('shows the empty state if there is no list', () => {
+		vi.mocked(useFetchList).mockReturnValue({
+			data: null,
+			isLoading: false,
+		} as unknown as any)
+
 		mountComponent()
 
 		expect(screen.queryByTestId('list-emptyState')).toBeInTheDocument()
@@ -34,7 +46,12 @@ describe('<List />', () => {
 
 	it('shows the item empty state if there are no list items', () => {
 		const list = createList()
-		mountComponent({ list })
+		vi.mocked(useFetchList).mockReturnValue({
+			data: list,
+			isLoading: false,
+		} as unknown as any)
+
+		mountComponent({ listId: list.id })
 
 		expect(screen.queryByTestId('list-itemsEmptyState')).toBeInTheDocument()
 	})
@@ -43,7 +60,12 @@ describe('<List />', () => {
 		const numItems = faker.datatype.number(5)
 		const list = createList(numItems)
 
-		mountComponent({ list })
+		vi.mocked(useFetchList).mockReturnValue({
+			data: list,
+			isLoading: false,
+		} as unknown as any)
+
+		mountComponent({ listId: list.id })
 
 		for (let item of list.items) {
 			expect(screen.queryByText(item.text)).toBeInTheDocument()
@@ -52,15 +74,15 @@ describe('<List />', () => {
 
 	it('adds an item to the list', async () => {
 		const addItem = vi.fn()
-		const list = createList()
 		const listText = faker.finance.accountName()
 
 		vi.mocked(useAddItem).mockReturnValue({
-			trigger: addItem,
-			isMutating: false,
-		})
+			mutate: addItem,
+			mutateAsync: addItem,
+			isLoading: false,
+		} as unknown as any)
 
-		mountComponent({ list })
+		mountComponent()
 
 		const input = screen.getByLabelText(/item text input/i)
 		await userEvent.type(input, listText)
@@ -68,41 +90,50 @@ describe('<List />', () => {
 			screen.getByRole('button', { name: /add item to list/i }),
 		)
 
-		expect(addItem).toHaveBeenCalledWith(listText)
+		expect(addItem).toHaveBeenCalledWith({ text: listText })
 	})
 
 	it('marks an item as complete', async () => {
 		const markItemComplete = vi.fn()
 		const list = createList(1)
-		const item = list.items[0]
 
 		vi.mocked(useToggleCompleted).mockReturnValue({
-			trigger: markItemComplete,
-			isMutating: false,
-		})
+			mutate: markItemComplete,
+			mutateAsync: markItemComplete,
+			isLoading: false,
+		} as unknown as any)
 
-		mountComponent({ list })
+		vi.mocked(useFetchList).mockReturnValue({
+			data: list,
+			isLoading: false,
+		} as unknown as any)
+
+		mountComponent({ listId: list.id })
 
 		await userEvent.click(screen.getByLabelText(/completed/i))
 
-		expect(markItemComplete).toHaveBeenCalledWith(item.id)
+		expect(markItemComplete).toHaveBeenCalled()
 	})
 
-	it.skip('deletes an item', async () => {
+	it('deletes an item', async () => {
 		const removeItem = vi.fn()
 		const list = createList(1)
-		const item = list.items[0]
 
 		vi.mocked(useDeleteItem).mockReturnValue({
-			trigger: removeItem,
-			isMutating: false,
-		})
+			mutate: removeItem,
+			mutateAsync: removeItem,
+			isLoading: false,
+		} as unknown as any)
+		vi.mocked(useFetchList).mockReturnValue({
+			data: list,
+			isLoading: false,
+		} as unknown as any)
 
-		mountComponent({ list })
+		mountComponent({ listId: list.id })
 
 		await userEvent.click(screen.getByLabelText(/delete item/i))
 
-		expect(removeItem).toHaveBeenCalledWith(item.id)
+		expect(removeItem).toHaveBeenCalled()
 	})
 })
 

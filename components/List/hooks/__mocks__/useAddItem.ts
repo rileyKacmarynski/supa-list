@@ -1,8 +1,8 @@
 import { vi } from 'vitest'
 
 const useAddItem = vi.fn().mockReturnValue({
-	trigger: vi.fn(),
-	isMutating: false,
+	mutate: vi.fn(),
+	isLoading: true,
 })
 
 export default useAddItem

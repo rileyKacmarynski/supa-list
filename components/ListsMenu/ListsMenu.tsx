@@ -5,12 +5,7 @@ import React, { Dispatch, SetStateAction } from 'react'
 import { ListForm } from './ListForm'
 import { ListItem } from './ListItem'
 import { ListMenuEmptyState } from './ListMenuEmptyState'
-import { useCreateLists, useFetchLists } from './useLists'
-
-export type List = {
-	name: string
-	id: ListId
-}
+import { useCreateList, useFetchLists } from './listsHooks'
 
 export interface ListsMenuProps {
 	activeListId: ListId | null
@@ -27,24 +22,19 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 	activeListId,
 	setActiveListId,
 }) => {
-	const create = useCreateLists()
+	const create = useCreateList()
+	const lists = useFetchLists()
 
-	const lists = useFetchLists({
-		onSuccess: ({ lists }) => {
-			if (lists && !lists.some(l => l.id === activeListId)) {
-				setActiveListId(lists[0].id)
-			}
-		},
-	})
-
-	const mappedLists =
-		lists.data?.lists?.map(l => ({ name: l.name, id: l.id })) ?? []
-
-	const createList = async (name: string) => {
-		await create(name)
+	// this will go away eventually
+	if (lists.data?.length && !lists.data.some(l => l.id === activeListId)) {
+		setActiveListId(lists.data[0].id)
 	}
 
-	const noLists = !mappedLists.length && !lists.isLoading
+	const createList = async (name: string) => {
+		await create.mutateAsync({ name })
+	}
+
+	const noLists = !lists.data?.length && !lists.isLoading
 
 	return (
 		<Navbar.Section grow sx={theme => ({ width: '100%' })}>
@@ -61,7 +51,7 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 								<ListMenuEmptyState />
 							</motion.div>
 						)}
-						{mappedLists.map(list => (
+						{lists.data?.map(list => (
 							<motion.div key={list.id} {...animateProps}>
 								<ListItem
 									setActiveListId={setActiveListId}
@@ -76,7 +66,10 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 									component="li"
 									sx={theme => ({ padding: `0 ${theme.spacing.xs}px` })}
 								>
-									<ListForm onSubmit={createList} />
+									<ListForm
+										onSubmit={createList}
+										isLoading={create.isLoading}
+									/>
 								</Box>
 							</motion.div>
 						)}
