@@ -5,22 +5,18 @@ import { ListId } from 'lib/ListService'
 import { SupabaseClient, useSupabaseClient } from 'lib/supabaseClient'
 import { useMutation, useQueryClient } from 'react-query'
 
-export type AddItemArgs = {
-	text: string
+export type ReorderListArgs = {
+	source: number
+	destination: number
 }
 
-export default function useAddItem(listId: string) {
+export default function useReorderList(listId: string) {
 	const supabaseClient = useSupabaseClient()
-	const user = useUser()
 	const queryClient = useQueryClient()
 
-	if (!user) {
-		throw new Error('Must be logged in.')
-	}
-
 	return useMutation(
-		({ text }: AddItemArgs) =>
-			addItem({ text, userId: user.id, listId }, supabaseClient),
+		({ source, destination }: ReorderListArgs) =>
+			reorderItem({ source, destination, listId }, supabaseClient),
 		{
 			onError: e => {
 				showNotification({
@@ -36,25 +32,33 @@ export default function useAddItem(listId: string) {
 	)
 }
 
-async function addItem(
-	{ text, userId, listId }: { text: string; userId: string; listId: ListId },
+async function reorderItem(
+	{
+		source,
+		destination,
+		listId,
+	}: { source: number; destination: number; listId: string },
 	supabaseClient: SupabaseClient,
 ) {
-	const { count, error: queryError } = await supabaseClient
+	console.log('drag ended', source, destination)
+
+	const { data, error: queryError } = await supabaseClient
 		.from('list_items')
-		.select('*', { count: 'exact', head: true })
+		.select('*')
+		.order('order', { ascending: true })
 		.eq('list_id', listId)
 
 	if (queryError) throw new Error(queryError.message)
-	if (count === null)
-		throw new Error('unable to fetch number of existing items.')
 
-	const { error } = await supabaseClient.from('list_items').insert({
-		list_id: listId,
-		text: text,
-		created_by: userId,
-		order: count + 1,
-	})
+	console.log('old order', data)
+	// remove item, source and dest are 1 based
+	const item = data.splice(source - 1, 1)
+	// place in ne spot
+	data.splice(destination - 1, 0, item[0])
+
+	const newData = data.map((oldData, i) => ({ ...oldData, order: i + 1 }))
+
+	const { error } = await supabaseClient.from('list_items').upsert(newData)
 
 	if (error) {
 		throw new Error(error.message)

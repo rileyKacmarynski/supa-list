@@ -1,4 +1,4 @@
-import { Checkbox, createStyles, Text } from '@mantine/core'
+import { Checkbox, createStyles, ScrollArea, Text } from '@mantine/core'
 import { IconGripVertical, IconX } from '@tabler/icons'
 import { AnimatePresence, motion } from 'framer-motion'
 import React from 'react'
@@ -6,6 +6,16 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import IconButton from '../Buttons/IconButton'
 
 const useStyles = createStyles(theme => ({
+	ul: {
+		width: '100%',
+		listStyle: 'none',
+		padding: 0,
+
+		'& li:last-child div': {
+			marginBottom: 0,
+		},
+	},
+
 	item: {
 		display: 'flex',
 		position: 'relative',
@@ -97,8 +107,8 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 			{(provided, snapshot) => (
 				<motion.li
 					animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
-					exit={{ opacity: 0, height: 0, x: -50 }}
-					initial={{ opacity: 0, height: 0, x: -50 }}
+					exit={{ opacity: 0, height: 0 }}
+					initial={{ opacity: 0, height: 0 }}
 					ref={provided.innerRef}
 					{...provided.draggableProps}
 				>
@@ -113,7 +123,6 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 						</div>
 						<Text>{item.text}</Text>
 						<Checkbox
-							sx={{ cursor: 'pointer' }}
 							className={classes.checkbox}
 							onChange={() => toggleItemCompleted(item)}
 							checked={item.completed}
@@ -137,34 +146,36 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 	))
 
 	return (
-		<DragDropContext
-			onDragEnd={({ destination, source }) => {
-				const item = items.find(i => i.order === source.index + 1)
-				if (!item) throw new Error('Unable to find item')
-				if (!destination) return
+		<ScrollArea>
+			<DragDropContext
+				onDragEnd={({ destination, source }) => {
+					const item = items.find(i => i.order === source.index + 1)
+					if (!item) throw new Error('Unable to find item')
+					if (!destination) return
 
-				onDragEnd({
-					item,
-					source: source.index,
-					destination: destination.index,
-				})
-			}}
-		>
-			<Droppable droppableId="dnd-list" direction="vertical">
-				{provided => (
-					<ul
-						style={{ width: '100%', listStyle: 'none', padding: 0 }}
-						{...provided.droppableProps}
-						ref={provided.innerRef}
-					>
-						<AnimatePresence initial={false}>
-							{draggableItems}
-							{provided.placeholder}
-						</AnimatePresence>
-					</ul>
-				)}
-			</Droppable>
-		</DragDropContext>
+					onDragEnd({
+						item,
+						source: source.index,
+						destination: destination.index,
+					})
+				}}
+			>
+				<Droppable droppableId="dnd-list" direction="vertical">
+					{provided => (
+						<ul
+							className={classes.ul}
+							{...provided.droppableProps}
+							ref={provided.innerRef}
+						>
+							<AnimatePresence initial={false}>
+								{draggableItems}
+								{provided.placeholder}
+							</AnimatePresence>
+						</ul>
+					)}
+				</Droppable>
+			</DragDropContext>
+		</ScrollArea>
 	)
 }
 

@@ -22,7 +22,10 @@ async function getList(id: ListId, supabaseClient: SupabaseClient) {
 	const { data } = await supabaseClient
 		.from('lists')
 		.select('*, list_items(*)')
+		.order('order', { foreignTable: 'list_items', ascending: true })
 		.eq('id', id)
+
+	console.log('fetched items', data![0].list_items)
 
 	if (!data || data.length === 0) return null
 

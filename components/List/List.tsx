@@ -2,7 +2,6 @@ import {
 	Box,
 	createStyles,
 	LoadingOverlay,
-	ScrollArea,
 	TextInput,
 	Title,
 } from '@mantine/core'
@@ -23,6 +22,7 @@ import {
 	useToggleCompleted,
 	useFetchList,
 } from './hooks'
+import useReorderList from './hooks/useReorderList'
 
 export interface ListProps {
 	listId: ListId
@@ -32,7 +32,11 @@ const List: React.FC<ListProps> = ({ listId }) => {
 	const list = useFetchList(listId)
 
 	return (
-		<Box component="section" sx={{ height: '100%' }} data-testid="todos">
+		<Box
+			component="section"
+			sx={{ height: '100%', width: '100%' }}
+			data-testid="todos"
+		>
 			{/* at some point the list will be loaded server side and we'll let prefetching do it's thing */}
 			{/* if not I'll have to move the scroll box guy in here probably should do that anyway */}
 			<LoadingOverlay
@@ -54,6 +58,7 @@ const List: React.FC<ListProps> = ({ listId }) => {
 const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
 	const toggleCompleted = useToggleCompleted()
 	const removeItem = useDeleteItem()
+	const reorder = useReorderList(list.id)
 
 	const onDeleteItem = (item: DragAndDropItem) => {
 		console.log('deleting item', item)
@@ -61,12 +66,15 @@ const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
 	}
 
 	const onDragEnd = (args: OnDragEndArgs) => {
-		console.log('drag ended', args)
+		reorder.mutate({
+			source: args.source + 1,
+			destination: args.destination + 1,
+		})
 	}
 
 	const toggleItemCompleted = (item: DragAndDropItem) => {
 		console.log('item completed', item)
-		toggleCompleted.mutate({ completed: item.completed, itemId: item.id })
+		toggleCompleted.mutate({ completed: !item.completed, itemId: item.id })
 	}
 
 	return (
@@ -74,17 +82,12 @@ const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
 			{list && !list.items.length ? (
 				<ListItemsEmptyState />
 			) : (
-				<ScrollArea
-					offsetScrollbars
-					sx={{ width: '100vw', position: 'relative' }}
-				>
-					<DragAndDropList
-						items={list?.items ?? []}
-						deleteItem={onDeleteItem}
-						onDragEnd={onDragEnd}
-						toggleItemCompleted={toggleItemCompleted}
-					/>
-				</ScrollArea>
+				<DragAndDropList
+					items={list?.items ?? []}
+					deleteItem={onDeleteItem}
+					onDragEnd={onDragEnd}
+					toggleItemCompleted={toggleItemCompleted}
+				/>
 			)}
 			<ItemForm listId={list.id} />
 		</Box>
@@ -92,7 +95,7 @@ const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
 }
 
 export const ItemForm: React.FC<{ listId: ListId }> = ({ listId }) => {
-	const { mutate, isLoading } = useAddItem(listId)
+	const { mutateAsync, isLoading } = useAddItem(listId)
 	const { classes } = useFormStyles()
 	const form = useForm({
 		initialValues: {
@@ -102,7 +105,7 @@ export const ItemForm: React.FC<{ listId: ListId }> = ({ listId }) => {
 
 	const submit = async (values: typeof form.values) => {
 		if (values.text) {
-			mutate({ text: values.text })
+			await mutateAsync({ text: values.text })
 			form.reset()
 		}
 	}
@@ -111,12 +114,14 @@ export const ItemForm: React.FC<{ listId: ListId }> = ({ listId }) => {
 		<Box
 			component="form"
 			onSubmit={form.onSubmit(submit)}
-			sx={{
+			sx={theme => ({
 				display: 'flex',
 				justifyContent: 'space-between',
 				alignItems: 'end',
 				gap: '1rem',
-			}}
+				paddingLeft: theme.spacing.sm,
+				paddingRight: theme.spacing.sm,
+			})}
 		>
 			<TextInput
 				id="name"
@@ -154,6 +159,7 @@ const useFormStyles = createStyles(theme => {
 		},
 		input: {
 			padding: 0,
+			fontSize: '1rem',
 		},
 	}
 })

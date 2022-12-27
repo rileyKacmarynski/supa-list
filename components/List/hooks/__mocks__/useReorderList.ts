@@ -1,9 +1,9 @@
 import { vi } from 'vitest'
 
-const useDeleteItem = vi.fn().mockReturnValue({
+const useReorderList = vi.fn().mockReturnValue({
 	mutate: vi.fn(),
 	mutateAsync: vi.fn(),
 	isLoading: true,
 })
 
-export default useDeleteItem
+export default useReorderList

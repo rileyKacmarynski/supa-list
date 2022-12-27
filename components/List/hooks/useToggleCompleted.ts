@@ -1,7 +1,8 @@
 import { showNotification } from '@mantine/notifications'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { listKeys } from 'components/ListsMenu/listsHooks'
 import { SupabaseClient } from 'lib/supabaseClient'
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 
 export type ToggleCompleteArgs = {
 	itemId: string
@@ -10,6 +11,7 @@ export type ToggleCompleteArgs = {
 
 export default function useToggleComplete() {
 	const supabaseClient = useSupabaseClient()
+	const queryClient = useQueryClient()
 
 	return useMutation(
 		({ completed, itemId }: ToggleCompleteArgs) =>
@@ -22,6 +24,9 @@ export default function useToggleComplete() {
 				})
 				console.error(e)
 			},
+			onSuccess: completed => {
+				return queryClient.invalidateQueries(listKeys.detail(completed.list_id))
+			},
 		},
 	)
 }
@@ -30,12 +35,16 @@ async function markComplete(
 	{ itemId, completed }: { itemId: string; completed: boolean },
 	supabaseClient: SupabaseClient,
 ) {
-	const { error } = await supabaseClient
+	console.log('completed value', completed)
+	const { data, error } = await supabaseClient
 		.from('list_items')
 		.update({ completed })
 		.eq('id', itemId)
+		.select('*')
 
 	if (error) {
 		throw new Error(error.message)
 	}
+
+	return data[0]
 }

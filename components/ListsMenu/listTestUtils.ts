@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker'
-import { ListData } from 'components/List'
+import { List } from 'lib/ListService'
 import { getRandomInt } from 'lib/utils'
 
 const userId = faker.datatype.uuid()
 
-export const makeTestList: (length: number) => ListData[] = length =>
+export const makeTestList: (length: number) => List[] = length =>
 	Array.from({ length }, (v, i) => ({
 		id: (i + 1).toString(),
 		name: getTestListName(),

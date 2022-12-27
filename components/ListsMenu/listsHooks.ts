@@ -1,6 +1,6 @@
 import { showNotification } from '@mantine/notifications'
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
-import ListService, { ListId } from 'lib/ListService'
+import ListService, { List, ListId } from 'lib/ListService'
 import { checkForError } from 'lib/utils'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
 
@@ -53,34 +53,30 @@ export function useRenameList() {
 	const queryClient = useQueryClient()
 
 	return useMutation(({ name, id }: RenameListArgs) => renameList(id, name), {
-		// onMutate: async (item) => {
-		// 	await queryClient.cancelQueries({ queryKey: listKeys.all })
+		onMutate: async item => {
+			await queryClient.cancelQueries({ queryKey: listKeys.all })
 
-		// 	const previousItems = queryClient.getQueryData<ListData[]>(listKeys.all)
+			const previousItems = queryClient.getQueryData<List[]>(listKeys.all)
 
-		// 	queryClient.setQueryData(
-		// 		listKeys.all,
-		// 		(oldLists: ListData[] | undefined) => {
+			queryClient.setQueryData(listKeys.all, (oldLists: List[] | undefined) => {
+				if (!oldLists) return []
 
-		// 			if(!oldLists) return []
+				const newLists = [...oldLists]
+				const changed = oldLists.findIndex(l => l.id === item.id)
+				newLists[changed].name = item.name
 
-		// 			const newLists = [...oldLists]
-		// 			const changed = oldLists.findIndex(l => l.id === item.id)
-		// 			newLists[changed].name = item.name
+				return newLists
+			})
 
-		// 			return newLists
-		// 		},
-		// 	)
-
-		// 	return { previousItems }
-		// },
+			return { previousItems }
+		},
 		onSuccess: ({ error }) => {
 			checkForError(error)
 			return queryClient.invalidateQueries(listKeys.all)
 		},
-		// onSettled: () => {
-		// 	return queryClient.invalidateQueries({ queryKey: listKeys.all })
-		// },
+		onSettled: () => {
+			return queryClient.invalidateQueries({ queryKey: listKeys.all })
+		},
 		onError: e => {
 			handleError('Unable to rename list.')
 			console.error(e)
