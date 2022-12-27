@@ -4,7 +4,7 @@ import { SUPABASE_URL } from './auth'
 import { db } from 'mocks/db'
 import { faker } from '@faker-js/faker'
 
-const LIST_URL = `${SUPABASE_URL}/rest/v1/lists`
+export const LIST_URL = `${SUPABASE_URL}/rest/v1/lists`
 
 export const handlers = [
 	rest.get(LIST_URL, async (req, res, ctx) => {
@@ -27,6 +27,7 @@ export const handlers = [
 			id: faker.datatype.uuid(),
 			created_at: new Date(),
 			last_modified: new Date(),
+			list_items: [],
 		})
 
 		return res(ctx.status(201))

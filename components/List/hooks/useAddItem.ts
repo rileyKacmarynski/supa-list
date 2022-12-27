@@ -30,6 +30,7 @@ export default function useAddItem(listId: string) {
 				console.error(e)
 			},
 			onSuccess: () => {
+				console.log(queryClient.getQueryCache())
 				return queryClient.invalidateQueries(listKeys.detail(listId))
 			},
 		},

@@ -15,7 +15,7 @@ export default function useDeleteItem() {
 			onError: e => {
 				showNotification({
 					color: 'red',
-					message: 'Unable to mark item complete.',
+					message: 'Unable to delete item.',
 				})
 				console.error(e)
 			},
