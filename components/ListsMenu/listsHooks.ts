@@ -1,5 +1,6 @@
 import { showNotification } from '@mantine/notifications'
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import listKeys from 'lib/listKeys'
 import ListService, { List, ListId } from 'lib/ListService'
 import { checkForError } from 'lib/utils'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -7,12 +8,6 @@ import { useMutation, useQuery, useQueryClient } from 'react-query'
 function useLists() {
 	const supabaseClient = useSupabaseClient()
 	return new ListService(supabaseClient)
-}
-
-export const listKeys = {
-	all: ['lists'] as const,
-	details: () => [...listKeys.all, 'detail'] as const,
-	detail: (listId: ListId) => [...listKeys.details(), listId] as const,
 }
 
 export function useFetchLists() {

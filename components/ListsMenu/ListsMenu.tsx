@@ -1,7 +1,8 @@
 import { Box, List, LoadingOverlay, Navbar, Stack } from '@mantine/core'
 import { AnimatePresence, motion, MotionProps } from 'framer-motion'
 import { ListId } from 'lib/ListService'
-import React, { Dispatch, SetStateAction } from 'react'
+import { useRouter } from 'next/router'
+import React from 'react'
 import { ListForm } from './ListForm'
 import { ListItem } from './ListItem'
 import { ListMenuEmptyState } from './ListMenuEmptyState'
@@ -9,7 +10,6 @@ import { useCreateList, useFetchLists } from './listsHooks'
 
 export interface ListsMenuProps {
 	activeListId: ListId | null
-	setActiveListId: Dispatch<SetStateAction<ListId | null>>
 }
 
 const animateProps: MotionProps = {
@@ -18,20 +18,16 @@ const animateProps: MotionProps = {
 	initial: { opacity: 0, height: 0 },
 }
 
-const ListsMenu: React.FC<ListsMenuProps> = ({
-	activeListId,
-	setActiveListId,
-}) => {
+const ListsMenu: React.FC<ListsMenuProps> = ({ activeListId }) => {
 	const create = useCreateList()
 	const lists = useFetchLists()
-
-	// this will go away eventually
-	if (lists.data?.length && !lists.data.some(l => l.id === activeListId)) {
-		setActiveListId(lists.data[0].id)
-	}
+	const router = useRouter()
 
 	const createList = async (name: string) => {
-		await create.mutateAsync({ name })
+		const { list } = await create.mutateAsync({ name })
+		if (list) {
+			router.push(`/app/${list[0].id}`)
+		}
 	}
 
 	const noLists = !lists.data?.length && !lists.isLoading
@@ -53,11 +49,7 @@ const ListsMenu: React.FC<ListsMenuProps> = ({
 						)}
 						{lists.data?.map(list => (
 							<motion.div key={list.id} {...animateProps}>
-								<ListItem
-									setActiveListId={setActiveListId}
-									item={list}
-									isActive={activeListId === list.id}
-								/>
+								<ListItem item={list} isActive={activeListId === list.id} />
 							</motion.div>
 						))}
 						{!lists.isLoading && (

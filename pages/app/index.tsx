@@ -10,6 +10,7 @@ import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from 'types/supabase'
 import List from 'components/List'
 import { useFetchLists } from 'components/ListsMenu/listsHooks'
+import { ListEmptyState } from 'components/List/ListEmptyState'
 
 // this will give us the initial session in the _app.tsx component I think
 export const getServerSideProps: GetServerSideProps = async ctx => {
@@ -25,6 +26,8 @@ export const getServerSideProps: GetServerSideProps = async ctx => {
 				permanent: false,
 			},
 		}
+
+	// do work to see if user has lists and pick one to be active
 
 	return {
 		props: {
@@ -51,14 +54,9 @@ const App = () => {
 	return (
 		<Layout
 			header={<AppHeader />}
-			navbar={
-				<ListsMenu
-					activeListId={activeListId}
-					setActiveListId={setActiveListId}
-				/>
-			}
+			navbar={<ListsMenu activeListId={activeListId} />}
 		>
-			{activeListId && <List listId={activeListId} />}
+			<ListEmptyState />
 		</Layout>
 	)
 }

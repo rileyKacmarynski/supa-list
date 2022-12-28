@@ -1,7 +1,9 @@
 import { Box, Loader, NavLink } from '@mantine/core'
 import { useClickOutside } from '@mantine/hooks'
 import { ListId } from 'lib/ListService'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
 import { useTheme } from 'ui/Theme'
 import { ListForm } from './ListForm'
 import { ListOptions } from './ListOptions'
@@ -15,19 +17,15 @@ export type ListItemDisplayValues = {
 export interface ListItemProps {
 	item: ListItemDisplayValues
 	isActive: boolean
-	setActiveListId: Dispatch<SetStateAction<ListId | null>>
 }
 
-export const ListItem: React.FC<ListItemProps> = ({
-	item,
-	isActive,
-	setActiveListId,
-}) => {
+export const ListItem: React.FC<ListItemProps> = ({ item, isActive }) => {
 	const rename = useRenameList()
 	const remove = useDeleteList()
 	const [renaming, setRenaming] = useState(false)
 	const ref = useClickOutside(() => setRenaming(false))
 	const { primaryColorOption } = useTheme()
+	const router = useRouter()
 
 	const onRename = async (name: string) => {
 		await rename.mutateAsync({ name, id: item.id })
@@ -40,7 +38,7 @@ export const ListItem: React.FC<ListItemProps> = ({
 			{
 				onSuccess: () => {
 					if (isActive) {
-						setActiveListId(null)
+						router.push('/app')
 					}
 				},
 			},
@@ -64,10 +62,10 @@ export const ListItem: React.FC<ListItemProps> = ({
 				</Box>
 			) : (
 				<NavLink
-					component="div"
+					component={Link}
+					href={`/app/${item.id}`}
 					label={item.name}
 					active={isActive}
-					onClick={() => setActiveListId(item.id)}
 					color={primaryColorOption}
 					key={item.id}
 					rightSection={

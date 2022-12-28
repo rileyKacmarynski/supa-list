@@ -1,7 +1,5 @@
 import { showNotification } from '@mantine/notifications'
-import { useUser } from '@supabase/auth-helpers-react'
-import { listKeys } from 'components/ListsMenu/listsHooks'
-import { ListId } from 'lib/ListService'
+import listKeys from 'lib/listKeys'
 import { SupabaseClient, useSupabaseClient } from 'lib/supabaseClient'
 import { useMutation, useQueryClient } from 'react-query'
 

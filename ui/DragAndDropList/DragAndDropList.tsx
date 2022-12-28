@@ -101,6 +101,7 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 	deleteItem,
 }) => {
 	const { classes, cx } = useStyles()
+	console.log('dnd items', items)
 
 	const draggableItems = items.map((item, index) => (
 		<Draggable key={item.id} index={index} draggableId={item.id}>

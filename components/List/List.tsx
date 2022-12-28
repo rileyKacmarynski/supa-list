@@ -1,10 +1,4 @@
-import {
-	Box,
-	createStyles,
-	LoadingOverlay,
-	TextInput,
-	Title,
-} from '@mantine/core'
+import { Box, createStyles, TextInput, Title } from '@mantine/core'
 import { useForm } from '@mantine/form'
 import { IconPlus } from '@tabler/icons'
 import { ListDetail, ListId } from 'lib/ListService'
@@ -20,37 +14,22 @@ import {
 	useAddItem,
 	useDeleteItem,
 	useToggleCompleted,
-	useFetchList,
+	useReorderList,
 } from './hooks'
-import useReorderList from './hooks/useReorderList'
 
 export interface ListProps {
-	listId: ListId
+	list: ListDetail
 }
 
-const List: React.FC<ListProps> = ({ listId }) => {
-	const list = useFetchList(listId)
-
+const List: React.FC<ListProps> = ({ list }) => {
 	return (
 		<Box
 			component="section"
 			sx={{ height: '100%', width: '100%' }}
 			data-testid="todos"
 		>
-			{/* at some point the list will be loaded server side and we'll let prefetching do it's thing */}
-			{/* if not I'll have to move the scroll box guy in here probably should do that anyway */}
-			<LoadingOverlay
-				visible={list.isLoading}
-				overlayBlur={2}
-				transitionDuration={500}
-			/>
-			{list.data && !list.isLoading && (
-				<>
-					<Title order={1}>{list.data.name}</Title>
-					<ListItems list={list.data} />
-				</>
-			)}
-			{!list.data && !list.isLoading && <ListEmptyState />}
+			<Title order={1}>{list.name}</Title>
+			<ListItems list={list} />
 		</Box>
 	)
 }
@@ -163,10 +142,6 @@ const useFormStyles = createStyles(theme => {
 		},
 	}
 })
-
-const ListEmptyState = () => (
-	<h1 data-testid="list-emptyState">Get started by creating a list</h1>
-)
 
 const ListItemsEmptyState = () => (
 	<h2 data-testid="list-itemsEmptyState">Add an item to the list</h2>

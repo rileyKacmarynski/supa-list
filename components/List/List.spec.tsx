@@ -4,54 +4,29 @@ import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { renderWithProviders } from '__tests__/testUtils'
 import List, { ListProps } from './List'
-import {
-	useAddItem,
-	useToggleCompleted,
-	useDeleteItem,
-	useFetchList,
-} from './hooks'
+import { useAddItem, useToggleCompleted, useDeleteItem } from './hooks'
 
 vi.mock('./hooks')
 
 describe('<List />', () => {
 	const mountComponent = (props: Partial<ListProps> = {}) => {
-		const { listId = faker.datatype.uuid() } = props
+		const { list = createList() } = props
 
-		return renderWithProviders(<List listId={listId} />)
+		return renderWithProviders(<List list={list} />)
 	}
 
 	it('render the list name', () => {
 		const list = createList()
 
-		vi.mocked(useFetchList).mockReturnValue({
-			data: list,
-			isLoading: false,
-		} as unknown as any)
-
-		mountComponent({ listId: list.id })
+		mountComponent({ list })
 
 		expect(screen.queryByText(list.name)).toBeInTheDocument()
 	})
 
-	it('shows the empty state if there is no list', () => {
-		vi.mocked(useFetchList).mockReturnValue({
-			data: null,
-			isLoading: false,
-		} as unknown as any)
-
-		mountComponent()
-
-		expect(screen.queryByTestId('list-emptyState')).toBeInTheDocument()
-	})
-
 	it('shows the item empty state if there are no list items', () => {
 		const list = createList()
-		vi.mocked(useFetchList).mockReturnValue({
-			data: list,
-			isLoading: false,
-		} as unknown as any)
 
-		mountComponent({ listId: list.id })
+		mountComponent({ list })
 
 		expect(screen.queryByTestId('list-itemsEmptyState')).toBeInTheDocument()
 	})
@@ -60,12 +35,7 @@ describe('<List />', () => {
 		const numItems = faker.datatype.number(5)
 		const list = createList(numItems)
 
-		vi.mocked(useFetchList).mockReturnValue({
-			data: list,
-			isLoading: false,
-		} as unknown as any)
-
-		mountComponent({ listId: list.id })
+		mountComponent({ list })
 
 		for (let item of list.items) {
 			expect(screen.queryByText(item.text)).toBeInTheDocument()
@@ -103,12 +73,7 @@ describe('<List />', () => {
 			isLoading: false,
 		} as unknown as any)
 
-		vi.mocked(useFetchList).mockReturnValue({
-			data: list,
-			isLoading: false,
-		} as unknown as any)
-
-		mountComponent({ listId: list.id })
+		mountComponent({ list })
 
 		await userEvent.click(screen.getByLabelText(/completed/i))
 
@@ -124,12 +89,7 @@ describe('<List />', () => {
 			mutateAsync: removeItem,
 			isLoading: false,
 		} as unknown as any)
-		vi.mocked(useFetchList).mockReturnValue({
-			data: list,
-			isLoading: false,
-		} as unknown as any)
-
-		mountComponent({ listId: list.id })
+		mountComponent({ list })
 
 		await userEvent.click(screen.getByLabelText(/delete item/i))
 
@@ -141,7 +101,7 @@ function createList(numItems = 0) {
 	const userId = faker.datatype.uuid()
 
 	const items = Array.from({ length: numItems }, (v, i) => ({
-		createdAt: faker.date.recent(5),
+		createdAt: faker.date.recent(5).toString(),
 		createdBy: userId,
 		id: faker.datatype.uuid(),
 		order: i + 1,
@@ -152,8 +112,8 @@ function createList(numItems = 0) {
 	return {
 		id: faker.datatype.uuid(),
 		name: faker.commerce.product(),
-		createdAt: faker.date.past(),
-		lastModified: new Date(),
+		createdAt: faker.date.past().toString(),
+		lastModified: new Date().toString(),
 		items,
 		createdBy: userId,
 		contributors: [userId],

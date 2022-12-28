@@ -1,5 +1,5 @@
 import { showNotification } from '@mantine/notifications'
-import { listKeys } from 'components/ListsMenu/listsHooks'
+import listKeys from 'lib/listKeys'
 import { ListId, MapListDetails } from 'lib/ListService'
 import { SupabaseClient, useSupabaseClient } from 'lib/supabaseClient'
 import { useQuery } from 'react-query'
@@ -18,7 +18,7 @@ export default function useFetchList(id: ListId) {
 	})
 }
 
-async function getList(id: ListId, supabaseClient: SupabaseClient) {
+export async function getList(id: ListId, supabaseClient: SupabaseClient) {
 	const { data } = await supabaseClient
 		.from('lists')
 		.select('*, list_items(*)')
