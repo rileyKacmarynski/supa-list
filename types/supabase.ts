@@ -11,76 +11,76 @@ export interface Database {
 		Tables: {
 			list_items: {
 				Row: {
+					completed: boolean
+					created_at: string
+					created_by: string
 					id: string
 					list_id: string
-					created_by: string
-					text: string
 					order: number
-					created_at: string
-					completed: boolean
+					text: string
 				}
 				Insert: {
+					completed?: boolean
+					created_at?: string
+					created_by: string
 					id?: string
 					list_id: string
-					created_by: string
-					text: string
 					order?: number
-					created_at?: string
-					completed?: boolean
+					text: string
 				}
 				Update: {
+					completed?: boolean
+					created_at?: string
+					created_by?: string
 					id?: string
 					list_id?: string
-					created_by?: string
-					text?: string
 					order?: number
-					created_at?: string
-					completed?: boolean
+					text?: string
 				}
 			}
 			lists: {
 				Row: {
-					id: string
-					name: string
-					created_at: string
-					last_modified: string
-					created_by: string
 					contributors: string[]
+					created_at: string
+					created_by: string
+					id: string
+					last_modified: string
+					name: string
 				}
 				Insert: {
-					id?: string
-					name: string
-					created_at?: string
-					last_modified?: string
-					created_by: string
 					contributors: string[]
+					created_at?: string
+					created_by: string
+					id?: string
+					last_modified?: string
+					name: string
 				}
 				Update: {
-					id?: string
-					name?: string
-					created_at?: string
-					last_modified?: string
-					created_by?: string
 					contributors?: string[]
+					created_at?: string
+					created_by?: string
+					id?: string
+					last_modified?: string
+					name?: string
 				}
 			}
 			profiles: {
 				Row: {
-					id: string
-					created_at: string
 					avatar_color: string
+					created_at: string
+					id: string
 					user_id: string | null
 				}
 				Insert: {
-					id?: string
-					created_at?: string
 					avatar_color?: string
+					created_at?: string
+					id?: string
 					user_id?: string | null
 				}
 				Update: {
-					id?: string
-					created_at?: string
 					avatar_color?: string
+					created_at?: string
+					id?: string
 					user_id?: string | null
 				}
 			}

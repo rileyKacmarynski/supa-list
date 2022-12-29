@@ -25,9 +25,6 @@ export async function getList(id: ListId, supabaseClient: SupabaseClient) {
 		.order('order', { foreignTable: 'list_items', ascending: true })
 		.eq('id', id)
 
-	console.log('fetched items', data![0].list_items)
-
 	if (!data || data.length === 0) return null
-
 	return MapListDetails(data[0])
 }

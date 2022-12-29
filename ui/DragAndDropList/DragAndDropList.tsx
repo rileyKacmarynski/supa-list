@@ -1,8 +1,16 @@
 import { Checkbox, createStyles, ScrollArea, Text } from '@mantine/core'
 import { IconGripVertical, IconX } from '@tabler/icons'
-import { AnimatePresence, motion } from 'framer-motion'
-import React from 'react'
+import {
+	AnimatePresence,
+	LayoutGroup,
+	motion,
+	Reorder,
+	useDragControls,
+} from 'framer-motion'
+import React, { useRef, useState } from 'react'
+import { useEffect } from 'react'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { useTheme } from 'ui/Theme'
 import IconButton from '../Buttons/IconButton'
 
 const useStyles = createStyles(theme => ({
@@ -65,11 +73,16 @@ const useStyles = createStyles(theme => ({
 		alignItems: 'center',
 		justifyContent: 'center',
 		height: '100%',
+		cursor: 'grab',
 		color:
 			theme.colorScheme === 'dark'
 				? theme.colors.dark[1]
 				: theme.colors.gray[6],
 		paddingRight: theme.spacing.md,
+
+		'&:active': {
+			cursor: 'grabbing',
+		},
 	},
 }))
 
@@ -81,17 +94,11 @@ export interface DragAndDropItem {
 	[key: string]: any
 }
 
-export interface OnDragEndArgs {
-	item: DragAndDropItem
-	source: number
-	destination: number
-}
-
 export interface DragAndDropListProps {
 	items: DragAndDropItem[]
 	toggleItemCompleted: (item: DragAndDropItem) => void
 	deleteItem: (item: DragAndDropItem) => void
-	onDragEnd: (args: OnDragEndArgs) => void
+	onDragEnd: (items: DragAndDropItem[]) => void
 }
 
 const DragAndDropList: React.FC<DragAndDropListProps> = ({
@@ -101,82 +108,130 @@ const DragAndDropList: React.FC<DragAndDropListProps> = ({
 	deleteItem,
 }) => {
 	const { classes, cx } = useStyles()
-	console.log('dnd items', items)
 
-	const draggableItems = items.map((item, index) => (
-		<Draggable key={item.id} index={index} draggableId={item.id}>
-			{(provided, snapshot) => (
-				<motion.li
-					animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
-					exit={{ opacity: 0, height: 0 }}
-					initial={{ opacity: 0, height: 0 }}
-					ref={provided.innerRef}
-					{...provided.draggableProps}
-				>
-					<div
-						className={cx(classes.item, {
-							[classes.itemDragging]: snapshot.isDragging,
-							[classes.itemCompleted]: item.completed,
-						})}
-					>
-						<div {...provided.dragHandleProps} className={classes.dragHandle}>
-							<IconGripVertical size={18} stroke={1.5} />
-						</div>
-						<Text>{item.text}</Text>
-						<Checkbox
-							className={classes.checkbox}
-							onChange={() => toggleItemCompleted(item)}
-							checked={item.completed}
-							color="gray"
-							aria-label="completed"
-							radius="xl"
-							size="sm"
-						/>
-						<IconButton
-							sx={theme => ({
-								marginLeft: theme.spacing.xs,
-							})}
-							aria-label="delete item"
-							Icon={IconX}
-							onClick={() => deleteItem(item)}
-						/>
-					</div>
-				</motion.li>
-			)}
-		</Draggable>
-	))
+	const [reorderItems, setReorderItems] = useState(items)
+
+	const reorderComplete = () => {
+		const changedPosition = reorderItems.reduce(
+			(changed, item, index) => (item.id !== items[index].id ? true : changed),
+			false,
+		)
+
+		if (changedPosition) {
+			onDragEnd(reorderItems)
+		}
+	}
+
+	// always take what we get from the
+	// client as the source of truth
+	useEffect(() => {
+		setReorderItems(items)
+	}, [items])
 
 	return (
-		<ScrollArea>
-			<DragDropContext
-				onDragEnd={({ destination, source }) => {
-					const item = items.find(i => i.order === source.index + 1)
-					if (!item) throw new Error('Unable to find item')
-					if (!destination) return
+		<Reorder.Group
+			axis="y"
+			values={reorderItems}
+			onReorder={setReorderItems}
+			as="ul"
+			className={classes.ul}
+		>
+			{reorderItems.map(item => (
+				<DragItem
+					key={item.id}
+					deleteItem={deleteItem}
+					item={item}
+					toggleItemCompleted={toggleItemCompleted}
+					onDragEnd={reorderComplete}
+				/>
+			))}
+		</Reorder.Group>
+	)
+}
 
-					onDragEnd({
-						item,
-						source: source.index,
-						destination: destination.index,
-					})
-				}}
+type DragItemProps = {
+	item: DragAndDropItem
+	onDragEnd(): void
+} & Pick<DragAndDropListProps, 'toggleItemCompleted' | 'deleteItem'>
+
+const DragItem: React.FC<DragItemProps> = ({
+	item,
+	toggleItemCompleted,
+	deleteItem,
+	onDragEnd,
+}) => {
+	const { classes, cx } = useStyles()
+	const controls = useDragControls()
+	const [dragging, setDragging] = useState(false)
+	const theme = useTheme()
+
+	function onDrag<TElement extends Element>(e: React.MouseEvent<TElement>) {
+		setDragging(true)
+		controls.start(e)
+	}
+
+	function onPointerUp<TElement extends Element>(
+		e: React.MouseEvent<TElement>,
+	) {
+		setDragging(false)
+		onDragEnd()
+	}
+
+	return (
+		// <motion.li
+		// 	key={item.id}
+		// 	animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
+		// 	exit={{ opacity: 0, height: 0 }}
+		// 	initial={{ opacity: 0, height: 0 }}
+		// >
+		<Reorder.Item
+			key={item.id}
+			value={item}
+			className={cx(classes.item, {
+				[classes.itemDragging]: dragging,
+				[classes.itemCompleted]: item.completed,
+			})}
+			whileTap={{
+				boxShadow: theme.shadows.sm,
+				backgroundColor:
+					theme.colorScheme === 'dark'
+						? theme.colors.dark[5]
+						: theme.colors.gray[2],
+			}}
+			dragListener={false}
+			dragControls={controls}
+			style={{ borderRadius: '12px', position: 'relative' }}
+			animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
+			exit={{ opacity: 0, height: 0 }}
+			initial={{ opacity: 0, height: 0 }}
+		>
+			<div
+				className={classes.dragHandle}
+				onPointerDown={onDrag}
+				onPointerUp={onPointerUp}
 			>
-				<Droppable droppableId="dnd-list" direction="vertical">
-					{provided => (
-						<ul
-							className={classes.ul}
-							{...provided.droppableProps}
-							ref={provided.innerRef}
-						>
-							<AnimatePresence initial={false}>
-								{draggableItems}
-								{provided.placeholder}
-							</AnimatePresence>
-						</ul>
-					)}
-				</Droppable>
-			</DragDropContext>
-		</ScrollArea>
+				<IconGripVertical size={18} stroke={1.5} />
+			</div>
+			<Text sx={{ userSelect: 'none' }}>{item.text}</Text>
+			<Checkbox
+				className={classes.checkbox}
+				onChange={() => toggleItemCompleted(item)}
+				checked={item.completed}
+				color="gray"
+				aria-label="completed"
+				radius="xl"
+				size="sm"
+			/>
+			<IconButton
+				sx={theme => ({
+					marginLeft: theme.spacing.xs,
+				})}
+				aria-label="delete item"
+				Icon={IconX}
+				onClick={() => deleteItem(item)}
+			/>
+		</Reorder.Item>
+		// </motion.li>
 	)
 }
 

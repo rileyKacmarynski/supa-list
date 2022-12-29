@@ -5,10 +5,7 @@ import { ListDetail, ListId } from 'lib/ListService'
 import React from 'react'
 import IconButton from 'ui/Buttons/IconButton'
 import DragAndDropList from 'ui/DragAndDropList'
-import {
-	DragAndDropItem,
-	OnDragEndArgs,
-} from 'ui/DragAndDropList/DragAndDropList'
+import { DragAndDropItem } from 'ui/DragAndDropList/DragAndDropList'
 
 import {
 	useAddItem,
@@ -35,8 +32,8 @@ const List: React.FC<ListProps> = ({ list }) => {
 }
 
 const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
-	const toggleCompleted = useToggleCompleted()
-	const removeItem = useDeleteItem()
+	const toggleCompleted = useToggleCompleted(list.id)
+	const removeItem = useDeleteItem(list.id)
 	const reorder = useReorderList(list.id)
 
 	const onDeleteItem = (item: DragAndDropItem) => {
@@ -44,16 +41,18 @@ const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
 		removeItem.mutate({ itemId: item.id })
 	}
 
-	const onDragEnd = (args: OnDragEndArgs) => {
+	const onDragEnd = (items: DragAndDropItem[]) => {
 		reorder.mutate({
-			source: args.source + 1,
-			destination: args.destination + 1,
+			items,
 		})
 	}
 
 	const toggleItemCompleted = (item: DragAndDropItem) => {
 		console.log('item completed', item)
-		toggleCompleted.mutate({ completed: !item.completed, itemId: item.id })
+		toggleCompleted.mutate({
+			completed: !item.completed,
+			itemId: item.id,
+		})
 	}
 
 	return (
@@ -62,7 +61,7 @@ const ListItems: React.FC<{ list: ListDetail }> = ({ list }) => {
 				<ListItemsEmptyState />
 			) : (
 				<DragAndDropList
-					items={list?.items ?? []}
+					items={list.items ? [...list.items] : []}
 					deleteItem={onDeleteItem}
 					onDragEnd={onDragEnd}
 					toggleItemCompleted={toggleItemCompleted}

@@ -1,22 +1,22 @@
 import { useListState } from '@mantine/hooks'
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 import React from 'react'
-import DragAndDropList, {
+import DragAndDropList2, {
 	DragAndDropItem,
 	OnDragEndArgs,
 } from './DragAndDropList'
 
 export default {
 	title: 'UI/DragAndDropList',
-	component: DragAndDropList,
+	component: DragAndDropList2,
 	parameters: {
 		layout: 'fullscreen',
 	},
-} as ComponentMeta<typeof DragAndDropList>
+} as ComponentMeta<typeof DragAndDropList2>
 
 // This will have to wired in to supabase in the actual
 // app, but this works pretty well
-const Template: ComponentStory<typeof DragAndDropList> = args => {
+const Template: ComponentStory<typeof DragAndDropList2> = args => {
 	const [state, handlers] = useListState(
 		listItems.sort((a, b) => a.order - b.order),
 	)
@@ -45,7 +45,7 @@ const Template: ComponentStory<typeof DragAndDropList> = args => {
 	}
 
 	return (
-		<DragAndDropList
+		<DragAndDropList2
 			{...args}
 			items={state}
 			toggleItemCompleted={completeItem}

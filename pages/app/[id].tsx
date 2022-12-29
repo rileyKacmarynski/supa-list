@@ -66,6 +66,7 @@ const ListPage: React.FC<ComponentProps> = ({ id }) => {
 	const user = useUser()
 	const router = useRouter()
 	const { data } = useFetchList(id)
+
 	if (!data) {
 		console.log('we dont have data yet')
 	}

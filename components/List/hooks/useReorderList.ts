@@ -1,20 +1,26 @@
 import { showNotification } from '@mantine/notifications'
 import listKeys from 'lib/listKeys'
+import { ListDetail } from 'lib/ListService'
 import { SupabaseClient, useSupabaseClient } from 'lib/supabaseClient'
 import { useMutation, useQueryClient } from 'react-query'
 
+export type ReorderListItem = {
+	id: string
+	order: number
+}
+
 export type ReorderListArgs = {
-	source: number
-	destination: number
+	items: ReorderListItem[]
 }
 
 export default function useReorderList(listId: string) {
 	const supabaseClient = useSupabaseClient()
 	const queryClient = useQueryClient()
+	const queryKey = listKeys.detail(listId)
 
 	return useMutation(
-		({ source, destination }: ReorderListArgs) =>
-			reorderItem({ source, destination, listId }, supabaseClient),
+		({ items }: ReorderListArgs) =>
+			reorderItem({ items, listId }, supabaseClient),
 		{
 			onError: e => {
 				showNotification({
@@ -23,22 +29,38 @@ export default function useReorderList(listId: string) {
 				})
 				console.error(e)
 			},
-			onSuccess: () => {
-				return queryClient.invalidateQueries(listKeys.detail(listId))
+			onMutate: async ({ items }) => {
+				await queryClient.cancelQueries({ queryKey })
+
+				const previousList = queryClient.getQueryData<ListDetail>(queryKey)
+
+				queryClient.setQueryData(
+					queryKey,
+					(oldList: ListDetail | undefined) => {
+						if (!oldList)
+							throw new Error('How are we reordering a list that doesnt exist?')
+
+						return {
+							...oldList,
+							items: reorderListItems(items, oldList.items),
+						}
+					},
+				)
+
+				return { previousList }
+			},
+			onSettled: () => {
+				return queryClient.invalidateQueries({ queryKey })
 			},
 		},
 	)
 }
 
 async function reorderItem(
-	{
-		source,
-		destination,
-		listId,
-	}: { source: number; destination: number; listId: string },
+	{ items, listId }: { items: ReorderListItem[]; listId: string },
 	supabaseClient: SupabaseClient,
 ) {
-	console.log('drag ended', source, destination)
+	console.log('drag ended', items)
 
 	const { data, error: queryError } = await supabaseClient
 		.from('list_items')
@@ -48,17 +70,26 @@ async function reorderItem(
 
 	if (queryError) throw new Error(queryError.message)
 
-	console.log('old order', data)
-	// remove item, source and dest are 1 based
-	const item = data.splice(source - 1, 1)
-	// place in ne spot
-	data.splice(destination - 1, 0, item[0])
-
-	const newData = data.map((oldData, i) => ({ ...oldData, order: i + 1 }))
+	const newData = reorderListItems(items, data)
 
 	const { error } = await supabaseClient.from('list_items').upsert(newData)
 
 	if (error) {
 		throw new Error(error.message)
 	}
+}
+
+function reorderListItems<T extends { id: string }>(
+	newItems: ReorderListItem[],
+	existingItems: T[],
+) {
+	return newItems.map((item, index) => {
+		const savedItem = existingItems.find(d => d.id === item.id)
+		if (!savedItem) throw new Error('Items in db do not match reordered items')
+
+		return {
+			...savedItem,
+			order: index + 1,
+		}
+	})
 }
