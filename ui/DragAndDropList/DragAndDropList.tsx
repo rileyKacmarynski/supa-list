@@ -21,7 +21,7 @@ import {
 	useSortable,
 	verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import { CSS } from '@dnd-kit/utilities/dist'
 
 export interface DragAndDropItem {
 	id: string

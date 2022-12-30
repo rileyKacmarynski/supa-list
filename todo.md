@@ -1,6 +1,10 @@
 # To Do
 
-- Work on styling list
+- Make list look great
+  - Mess around with a cool way to only allow deletion if item is completed
+  - Make a good empty state
+  - Switch up the form. Maybe move save to second line
+-
 
 # At some point
 
