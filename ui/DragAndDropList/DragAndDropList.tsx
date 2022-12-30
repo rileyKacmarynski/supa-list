@@ -1,17 +1,178 @@
-import { Checkbox, createStyles, ScrollArea, Text } from '@mantine/core'
+import { Checkbox, createStyles, Text } from '@mantine/core'
 import { IconGripVertical, IconX } from '@tabler/icons'
-import {
-	AnimatePresence,
-	LayoutGroup,
-	motion,
-	Reorder,
-	useDragControls,
-} from 'framer-motion'
-import React, { useRef, useState } from 'react'
-import { useEffect } from 'react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import { useTheme } from 'ui/Theme'
+import { motion } from 'framer-motion'
+import React, { useEffect, useState } from 'react'
 import IconButton from '../Buttons/IconButton'
+
+import {
+	closestCenter,
+	DndContext,
+	DragEndEvent,
+	KeyboardSensor,
+	PointerSensor,
+	TouchSensor,
+	useSensor,
+	useSensors,
+} from '@dnd-kit/core'
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+
+export interface DragAndDropItem {
+	id: string
+	order: number
+	text: string
+	completed: boolean
+	[key: string]: any
+}
+
+export interface DragAndDropListProps {
+	items: DragAndDropItem[]
+	toggleItemCompleted: (item: DragAndDropItem) => void
+	deleteItem: (item: DragAndDropItem) => void
+	onDragEnd: (items: DragAndDropItem[]) => void
+}
+
+const DragAndDropList: React.FC<DragAndDropListProps> = ({
+	items,
+	onDragEnd,
+	toggleItemCompleted,
+	deleteItem,
+}) => {
+	const { classes } = useStyles()
+
+	const [reorderItems, setReorderItems] = useState(items)
+
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(TouchSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+	)
+
+	const handleDragEnd: (e: DragEndEvent) => void = (e: DragEndEvent): void => {
+		const { active, over } = e
+		if (over && active.id !== over.id) {
+			const oldIndex = reorderItems.findIndex(i => i.id === active.id)
+			const newIndex = reorderItems.findIndex(i => i.id === over.id)
+
+			const newArray = [...arrayMove(reorderItems, oldIndex, newIndex)]
+			setReorderItems(newArray)
+
+			const changedPosition = newArray.reduce(
+				(changed, item, index) =>
+					item.id !== items[index].id ? true : changed,
+				false,
+			)
+
+			if (changedPosition) {
+				onDragEnd(newArray)
+			}
+		}
+	}
+
+	// always take what we get from the
+	// client as the source of truth
+	useEffect(() => {
+		setReorderItems(items)
+	}, [items])
+
+	return (
+		<motion.div layout="position">
+			<DndContext
+				collisionDetection={closestCenter}
+				sensors={sensors}
+				onDragEnd={handleDragEnd}
+			>
+				<SortableContext
+					items={reorderItems}
+					strategy={verticalListSortingStrategy}
+				>
+					<ul className={classes.ul}>
+						{reorderItems.map(item => (
+							<DragItem
+								key={item.id}
+								deleteItem={deleteItem}
+								item={item}
+								toggleItemCompleted={toggleItemCompleted}
+							/>
+						))}
+					</ul>
+				</SortableContext>
+			</DndContext>
+		</motion.div>
+	)
+}
+
+type DragItemProps = {
+	item: DragAndDropItem
+} & Pick<DragAndDropListProps, 'toggleItemCompleted' | 'deleteItem'>
+
+const DragItem: React.FC<DragItemProps> = ({
+	item,
+	toggleItemCompleted,
+	deleteItem,
+}) => {
+	const { classes, cx } = useStyles()
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		setActivatorNodeRef, // drag handle ref
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id: item.id })
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	}
+
+	return (
+		<li
+			className={cx(classes.item, {
+				[classes.itemDragging]: isDragging,
+				[classes.itemCompleted]: item.completed,
+			})}
+			ref={setNodeRef}
+			style={style}
+		>
+			<div
+				{...attributes}
+				{...listeners}
+				className={classes.dragHandle}
+				ref={setActivatorNodeRef}
+			>
+				<IconGripVertical size={18} stroke={1.5} />
+			</div>
+			<Text sx={{ userSelect: 'none' }}>{item.text}</Text>
+			<Checkbox
+				className={classes.checkbox}
+				onChange={() => toggleItemCompleted(item)}
+				checked={item.completed}
+				color="gray"
+				aria-label="completed"
+				radius="xl"
+				size="sm"
+			/>
+			<IconButton
+				sx={theme => ({
+					marginLeft: theme.spacing.xs,
+				})}
+				aria-label="delete item"
+				Icon={IconX}
+				onClick={() => deleteItem(item)}
+			/>
+		</li>
+	)
+}
 
 const useStyles = createStyles(theme => ({
 	ul: {
@@ -31,8 +192,9 @@ const useStyles = createStyles(theme => ({
 		borderRadius: theme.radius.md,
 		padding: `${theme.spacing.xs}px ${theme.spacing.xs}px`,
 		marginBottom: theme.spacing.sm,
+		backgroundColor: 'inherit',
 
-		transition: 'color .1s ease',
+		transition: 'all .1s ease',
 
 		'&:after': {
 			content: '""',
@@ -85,154 +247,5 @@ const useStyles = createStyles(theme => ({
 		},
 	},
 }))
-
-export interface DragAndDropItem {
-	id: string
-	order: number
-	text: string
-	completed: boolean
-	[key: string]: any
-}
-
-export interface DragAndDropListProps {
-	items: DragAndDropItem[]
-	toggleItemCompleted: (item: DragAndDropItem) => void
-	deleteItem: (item: DragAndDropItem) => void
-	onDragEnd: (items: DragAndDropItem[]) => void
-}
-
-const DragAndDropList: React.FC<DragAndDropListProps> = ({
-	items,
-	onDragEnd,
-	toggleItemCompleted,
-	deleteItem,
-}) => {
-	const { classes, cx } = useStyles()
-
-	const [reorderItems, setReorderItems] = useState(items)
-
-	const reorderComplete = () => {
-		const changedPosition = reorderItems.reduce(
-			(changed, item, index) => (item.id !== items[index].id ? true : changed),
-			false,
-		)
-
-		if (changedPosition) {
-			onDragEnd(reorderItems)
-		}
-	}
-
-	// always take what we get from the
-	// client as the source of truth
-	useEffect(() => {
-		setReorderItems(items)
-	}, [items])
-
-	return (
-		<Reorder.Group
-			axis="y"
-			values={reorderItems}
-			onReorder={setReorderItems}
-			as="ul"
-			className={classes.ul}
-		>
-			{reorderItems.map(item => (
-				<DragItem
-					key={item.id}
-					deleteItem={deleteItem}
-					item={item}
-					toggleItemCompleted={toggleItemCompleted}
-					onDragEnd={reorderComplete}
-				/>
-			))}
-		</Reorder.Group>
-	)
-}
-
-type DragItemProps = {
-	item: DragAndDropItem
-	onDragEnd(): void
-} & Pick<DragAndDropListProps, 'toggleItemCompleted' | 'deleteItem'>
-
-const DragItem: React.FC<DragItemProps> = ({
-	item,
-	toggleItemCompleted,
-	deleteItem,
-	onDragEnd,
-}) => {
-	const { classes, cx } = useStyles()
-	const controls = useDragControls()
-	const [dragging, setDragging] = useState(false)
-	const theme = useTheme()
-
-	function onDrag<TElement extends Element>(e: React.MouseEvent<TElement>) {
-		setDragging(true)
-		controls.start(e)
-	}
-
-	function onPointerUp<TElement extends Element>(
-		e: React.MouseEvent<TElement>,
-	) {
-		setDragging(false)
-		onDragEnd()
-	}
-
-	return (
-		// <motion.li
-		// 	key={item.id}
-		// 	animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
-		// 	exit={{ opacity: 0, height: 0 }}
-		// 	initial={{ opacity: 0, height: 0 }}
-		// >
-		<Reorder.Item
-			key={item.id}
-			value={item}
-			className={cx(classes.item, {
-				[classes.itemDragging]: dragging,
-				[classes.itemCompleted]: item.completed,
-			})}
-			whileTap={{
-				boxShadow: theme.shadows.sm,
-				backgroundColor:
-					theme.colorScheme === 'dark'
-						? theme.colors.dark[5]
-						: theme.colors.gray[2],
-			}}
-			dragListener={false}
-			dragControls={controls}
-			style={{ borderRadius: '12px', position: 'relative' }}
-			animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
-			exit={{ opacity: 0, height: 0 }}
-			initial={{ opacity: 0, height: 0 }}
-		>
-			<div
-				className={classes.dragHandle}
-				onPointerDown={onDrag}
-				onPointerUp={onPointerUp}
-			>
-				<IconGripVertical size={18} stroke={1.5} />
-			</div>
-			<Text sx={{ userSelect: 'none' }}>{item.text}</Text>
-			<Checkbox
-				className={classes.checkbox}
-				onChange={() => toggleItemCompleted(item)}
-				checked={item.completed}
-				color="gray"
-				aria-label="completed"
-				radius="xl"
-				size="sm"
-			/>
-			<IconButton
-				sx={theme => ({
-					marginLeft: theme.spacing.xs,
-				})}
-				aria-label="delete item"
-				Icon={IconX}
-				onClick={() => deleteItem(item)}
-			/>
-		</Reorder.Item>
-		// </motion.li>
-	)
-}
 
 export default DragAndDropList

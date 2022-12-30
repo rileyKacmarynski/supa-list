@@ -60,8 +60,6 @@ async function reorderItem(
 	{ items, listId }: { items: ReorderListItem[]; listId: string },
 	supabaseClient: SupabaseClient,
 ) {
-	console.log('drag ended', items)
-
 	const { data, error: queryError } = await supabaseClient
 		.from('list_items')
 		.select('*')

@@ -1,7 +1,7 @@
 import { showNotification } from '@mantine/notifications'
 import { useUser } from '@supabase/auth-helpers-react'
 import listKeys from 'lib/listKeys'
-import { ListId } from 'lib/ListService'
+import { ListDetail, ListId, ListItem } from 'lib/ListService'
 import { SupabaseClient, useSupabaseClient } from 'lib/supabaseClient'
 import { useMutation, useQueryClient } from 'react-query'
 
@@ -18,9 +18,12 @@ export default function useAddItem(listId: string) {
 		throw new Error('Must be logged in.')
 	}
 
+	const queryKey = listKeys.detail(listId)
+	const itemId = crypto.randomUUID()
+
 	return useMutation(
 		({ text }: AddItemArgs) =>
-			addItem({ text, userId: user.id, listId }, supabaseClient),
+			addItem({ text, userId: user.id, listId, id: itemId }, supabaseClient),
 		{
 			onError: e => {
 				showNotification({
@@ -29,8 +32,39 @@ export default function useAddItem(listId: string) {
 				})
 				console.error(e)
 			},
+			onMutate: async ({ text }) => {
+				await queryClient.cancelQueries({ queryKey })
+
+				const previousList = queryClient.getQueryData<ListDetail>(queryKey)
+
+				queryClient.setQueryData(
+					queryKey,
+					(oldList: ListDetail | undefined) => {
+						if (!oldList)
+							throw new Error('How are we reordering a list that doesnt exist?')
+
+						const newItem: ListItem = {
+							id: itemId,
+							text,
+							completed: false,
+							order: oldList.items.length + 1,
+							createdAt: new Date().toString(),
+							createdBy: user.id,
+						}
+
+						return {
+							...oldList,
+							items: [...oldList.items, newItem],
+						}
+					},
+				)
+
+				return { previousList }
+			},
+			onSettled: () => {
+				return queryClient.invalidateQueries({ queryKey })
+			},
 			onSuccess: () => {
-				console.log(queryClient.getQueryCache())
 				return queryClient.invalidateQueries(listKeys.detail(listId))
 			},
 		},
@@ -38,7 +72,12 @@ export default function useAddItem(listId: string) {
 }
 
 async function addItem(
-	{ text, userId, listId }: { text: string; userId: string; listId: ListId },
+	{
+		id,
+		text,
+		userId,
+		listId,
+	}: { id: string; text: string; userId: string; listId: ListId },
 	supabaseClient: SupabaseClient,
 ) {
 	const { count, error: queryError } = await supabaseClient
@@ -51,6 +90,7 @@ async function addItem(
 		throw new Error('unable to fetch number of existing items.')
 
 	const { error } = await supabaseClient.from('list_items').insert({
+		id,
 		list_id: listId,
 		text: text,
 		created_by: userId,

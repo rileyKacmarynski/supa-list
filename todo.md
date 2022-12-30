@@ -1,8 +1,5 @@
 # To Do
 
-- get CRUD working for items
-  - don't forget about MSW, but I don't wanna
-- remove all spinners
 - Work on styling list
 
 # At some point
