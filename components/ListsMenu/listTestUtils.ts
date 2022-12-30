@@ -9,10 +9,10 @@ export const makeTestList: (length: number) => List[] = length =>
 		id: (i + 1).toString(),
 		name: getTestListName(),
 		contributors: [],
-		createdAt: faker.date.past(1),
+		createdAt: faker.date.past(1).toString(),
 		createdBy: userId,
+		lastModified: faker.date.recent(2).toString(),
 		items: [],
-		lastModified: faker.date.recent(2),
 	}))
 
 export const getTestListName = () => faker.lorem.words(getRandomInt(4))
